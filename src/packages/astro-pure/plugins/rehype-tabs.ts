@@ -3,7 +3,7 @@ import { select } from 'hast-util-select'
 import { rehype } from 'rehype'
 import { CONTINUE, SKIP, visit } from 'unist-util-visit'
 
-interface Panel {
+export interface Panel {
   panelId: string
   tabId: string
   label: string
@@ -101,12 +101,20 @@ const tabsProcessor = rehype()
  * each tab panel correctly.
  * @param html Inner HTML passed to the `<Tabs>` component.
  */
-export const processPanels = (html: string) => {
+// export const processPanels = (html: string) => {
+//   const file = tabsProcessor.processSync({ value: html })
+//   return {
+//     /** Data for each tab panel. */
+//     panels: file.data.panels,
+//     /** Processed HTML for the tab panels. */
+//     html: file.toString()
+//   }
+// }
+
+export const processPanels = (html: string): { panels: Panel[]; html: string } => {
   const file = tabsProcessor.processSync({ value: html })
   return {
-    /** Data for each tab panel. */
-    panels: file.data.panels,
-    /** Processed HTML for the tab panels. */
+    panels: file.data.panels as Panel[],
     html: file.toString()
   }
 }
