@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 
-import Quote from '../components/custom/Quote.astro'
+import { Quote } from '../packages/astro-pure/components/advanced/index.ts'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
@@ -12,8 +12,8 @@ import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
 import config from '@/site-config'
 
-const languages = ['Python', 'HTML', 'C / C++', 'Shell']
-const courses = ['RL', 'Mathematical Analysis', 'NLP', 'CV']
+const languages = ['Python', 'HTML', 'C / C++', 'Shell', 'JavaScript']
+const courses = ['RL', 'CV', 'Mathematical Analysis', 'MIMO & OFDM', 'NLP']
 const backend = ['Vercel', 'Waline']
 
 const MAX_POSTS = 10
@@ -24,31 +24,35 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
 <PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
   <main class='flex w-full flex-col items-center'>
-    <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
+    <section class='animate mb-10 flex flex-col items-center gap-y-3' id='content-header'>
       <Image
         src={avatar}
         alt='profile'
         class='h-28 w-auto rounded-full border p-1'
         loading='eager'
       />
-
       <div class='flex flex-col items-center gap-y-4'>
         <h1 class='text-3xl font-bold'>{config.author}</h1>
+        <!-- <Quote class='mt-12' /> -->
+        <Quote/>
+
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='Beijing, Haidian'>
-            <Icon name='location' class='size-5' slot='icon' />
+          <Label title='Beijing, Haidian' class="text-sm">
+            <Icon name='location' class='size-4' slot='icon' />
           </Label>
           <Label
-            title='Project Repo.'
+            title='Github Repo.'
             as='a'
             href='https://github.com/Dingnuooo/astro-page'
             target='_blank'
+            class='text-sm'
           >
-            <Icon name='github' class='size-5' slot='icon' />
+            <Icon name='github' class='size-4' slot='icon' />
           </Label>
         </div>
+        
       </div>
-
+    
       <!-- {/* Get template */}
       <a
         href='https://github.com/cworld1/astro-theme-pure'
@@ -68,8 +72,8 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
       <Section title='About'>
         <p class='text-muted-foreground'>Student in Communication Engineering & Artificial Intelligence</p>
-        <p class='text-muted-foreground'>
-          你来了？<br>目前这里是一个毛坯房，我们正在往这里搬家。您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>
+        <p class='text-foreground'>
+          你来了？<br>目前此处只是一个样板毛坯房，我们正在往这里搬家。您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>
         </p>
         <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
       </Section>
@@ -186,7 +190,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         <SkillLayout title='Backend' skills={backend} />
       </Section>
     </div>
-    <Quote class='mt-12' />
+    <!-- <Quote class='mt-12' /> -->
     <!-- <span id="busuanzi_container_site_pv">
       本站总访问量 <span id="busuanzi_site_pv">Loading</span> 次
     </span> -->

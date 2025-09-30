@@ -1,7 +1,7 @@
 ---
 import config from 'virtual:config'
 
-import Icon from '../libs/user/Icon.astro'
+import { Icon } from '../user'
 
 const footerConf = config.footer
 let social = footerConf.social || {}
@@ -45,6 +45,18 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
         </div>
         {/* Position 2 */}
         {
+          footerConf.credits && (
+            <span>
+              Powered by
+              <a href='https://github.com/withastro/astro' target='_blank'>
+                Astro
+              </a>
+              &
+              Theme.<a href='https://github.com/cworld1/astro-theme-pure' target='_blank' rel="noopener noreferrer">Pure</a>
+            </span>
+          )
+        }
+        {
           footerLink1.length > 0 && (
             <div>
               {footerLink1.map(({ title, link, style }, index) => (
@@ -58,20 +70,7 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             </div>
           )
         }
-        {
-          footerConf.credits && (
-            <span>
-              Powered by
-              <a href='https://github.com/withastro/astro' target='_blank'>
-                Astro
-              </a>
-              &
-              Theme.<a href='https://github.com/cworld1/astro-theme-pure' target='_blank'>
-                Pure
-              </a>
-            </span>
-          )
-        }
+        
       </div>
 
       {/* Social Brands */}
