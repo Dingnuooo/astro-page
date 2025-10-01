@@ -6,7 +6,7 @@ updatedDate: 2025-01-21
 tags:
   - default
 heroImage: { src: './cover.png', color: '#2472aa' }
-language: 'Chinese'
+language: '中文'
 ---
 
 **2025新国辩哲理辩 辩题：[当今时代，我们更需要意义的解构/建构](https://www.bilibili.com/video/BV17fw6ekE4h)**
