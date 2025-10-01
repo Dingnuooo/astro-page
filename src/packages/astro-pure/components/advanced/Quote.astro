@@ -5,14 +5,16 @@ const { class: className } = Astro.props
 ---
 
 <quote-component class={cn('not-prose inline-block', className)} >
-  <div class='flex flex-row items-center gap-x-3 rounded-full border px-4 py-2 shadow-sm' style='font-size: 0.9375rem;'>
+  <div
+    class='flex flex-row items-center gap-x-3 rounded-full border px-4 py-2 shadow-sm text-sm'
+  >
     <span class='relative flex items-center justify-center'>
       <span
         class='absolute size-2.2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
       ></span>
       <span class='size-2.2 rounded-full bg-green-400'></span>
     </span>
-    <p id='quote-sentence' class='font-medium text-muted-foreground'>握紧你的锄头 - Never put down your hammer.</p>
+    <p id='quote-sentence' class='font-medium text-foreground'>Never put down your hammer.</p>
   </div>
 </quote-component>
 
