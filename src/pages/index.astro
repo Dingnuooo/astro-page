@@ -6,7 +6,7 @@ import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-// import ProjectCard from '@/components/home/ProjectCard.astro'
+import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
@@ -33,11 +33,10 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       />
       <div class='flex flex-col items-center gap-y-4'>
         <h1 class='text-3xl font-bold'>{config.author}</h1>
-        <!-- <Quote class='mt-12' /> -->
-        <Quote/>
+        
 
         <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='Beijing, Haidian' class="text-sm">
+          <Label title='Beijing, Haidian' class='text-sm text-muted-foreground'>
             <Icon name='location' class='size-4' slot='icon' />
           </Label>
           <Label
@@ -45,12 +44,13 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
             as='a'
             href='https://github.com/Dingnuooo/astro-page'
             target='_blank'
-            class='text-sm'
+            class='text-sm text-muted-foreground'
           >
             <Icon name='github' class='size-4' slot='icon' />
           </Label>
         </div>
-        
+        <!-- <Quote class='mt-12' /> -->
+        <Quote/>
       </div>
     
       <!-- {/* Get template */}
@@ -71,7 +71,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
       <Section title='About'>
-        <p class='text-muted-foreground'>Student in Communication Engineering & Artificial Intelligence</p>
+        <p class='text-foreground'>Student in Communication Engineering & Artificial Intelligence</p>
         <p class='text-foreground'>
           你来了？<br>目前此处只是一个样板毛坯房，我们正在往这里搬家。您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>
         </p>

@@ -83,8 +83,9 @@ export const theme: ThemeUserConfig = {
     /** Optional details about the social media accounts for this site. */
     social: { github: 'https://github.com/Dingnuooo/astro-site',
       bilibili: 'https://space.bilibili.com/90563238',
-      zhihu: 'https://www.zhihu.com/people/ddxdd-74',
-      email: 'mailto:dingnuooo@163.com'
+      netease: 'https://music.163.com/#/user/home?id=384322136',
+      email: 'mailto:dingnuooo@163.com',
+      // rss: false
     }
   },
 
