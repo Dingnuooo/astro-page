@@ -12,9 +12,10 @@ import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
 import config from '@/site-config'
 
-const languages = ['Python', 'HTML', 'C / C++', 'Shell', 'JavaScript']
-const courses = ['RL', 'CV', 'Mathematical Analysis', 'MIMO & OFDM', 'NLP']
-const backend = ['Vercel', 'Waline']
+const language = ['Python', 'C / C++', 'MATLAB', 'LaTeX', 'HTML', 'MySQL']
+const subject = ['MIMO', 'RL', 'CV', 'Math Analysis', 'OFDM', 'NLP']
+const tool = ['VSCode', 'Obsidian', 'Zotero', 'Docker', 'VMware']
+const design = ['SAI', 'FL Studio', 'Manim', 'Blender']
 
 const MAX_POSTS = 10
 const allPosts = await getBlogCollection()
@@ -73,7 +74,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       <Section title='About'>
         <p class='text-foreground'>Student in Communication Engineering & Artificial Intelligence</p>
         <p class='text-foreground'>
-          你来了？<br>目前此处只是一个样板毛坯房，我们正在往这里搬家。您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>
+          你来了？<br>目前此处是一间毛坯样板房，我们正在往这里搬家。您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>。
         </p>
         <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
       </Section>
@@ -122,12 +123,18 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     </Section> */
       }
       <Section title='Education'>
-        <Card
+        <!-- <Card
           as='a'
           heading='Beijing Institute of Technology'
           subheading='School of Future Technology & Interdisciplinary Science'
           date='August 2023 - Present'
           href='https://bit.edu.cn'
+        > -->
+        <Card
+          as='a'
+          heading='Beijing Institute of Technology'
+          subheading='School of Future Technology & Interdisciplinary Science'
+          date='August 2023 - Present'
         >
           <img
             class='absolute end-0 z-0 m-0 -my-3 h-full w-1/2 object-cover opacity-20'
@@ -184,10 +191,18 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         />
       </Section> -->
 
+
+
+      <!-- <Section title='Papers'>
+        <div class='text-muted-foreground'>希望在不远的将来，这里能够填上一些东西。你可以的。</div>
+      </Section> -->
+
+
       <Section title='Skills'>
-        <SkillLayout title='Languages' skills={languages} />
-        <SkillLayout title='Courses' skills={courses} />
-        <SkillLayout title='Backend' skills={backend} />
+        <SkillLayout title='Programming' skills={language} />
+        <SkillLayout title='Subjects' skills={subject} />
+        <SkillLayout title='Tools' skills={tool} />
+        <SkillLayout title='Design' skills={design} />
       </Section>
     </div>
     <!-- <Quote class='mt-12' /> -->

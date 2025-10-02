@@ -1,0 +1,279 @@
+---
+title: 随机过程作业 Chapter3 更新理论
+description: 'Sheldon M. Ross《随机过程》第二版 习题作业'
+tags:
+ - Homework
+ - stochastic-processes
+publishDate: 2025-04-12
+updateDate: 2025-04-15
+heroImage: { src: './markov-rickroll.jpg', color: '#c9d9ee' }
+---
+import { Aside } from 'astro-pure/user'
+
+Sheldon M. Ross "Stochastic Processes" 2nd Edition
+随机过程（第二版）习题
+## 3.4
+<Aside type="note" title="习题 3.4">
+证明更新方程
+$$
+m(t)=F(t)+\displaystyle\int_0^tm(t-x)\,{\rm d}F(x)
+$$
+</Aside>
+**解：**
+
+取条件于首次更新的等待时间 $S_1$（也即 $X_1$），并假定积分与求和可交换. 则
+$$
+\begin{aligned}
+m(t)&=\sum\limits_{n=1}^{\infty}F_n(t)=F(t)+\sum\limits_{n=2}^{\infty}F_n(t)\\
+&=F(t)+\sum\limits_{n=2}^{\infty}P(S_n\leqslant t)\\
+&=F(t)+\sum\limits_{n=2}^{\infty}\displaystyle\int_0^tP(S_n\leqslant t\mid X_1=x)\,{\rm d}F(x)\\
+&=F(t)+\sum\limits_{n=2}^{\infty}\displaystyle\int_0^tP(X_1+X_2+\cdots+X_n\leqslant t\mid X_1=x)\,{\rm d}F(x)\\
+&=F(t)+\sum\limits_{n=2}^{\infty}\displaystyle\int_0^tP(X_2+\cdots+X_n\leqslant t-x)\,{\rm d}F(x)\\
+&=F(t)+\sum\limits_{n=2}^{\infty}\displaystyle\int_0^tF_{n-1}(t-x)\,{\rm d}F(x)\\
+&=F(t)+\displaystyle\int_0^t\sum\limits_{n=1}^{\infty}F_{n}(t-x)\,{\rm d}F(x)\\
+&=F(t)+\displaystyle\int_0^tm(t-x)\,{\rm d}F(x)
+\end{aligned}
+$$
+
+***
+## 3.7
+<Aside type="note" title="习题 3.7">
+若到达间隔分布 $F$ 为 $(0,1)$ 的均匀分布，证明
+$$
+m(t)={\rm e}^t-1,\ 0\leqslant t\leqslant1
+$$
+并论证：为了使得到达间隔分布之和大于 $1$，需要的间隔数的期望为 ${\rm e}{}$
+</Aside>
+**解：**
+
+将 $F(x)=x,\,0\leqslant t\leqslant1$ 代入习题3.4所证结论有
+$$
+\begin{aligned}
+m(t)&=t+\displaystyle\int_0^tm(t-x){\rm d}x\\
+&=t+\displaystyle\int_0^tm(x){\rm d}x\\
+\end{aligned}
+$$
+两边对 $t$ 求导得
+$$
+m'(t)=1+m(t)
+$$
+解微分方程即可. 令 $g(t)=1+m(t)$，则有 $g'(t)=g(t)$ 即 $\dfrac{ {\rm d}g}{g}={\rm d}t$. 于是
+$$
+\begin{aligned}
+\ln g(t)&=t+C\\
+g(t)&=C {\rm e}^t
+\end{aligned}
+$$
+代入 $g(0)=1+m(0)=1$ 得 $C=1$，即 $g(t)={\rm e}^t$. 于是 $m(t)=g(t)-1={\rm e}^t-1$
+
+在 $(0,1]$ 上发生的事件数为 $N(1)$，那么第 $N(1)+1$ 个事件发生的时刻即“第一个在1之后发生的事件”，或者说即“使得间隔之和大于1所需的更新数目”. 于是题目所求即为
+$$
+E[N(1)+1]=m(1)+1={\rm e}
+$$
+
+***
+## 3.10
+<Aside type="note" title="习题 3.10">
+设 $X_1,X_2,\cdots$ 独立同分布，$E[X_i]<{\infty}$. 设 $N_1$ 为它的停时，即在满足“一个仅依赖于 $X_1\sim X_{N_1}$ 的条件”之后停止实验. 实验停止之后，再次定义一个停时 $N_2$，即在满足“一个仅依赖于 $X_{N_1}\sim X_{N_1+N_2}$ 的条件”之后停止实验. 重复上述操作，得到序列 $N_1,N_2,\cdots$，称为对 $\left\{X_n\right\}$ 的停时序列.
+1. 令 $S_1=\sum\limits_{i=1}^{N_1}X_i$，$S_2=\sum\limits_{i=N_1+1}^{N_1+N_2}X_i$，$S_2=\sum\limits_{i=N_1+N_2+1}^{N_1+N_2+N_3}X_i$，$\cdots$. 使用强大数定律计算
+$$
+\lim\limits_{m\to {\infty} }\dfrac{S_1+\cdots+S_m}{N_1+\cdots+N_m}
+$$
+2. 把 $\dfrac{S_1+\cdots+S_m}{N_1+\cdots+N_m}$ 上式改写为 $\dfrac{S_1+\cdots+S_m}{m}\dfrac{m}{N_1+\cdots+N_m}$，再次计算其极限.
+3. 由上面两题证明 Wald 方程.
+</Aside>
+**解：**
+
+(1) 事实上 $\sum\limits_{i=1}^m S_i=\sum\limits_{n=1}^{\sum_1^m N_i}X_n=S_{\sum_1^m N_i}$. 令 $k=\sum_1^m N_i$，则当 $m\to\infty$ 时，$k\to\infty$. 于是由强大数定律
+$$
+\lim\limits_{m\to\infty}\dfrac{\sum_1^m S_i}{\sum_1^m N_i}=\lim\limits_{k\to\infty}\dfrac{S_k}{k}=\mu_X=E[X]
+$$
+***
+(2) $\dfrac{\sum_1^m S_i}{\sum_1^m N_i}=\dfrac{\sum_1^m S_i/m}{\sum_1^m N_i/m}$. 由 $S_i$ 的定义可知，$S_i$ 之间独立同分布. 故当 $m\to\infty$ 时，由强大数定律，分子分母极限都存在
+$$
+\begin{aligned}
+\lim\limits_{m\to\infty}\dfrac{\sum_1^m S_i}{m}&=\mu_S=E[S]\\
+\lim\limits_{m\to\infty}\dfrac{\sum_1^m N_i}{m}&=\mu_N=E[N]\\
+\end{aligned}
+$$
+代入即得
+$$
+\lim\limits_{m\to\infty}\dfrac{\sum_1^m S_i}{\sum_1^m N_i}=\dfrac{\lim\limits_{m\to\infty}\sum_1^m S_i/m}{\lim\limits_{m\to\infty}\sum_1^m N_i/m}=\dfrac{E[S]}{E[N]}
+$$
+***
+(3) 于是 $E[X]=\dfrac{E[S]}{E[N]}$，即 $E[S]=E[X]{E[N]}$. 此即为 Wald 方程.
+***
+## 3.17
+<Aside type="note" title="习题 3.17">
+形如 $g(t)=h(t)+\displaystyle\int_0^tg(t-x)\,{\rm d}F(x)$ 的方程称为更新型方程（或使用卷积记号记为 $g=h+g*F$）. 迭代之 / 使用Laplace变换，证明更新型方程具有解
+$$
+g(t)=h(t)+\displaystyle\int_0^th(t-x)\,{\rm d}m(x)
+$$
+若 $h(x)$  直接 Riemann 可积、且 $F$ 是均值有限的非格点分布，则可应用关键更新定理得
+$$
+\lim\limits_{t\to {\infty} }g(t)=\dfrac{1}{\mu_X}\int_0^{\infty}h(t){\rm d}t=\dfrac{\int_0^{\infty}h(t){\rm d}t}{\int_0^{\infty}\overline F(t){\rm d}t}
+$$
+
+对 $g(t)$ 的更新型方程得自取条件于过程按概率意义上重新开始的时刻，对下列函数建立更新型方程：
+1. 一个交替更新过程在时刻 $t$ 处于开状态的概率 $P(t)$
+2. 更新过程在时刻 $t$ 的期望年龄 $g(t)=E[A(t)]$
+
+使用题示结论给出更新型方程的解，并运用关键更新定理得到上述两题中的极限值.
+</Aside>
+**解：**
+
+对更新型方程作 Laplace 变换，由卷积定理得
+$$
+\begin{aligned}
+{\mathcal L}[g]&={\mathcal L}[h]+{\mathcal L}[g]{\mathcal L}[F]\\
+{\mathcal L}[g]&=\dfrac{ {\mathcal L}[h]}{1-{\mathcal L}[F]}
+\end{aligned}
+$$
+
+考虑更新函数的 Laplace 变换
+$$
+\begin{aligned}
+m(t)&=\sum\limits_{n=1}^{\infty}F_n(t)\\
+{\mathcal L}[m]&=\sum\limits_{n=1}^{\infty}({\mathcal L}[F])^n\\
+&=\dfrac{ {\mathcal L}[F]}{1-{\mathcal L}[F]}\\
+\end{aligned}
+$$
+于是 ${\mathcal L}[F]=\dfrac{ {\mathcal L}[m]}{1+{\mathcal L}[m]}$. 代入 Laplace 变换后的式子得
+$$
+\begin{aligned}
+{\mathcal L}[g]&=\dfrac{ {\mathcal L}[h]}{1-{\mathcal L}[F]}=\dfrac{ {\mathcal L}[h]}{1-\dfrac{ {\mathcal L}[m]}{1+{\mathcal L}[m]} }\\
+&={\mathcal L}[h](1+{\mathcal L}[m])\\
+&={\mathcal L}[h]+{\mathcal L}[h]\times{\mathcal L}[m]
+\end{aligned}
+$$
+最后做 Laplace 逆变换得
+$$
+g(t)=h(t)+[h*m](t)=h(t)+\displaystyle\int_0^th(t-x)\,{\rm d}m(x)
+$$
+***
+(1) 称“从关到开”为一次更新，开状态时间序列 $\left\{Z_n\right\}$ 独立同分布 $H$、关状态时间序列 $\left\{Y_n\right\}$ 独立同分布 $G$，$X_i=Z_i+Y_i$. 取条件于事件从概率意义上重新开始（即首次更新）的时刻
+$$
+\begin{aligned}
+P(t)&=\displaystyle\int_0^{+\infty}P(\,t时刻为开\mid X_1=s){\rm d}F(s)\\
+\end{aligned}
+$$
+对于 $s\leqslant t$，那么条件概率相当于从 $s$ 时刻重新开始，$\displaystyle\int_0^tP(t-s){\rm d}F(s)$；  
+对于 $s>t$，“$t$ 时刻处于开状态”等价于“$t<Z_1$”，而 $s$ 从 $t$ 积到正无穷也即所有可能的条件的总和.
+
+于是更新型方程为
+$$
+\begin{aligned}
+P(t)&=\displaystyle\int_0^tP(t-s){\rm d}F(s)+\displaystyle\int_t^{+\infty}P(t<Z_1\mid X_1=s){\rm d}F(s)\\
+&=P(Z_1>t)+\displaystyle\int_0^tP(t-s){\rm d}F(s)\\
+&=\overline H(t)+\displaystyle\int_0^tP(t-s){\rm d}F(s)\\
+\end{aligned}
+$$
+进而
+$$
+\lim\limits_{t\to {\infty} }P(t)=\dfrac{\int_0^{\infty}\overline H(t){\rm d}t}{\mu_X}=\dfrac{E(Z)}{E(X)}
+$$
+***
+(2) 取条件于事件从概率意义上重新开始（即首次更新）的时刻，拆积分区间，得更新型方程
+$$
+\begin{aligned}
+g(t)=E[A(t)]&=\displaystyle\int_0^{\infty}E[A(t)\mid X_1=s]{\rm d}F(s)\\
+&=\displaystyle\int_t^{+\infty}E(t\mid X_1=s){\rm d}F(s)+\displaystyle\int_9^tE[A(t-s)]{\rm d}F(s)\\
+&=\displaystyle\int_t^{+\infty}t{\rm d}F(s)+\displaystyle\int_0^tg(t-s){\rm d}F(s)\\
+&=t\overline F(t)+\displaystyle\int_0^tg(t-s){\rm d}F(s)
+\end{aligned}
+$$
+进而
+$$
+\begin{aligned}
+\lim\limits_{t\to {\infty} }g(t)&=\dfrac{\int_0^\infty t\overline F(t){\rm d}t}{\mu_X}\\
+&=\dfrac{\int_0^\infty\overline F(t){\rm d}(\frac12t^2)}{E[X]}\\
+&=\dfrac{\dfrac12t^2\overline F(t)\bigg|_0^\infty-\displaystyle\int_0^\infty\dfrac12t^2{\rm d}\overline F(t)}{E[X]}\\
+&=\dfrac{0+\dfrac12\displaystyle\int_0^\infty t^2{\rm d} F(t)}{E[X]}\\
+&=\dfrac{E[X^2]}{2E[X]}
+\end{aligned}
+$$
+***
+## 3.27
+<Aside type="note" title="习题 3.27">
+对更新报酬过程证明：
+$$
+\lim\limits_{t\to\infty}E[R_{N(t)+1}]=\dfrac{E[R_1X_1]}{E[X_1]}
+$$
+
+假定 $X_i$ 的分布不是格点的，而有关的任何函数都是直接 Riemann 可积的，当循环的报酬定义为等于循环的长度时，上式导致
+$$
+\lim\limits_{t\to\infty}E[X_{N(t)+1}]=\dfrac{E[X^2]}{E[X]}
+$$
+请说明：它总是大于 $E[X]$，除非 $X$ 以概率1地是常数.
+</Aside>
+**解：**
+
+取条件于 $S_{N(t)}$ 的值，将报酬转化到第一个更新区间内. 参考交替更新中处于开状态的概率的极限，需要对 $S_{N(t)}=0$ 单独讨论，注意到此时 $N(t)=0$.
+$$
+\begin{aligned}
+E[R_{N(t)+1}]&=E[R_{N(t)+1}\mid S_{N(t)}=0]\,\overline F(t){\rm d}m(0)+\displaystyle\int_0^{t} E[R_{N(t)+1}\mid S_{N(t)}=s]P(S_{N(t)}=s)\\
+&=E[R_1\mid X_1>t]\,\overline F(t)+\displaystyle\int_0^{t} E[R_1\mid X_1>t-s]\,\overline F(t-s){\rm d}m(s)\\
+\end{aligned}
+$$
+令 $t\to {+\infty}$，前项中 $\overline F(\infty)=0$，后项使用关键更新定理
+$$
+\begin{aligned}
+\lim\limits_{t\to \infty}E[R_{N(t)+1}]&=\dfrac1{\mu_X}\displaystyle\int_0^{+\infty}E[R_1\mid X_1=\tau]\overline F(\tau){\rm d}\tau\quad(\tau 换成 x)\\
+&=\dfrac{1}{E(X_1)}\displaystyle\int_0^{+\infty}\overline F(x){\rm d}x\displaystyle\int_0^{+\infty}rP(R_1=r\mid X_1=x)\\
+&=\dfrac{1}{E(X_1)}\displaystyle\int_0^{+\infty}\displaystyle\int_0^{+\infty}xP(X_1=x)rP(R_1=r\mid X_1=x)\\
+&=\dfrac{1}{E(X_1)}\displaystyle\int_0^{+\infty}\displaystyle\int_0^{+\infty}rxP(R_1=r,\,X_1=x)\\
+&=\dfrac{E(R_1X_1)}{E(X_1)}
+\end{aligned}
+$$
+
+而 $D(X)=E(X^2)-E^2(X)\geqslant0$，故$E(X^2)\geqslant E^2(X)$，即
+$$
+\lim\limits_{t\to\infty}E[X_{N(t)+1}]=\dfrac{E[X^2]}{E[X]}\geqslant\dfrac{E^2(X)}{E(X)}=E(X)
+$$
+上式取等号当且仅当 $D(X)=0$，即 $X$ 为常数.
+***
+## 3.32
+<Aside type="note" title="习题 3.32">
+考虑一个按速率 $\lambda$ 的 Poisson 过程到达的单服务线排队系统，其具有均值为 $\mu_G$ 的服务时间分布 $G$. 假定 $\lambda\mu_G<1$.
+1. 求系统空闲的时间比例 $P_0$
+2. 计算忙期的平均长度
+3. 利用 (2) 和 Wald 方程计算在一个忙期中服务过的顾客数的期望
+</Aside>
+**解：**
+
+(1) 在首个顾客到达时开始计时. 每当顾客发现系统为空的时候，这个过程相当于在概率意义上重新开始. 进一步定义 $t$ 时刻系统的状态数 $j$ 等于系统中的顾客数 $Y(t)$，那么 $\{Y(t),t>0\}$ 是一个再现过程. 于是所求比例即为状态0的时间的长程比.  
+假设一个循环中服务的顾客数为 $N_i$，单个顾客的服务时间为 $T_j$，则
+$$
+\begin{aligned}
+\lim\limits_{t\to\infty}\dfrac{处于状态0的总时间}{t}&=\dfrac{E[单循环中系统内系统顾客为0的时间]}{E[循环周期]}\\
+&=\dfrac{E\left[\sum\limits_1^{N_i}X_j-\sum\limits_1^{N_i}T_j\right]}{E\left[\sum\limits_1^{N_i}X_j\right]}\\
+&=\dfrac{E[N](E[X]-E[T])}{E[N]E[X]}\quad(\text{Wald})\\
+&=\dfrac{\mu_X-\mu_G}{\mu_X}\\
+&=1-\dfrac{\mu_G}{\mu_X}
+\end{aligned}
+$$
+也即 $P_0=1-\dfrac{\mu_G}{1/\lambda}=1-\lambda\mu_G$
+***
+(2)
+$$
+\lim\limits_{t\to \infty}P(t时刻在忙期内)=\dfrac{E[忙期时间]}{E[忙期时间]+E[空闲时间]}=1-P_0=\lambda\mu_G
+$$
+空闲时间即为“单循环中最后一位顾客离开、到下一个顾客到来”的这段时间，其分布即到达间隔分布，即
+$$
+E[空闲时间]=E[X]=\dfrac1\lambda
+$$
+于是
+$$
+\begin{aligned}
+\dfrac{E[忙期时间]}{E[忙期时间]+E[空闲时间]}&=\lambda\mu_G\\
+E[忙期]=\dfrac{\lambda\mu_GE[空闲时间]}{1-\lambda\mu_G}&=\frac{\mu_G}{1-\lambda\mu_G}
+\end{aligned}
+$$
+***
+(3) 设一个忙期内共 $N$ 人接受了服务，则由 Wald
+$$
+\begin{aligned}
+E[B]&=E\left[\sum\limits_1^NT_i\right]=E[N]E[T_i]\\
+E[N]&=\dfrac{E[B]}{E[T_i]}=\dfrac{1}{1-\lambda\mu_G}
+\end{aligned}
+$$

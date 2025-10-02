@@ -1,0 +1,169 @@
+---
+title: 随机过程作业 Chapter4 Markov链
+description: 'Sheldon M. Ross《随机过程》第二版 习题作业'
+tags:
+ - Homework
+ - stochastic-processes
+publishDate: 2025-04-15
+updateDate: 2025-04-21
+heroImage: { src: './markov-rickroll.jpg', color: '#c9d9ee' }
+---
+import { Aside } from 'astro-pure/user'
+
+Sheldon M. Ross "Stochastic Processes" 2nd Edition
+随机过程（第二版）习题
+## 4.2
+<Aside type="note" title="习题 4.2">
+对 Markov 链证明, 只要 $n_1<\cdots<n_k<n$, 就有
+$$
+P(X_n=j\mid X_{n_1}=i_1,\cdots,\,X_{n_k}=i_k)=P(X_n=j\mid X_{n_k}=i_k)
+$$
+</Aside>
+**解：**
+
+归纳法证之.
+
+① 当 $n=n_k+1$ 时，由 Markov 性立即得
+$$
+P(X_{n_k+1}=j\mid X_{n_1}=i_1,\cdots,X_{n_k}=i_k)=P(X_{n_k+1}=j\mid X_{n_k}=i_k)
+$$
+
+② 假设 $n=m>n_k+1$ 时成立 $P(X_m=s\mid X_{n_1}=i_1,\cdots,X_{n_k}=i_k)=P(X_m=s\mid X_{n_k}=i_k)$. 考虑 $n=m+1$，取条件于 $X_m$ 的取值，由 Markov 性及归纳假设得
+$$
+\begin{aligned}
+&P(X_{m+1}=j\mid X_{n_1}=i_1,\cdots,X_{n_k}=i_k)\\
+=\,&\textstyle\sum_{s}
+P(X_{m+1}=j\mid X_m=s,X_{n_1}=i_1,\cdots,X_{n_k}=i_k)\cdot
+P(X_m=s\mid X_{n_1}=i_1,\cdots,X_{n_k}=i_k)\\
+=\,&\textstyle\sum_{s}
+P(X_{m+1}=j\mid X_m=s)\cdot
+P(X_m=s\mid X_{n_k}=i_k)\\
+=\,&P(X_{m+1}=j\mid X_{n_k}=i_k)\quad(\text{Chapman-Kolmogorov})
+\end{aligned}
+$$
+
+于是原命题成立.
+***
+## 4.8
+
+<Aside type="danger" title="Warning!">
+本题题述不清，此处给出的答案不正确
+</Aside>
+<Aside type="note" title="习题 4.8">
+$X_1,\,X_2,\cdots$ 独立同分布,  $P(X_i=j)=\alpha_j\ (j\geq0)$，$X_0=-\infty$. 称 $n$ 时刻产生一个记录, 若 $X_n$ 比之前的所有值都大, 并称 $X_n$ 为其记录值. 令 $R_i$ 为第 $i$ 个记录值.
+1. 证明 $\left\{R_i\right\}$ 是 Markov 链, 并计算转移概率.
+2. 记第 $i$ 个记录与第 $i+1$ 个记录之间的时间为 $T_i$. $\left\{T_i\right\}$ 是 Markov 链否？$\left\{(R_i,\,T_i)\right\}$ 是 Markov 链否？若是则计算转移概率.
+3. 令 $S_n=\sum\limits_1^nT_i$, 证明：当 $X_i$ 都是连续随机变量时 $\left\{S_n\right\}$ 是 Markov 链, 并计算转移概率.
+</Aside>
+**解：**
+
+(1) 用 $n_{k}$ 表示第 $k$ 次记录产生的时刻，则 $X_{n_k}=R_k$. 于是 $R_k=r$ 即等价于“$n_k$ 时刻取值为 $r$，且比上一个记录值要大，且两次记录时刻之间的取值均不比上一个记录值大”. 记第 $k$ 次记录与第 $k+1$ 次记录之间间隔 $n_{k+1}-n_k=t$（也即两个记录中间夹 $t-1$ 个值），则取条件于 $t$：
+$$
+\begin{aligned}
+P\left(R_{k+1}=r\mid R_k=r_0\right)&= \textstyle\sum\limits_{t=1}^\infty P\left(X_{n_{k+1} }=r,\,X_{n_{k+1} }>r_0\,;\,X_{1+{n_k} }\leq r_0,\,X_{2+{n_k} }\leq r_0,\,\cdots,\,X_{t-1+n_{k} }\leq r_0\right)\\
+&= \textstyle\sum\limits_{t=1}^\infty P\left(X_l=r,\,X_{l}>r_0\right)\cdot\big[P\left(X_n\leq r_0\right)\big]^{t-1}
+\end{aligned}
+$$
+当 $r\leq r_0$ 时，显然有 $P\left(X_l=r,\,X_l>r_0\right)=0$；  
+当 $r>r_0$ 时，原式 $=\textstyle\sum\limits_{t=0}^\infty P\left(X_l=r\right)\cdot\big[P\left(X_n\leq r_0\right)\big]^{t}=P\left(X_l=r\right)\cdot\dfrac{1}{1-P(X_n\leq r_0)}=\dfrac{\alpha_j}{\sum_{m=r_0+1}^{\infty}\alpha_m}$
+
+因此 $\left\{R_k\right\}$ 是 Markov 链，转移概率
+$$
+P\left(R_{k+1}=r\mid R_k=r_0\right)=\begin{cases}0&,\,r\leq r_0\\\dfrac{\alpha_r}{\sum_{m=r_0+1}^{\infty}\alpha_m}&,\,r>r_0\end{cases}
+$$
+
+***
+(2) 第 $k+1$ 次记录至第 $k+2$ 次记录的时间间隔显然与且只与第 $k+1$ 次记录的值有关，因此 $\left\{T_k\right\}$ 不是 Markov 链。结合 $\left\{R_k\right\}$ 的 Markov 性可得
+$$
+\begin{aligned}
+&\quad\,\,P\left(R_{k+1}=r,\,T_{k+1}=t\mid R_k=r_0,\,T_k=t_0\right)\\
+&= P\left(R_{k+1}=r,\,T_{k+1}=t\mid R_k=r_0\right)\\
+&= \dfrac{P\left(R_{k+1}=r,\,T_{k+1}=t,\,T_k=t_0\mid R_k=r_0\right)\bcancel{P(R_k=r_0)} }{P\left(T_k=t_0\mid R_k=r_0\right)\bcancel{P(R_k=r_0)} }\\
+&= \dfrac{P((t\!-\!1)个X\leq r,\,X_l=r>r_0,\,(t_0\!-\!1)个X\leq r_0)}{P((t_0\!-\!1)个X\leq r_0)}\\
+&= P((t\!-\!1)个X\leq r,\,X_l=r>r_0)
+\end{aligned}
+$$
+于是由 (1) 的结论，当 $r \leq r_0$ 时为 $0$，当 $r>r_0$ 时 $=P\left(X_l=r\right)\cdot\big[P\left(X_n\leq r_0\right)\big]^{t-1}=\alpha_r\left(\sum\limits_{m=0}^{r}\alpha_m\right)^{t-1}{}$
+
+因此 $\left\{(R_k,\,T_k)\right\}$ 是 Markov 链，转移概率
+$$
+P\left(R_{k+1}=r,\,T_{k+1}=t\mid R_k=r_0,\,T_k=t_0\right)=\begin{cases}0&,\,r\leq r_0\\\alpha_r\left(\sum\limits_{m=0}^{r}\alpha_m\right)^{t-1}&,\,r>r_0\end{cases}
+$$
+***
+(3) 由题意，$S_k$ 即第 $k$ 个记录出现的时刻. 欲求 $P(S_{k+1}=s\mid S_k=s_0)$，这个事相当于：
+1. $X_1,\cdots,X_{s-1}$ 的最大值出现在前 $s_0$ 个中，即 $\max(X_1,\dots,X_{s-1})=\max(X_1,\dots,X_{s_0})$. 参考习题1.6可得，当变量为连续型时，右侧max括号内每一个数成为左侧最大值的可能性相同，均为 $\dfrac{1}{s-1}$，因此这部分的概率为 $\dfrac{s_0}{s-1}$；
+2. $X_s$ 是新的记录值，即 $X_s=\max(X_1,\dots,X_s)$，这里的概率为 $\dfrac1s$.
+
+以上两事件独立，故 $P(S_{k+1}=s\mid S_k=s_0)=\dfrac{s_0}{s-1}\dfrac1s\ (s>s_0)$.
+
+于是 $\left\{S_n\right\}$ 是 Markov 链，转移概率
+$$
+P(S_{k+1}=s\mid S_k=s_0)=\begin{cases}0&,s\leq s_0 \\
+\dfrac{s_0}{s(s-1)}&,s>s_0
+\end{cases}
+$$
+***
+## 4.18
+<Aside type="note" title="习题 4.18">
+工作按速率 $\lambda$ 的 Poisson 过程来到一个加工中心. 加工中心只有 $N$ 个等待空间, 因此若来到的工作发现有 $N$ 个工作在等待就不再进来. 每天至多有一个工作得到加工,  而加工此工作必须在每天的开始. 于是若在每天开始时有任何工作等待加工, 则其中之一就在这天被加工, 否则这天就没有工作被加工. 以 $X_n$ 记第 $n$ 天的开始时处在该加工中心的工作个数（不含当天开始时被加工的工作）.
+1. 求 Markov 链 $\left\{X_n\right\}$ 的转移概率.
+2. 判断该链是否遍历.
+3. 写出平稳概率的方程.
+</Aside>
+**解：**
+
+(1) $X_n$ 可能的取值只能为 $\left[0,N\right]$ 中的整数. 计算 $P(X_{n+1}=x\mid X_n=x_0)$ 时，假设两次统计之间来了 $k$ 个工作（概率为 $\dfrac{ {\rm e}^{-\lambda}\lambda^k}{\lambda!}$），按 $x_0$ 分两类讨论：  
+① $x_0=0$ 时，当 $0\leq k<N$ 时 $X_{n+1}$ 的取值 $x=k$，当 $k\geq N$ 时 $x=N$；  
+② $0< x_0\leq N$ 时，先从队列中扣除一个工作进行处理，当 $0\leq k < N-x_0$ 时 $X_{n+1}$ 的取值 $x=x_0+k-1$，当 $k\geq N-x_0+1$ 时 $x=N$
+
+将参数由 $k$ 代换为 $x$ 即得转移概率表达式
+$$
+P(X_{n+1}=x\mid X_n=x_0)=
+\begin{cases}
+{\dfrac{ {\rm e}^{-\lambda}\lambda^x}{x!} } & x_0=0\,,\quad\quad\ 0\leq x<N \\ \sum\limits_{k=N}^{\infty} {\dfrac{ {\rm e}^{-\lambda}\lambda^k}{k!} } & x_0=0\,,\quad\quad\ 
+x=N \\ {\dfrac{ {\rm e}^{-\lambda}\lambda^{x-x_0+1} }{(x-x_0+1)!} } & 0< x_0\leq N,\, x_0-1\leq x<N \\ \sum\limits_{k=N-x_0+1}^{\infty}  \dfrac{ {\rm e}^{-\lambda}\lambda^k}{k!} & 0< x_0\leq N,\, x=N
+\end{cases}
+$$
+***
+(2) 先证明该链不可约且正常返：
+
+若 $X_n=0$，则新到达 $k$ 个工作后，$X_{n+1}=\min(k,N)$，由于 Poisson 分布对任意 $k\in \mathbb{N}$ 都有正概率，故对任意 $0\leq x\leq N$，$P(X_{n+1}=x\mid X_n=0)>0$，即状态 $0$ 可以到达所有状态. 另一方面，对任意 $x_0>0$，每天加工一个工作，新到达 $k$ 个工作后，状态转移为$X_{n+1}=\min(x_0-1+k,N)$，特别地若连续有限天 $k=0$，工作数会递减到达状态 $0$. 因此该链不可约，且状态间是正常返的. 
+
+再证明该链非周期：
+
+$P(X_{n+1}=0\mid X_n=0)={\rm e}^{-\lambda}>0$，即状态 $0$ 可以在一步内返回自身，因此周期为 1. 由互通状态周期一致，该链周期为 1，故该链非周期.
+
+因此该链是遍历的.
+***
+(3) 平稳概率方程 $\left\{\begin{aligned}\pi_j= \sum\limits_i&\pi_iP_{ij}\\\sum\limits_{i=0}^N \pi_i=&\,1\end{aligned}\right.$. 由 (1) 中的分类，当 $j<N$ 时
+$$
+\begin{aligned}
+\pi_j=\sum\limits_{i=0}^N \pi_i P_{ij}&= \pi_0 \cdot  \frac{ {\rm e}^{-\lambda}\lambda^j}{j!}+\sum\limits_{i=1}^N \pi_i P_{ij} \\
+&= \pi_0\cdot{ \frac{ {\rm e}^{-\lambda}\lambda^j}{j!}+\sum\limits_{i=1}^{j+1} \pi_i P_{ij} }\\
+& =\pi_0 \cdot\frac{ {\rm e}^{-\lambda}\lambda^j}{j!}+\sum\limits_{i=1}^{j+1}\pi_i\cdot\frac{ {\rm e}^{-\lambda}\lambda^{j-i+1} }{(j-i+1)!}
+\end{aligned}
+$$
+当 $j=N$ 时，$\pi_N=\sum\limits_{i=0}^N \pi_i P_{i N}=\pi_0 \sum\limits_{i=N}^{\infty}\dfrac{ {\rm e}^{-\lambda}\lambda^i}{i!}+\sum\limits_{i=1}^N \pi_i\left(\sum\limits_{i=N-i+1}^{\infty} \dfrac{ {\rm e}^{-\lambda} \lambda^i}{i!}\right)$
+***
+## 4.23
+<Aside type="note" title="习题 4.23">
+在赌徒破产问题中，证明
+$$
+\begin{aligned}&\quad\ \ P(赢得下一次赌局\mid 当前资产为\ i\,, 且迟早到\ N)\\\\&=\begin{cases}p[1-(q/p)^{i+1}]/[1-(q/p)^{i}],\quad p\neq1/2\\\\(i+1)/2i,\quad p=1/2\end{cases}\end{aligned}
+$$
+</Aside>
+**解：**
+
+由例题4.4A，从本金 $i$ 出发最终赢到 $N$ 的概率 $f_i=\begin{cases}\dfrac{1-(q/p)^i}{1-(q/p)^N}&,p\neq\dfrac12\\\dfrac iN&,p=\dfrac12\end{cases}{}$
+
+于是
+$$
+\begin{aligned}
+P(\text{下一局赢} \mid 从\ i\ 开始赢到\ N)&= \dfrac{P(从\ i\ 开始赢到\ N\mid\text{下一局赢})\cdot P(下一局赢)}{P(从\ i\ 开始赢到\ N)}\\
+&= \dfrac{P(从\ i+1\ 开始赢到\ N)\cdot P(下一局赢)}{P(从\ i\ 开始赢到\ N)}\\
+&= \dfrac{p\cdot f_{i+1} }{f_i}\\
+\end{aligned}
+$$
+
+因此当 $p\neq\dfrac12$ 时，$\dfrac{p\cdot f_{i+1} }{f_i}= \dfrac{p{(1-(q/p)^{i+1})} }{ {1-(q/p)^i} }$；当 $p=\dfrac12$ 时，$\dfrac{p\cdot f_{i+1} }{f_i}= \dfrac12\dfrac{i+1}{i}=\dfrac{i+1}{2i}{}$
+***
