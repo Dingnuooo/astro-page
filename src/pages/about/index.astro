@@ -5,7 +5,7 @@ import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
 
 const headings = [
-  { depth: 2, slug: 'hobbies', text: 'Hobbies' },
+  { depth: 2, slug: 'hobbies', text: 'Persona' },
   { depth: 2, slug: 'tools', text: 'Tools' },
   //{ depth: 2, slug: 'social-networks', text: 'Social Networks' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
@@ -15,7 +15,7 @@ const headings = [
 
 <PageLayout title='About' {headings} comment>
   <p>
-    你好，我是 Dingnuooo，通信工程 + 人工智能在读本科生。
+    你好，我是 Dingnuooo，来自福建省福州市，通信工程 + 人工智能在读本科生。
     这里是正在装修中的博客站，您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>。
     新站将陆续上传读书笔记、讲义、心得、摘录等文字内容。写得不好，但我享受将知识翻译为人话的过程，我也很乐意将个人的见解分享出来。
   </p>
@@ -28,7 +28,7 @@ const headings = [
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* general-talk */}
-  <h2 id='hobbies'>Hobbies</h2>
+  <h2 id='hobbies'>Persona</h2>
   <ul>
     <li>INTJ</li>
     <li>我阅读侦探小说，尤爱黄金时代和社会派推理。</li>
@@ -97,10 +97,10 @@ const headings = [
         icon: import('@/assets/tools/sai.svg?raw')
       },
       {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
+        name: 'FL Studio',
+        description: 'Music Arranging & Mixing',
+        href: 'https://www.image-line.com/fl-studio/',
+        icon: import('@/assets/tools/fl.svg?raw')
       },
       {
         name: 'Blender',
@@ -181,53 +181,51 @@ const headings = [
 
   {/* about-blog */}
   <h2 id='about-blog'>About Blog</h2>
-  <p>Website history:</p>
+  <p>笔记系统与站点历史</p>
   <Timeline
     events={[
       {
-        date: '2024-04-29',
+        date: '2023-11',
         content:
-          'Website refactored using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
+          '学习 Markdown 与 LaTeX，开启手写笔记的电子化迁移'
+          // 'Website refactored using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
       },
       {
-        date: '2024-07-26',
+        date: '2025-02',
         content:
-          'Website abstracted as a theme and published on <a href="https://github.com/cworld1/astro-theme-pure"target="_blank">Github</a>'
+          '全面换用 Obsidian，重制分类系统、标签系统与笔记规范'
       },
       {
-        date: '2024-07-27',
-        content: 'Began writing website docs'
+        date: '2025-05',
+        content:
+          '使用 Hexo 搭建博客站，将部分笔记公开上传'
+      },
+      {
+        date: '2025-10',
+        content: '博客站迁移至 Astro 框架'
       }
     ]}
   />
   <p>
-    The smooth operation and personalized customization of website also rely on the resources and
-    technical support provided by the following excellent projects/service providers:
+    本站基于以下项目/服务商的技术支持
   </p>
   <ul>
-    <li>Domain: <a href='#' target='_blank'>Vercel</a></li>
+    <li>域名：<a href='https://www.alibabacloud.com/' target='_blank'>Alibaba Cloud</a>.</li>
     <li>
-      Framework & Theme: <a href='https://astro.build/' target='_blank'>Astro</a> + <a
+      框架与主题：<a href='https://astro.build/' target='_blank'>Astro</a> & <a
         href='https://github.com/cworld1/astro-theme-pure'
         target='_blank'>Astro Theme Pure</a
-      >
+      >.
     </li>
     <li>
-      Site hosting: <a href='https://vercel.com/' target='_blank'>Vercel</a>
-    </li>
-    <li>
-      CI/CD: <a href='https://vercel.com/workflow' target='_blank'>Vercel Workflow</a>
+      网页托管: <a href='https://vercel.com/' target='_blank'>Vercel</a>
     </li>
     <!-- <li>Resources speedup: <a href='https://cdn.cbd.int/' target='_blank'>CBD CDN</a></li> -->
-    <li>Comment system: <a href='https://waline.js.org' target='_blank'>Waline</a></li>
+    <li>评论与浏览量统计: <a href='https://waline.js.org' target='_blank'>Waline</a> + <a href='https://www.busuanzi.cc/' target='_blank'>不蒜子</a>.</li>
     <li>
-      Visits: <a href='https://supabase.com/' target='_blank'>Supabase</a> +
-      <a href='https://waline.js.org/' target='_blank'>Waline</a>
-    </li>
-    <li>
-      Other statistics: <a href='https://github.com/spencerwooo/substats' target='_blank'
+      粉丝数统计: <a href='https://github.com/spencerwooo/substats' target='_blank'
         >Substats</a
-      >
+      >（未启用）
     </li>
   </ul>
 </PageLayout>
