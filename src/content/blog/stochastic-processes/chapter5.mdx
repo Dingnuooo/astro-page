@@ -1,0 +1,157 @@
+---
+title: 随机过程作业 Chapter5 连续时间Markov链
+description: 'Sheldon M. Ross《随机过程》第二版 习题作业'
+tags:
+ - Homework
+ - stochastic-processes
+publishDate: 2025-05-05
+updateDate: 2025-05-05
+heroImage: { src: './markov-rickroll.jpg', color: '#c9d9ee' }
+---
+import { Aside } from 'astro-pure/user'
+
+Sheldon M. Ross "Stochastic Processes" 2nd Edition
+随机过程（第二版）习题
+## 5.10
+<Aside type="note" title="习题 5.10">
+令 $P(t)=P_{00}(t)$
+1. 求 $\lim\limits_{t\to0}\dfrac{1-P(t)}{t}{}$
+2. 证明 $P(s)P(t)\leq P(s+t)\leq1-P(s)+P(s)P(t)$
+3. 证明 $\forall\ s<t,\,|P(t)-P(s)|\leq1-P(t-s)$，并断言 $P$ 是连续的
+</Aside>
+**解：**
+
+(1) Kolmogorov 微分方程的引理1即为题所求. 只需证明该引理的前提条件，即“$t$ 时间内转移一次以上的概率为 $o(t)$”.
+
+记 $T_1$ 为第一次转移的时间，$T_1\sim E(v_0)$，假设转移到状态 $k$；记 $T_2$ 为第二次转移的时间，$T_2'=T_2-T_1\sim E(v_k)$. 两次转移都发生在 $t$ 时间内的概率 $P_{\ge2}(t)=P(T_1+T_2'\leq t)$
+
+$T_1$ 与 $T_2'$ 独立，于是卷积之得
+$$
+\begin{aligned}
+P_{\geq2}(t)&= \displaystyle\int_0^t f_{T_1}(x)\cdot P(T_2'\le t-x)\,{\rm d}x\\
+&= \displaystyle\int_0^t v_0{\rm e}^{-v_0 x} (1-{\rm e}^{-v_k(t-x)})\,{\rm d}x\\
+&= \int_0^t v_0 {\rm e}^{-v_0 x}\,{\rm d}x-\int_0^t v_0 e^{-v_0 x} {\rm e}^{-v_k(t-x)}\,{\rm d}x\\
+&= 1-{\rm e}^{-v_0t}-v_0{\rm e}^{-v_kt} \displaystyle\int_0^t {\rm e}^{-(v_0-v_k)x} {\rm d}x\\
+&= 1-{\rm e}^{-v_0t}-v_0{\rm e}^{-v_k t} \cdot\dfrac{1-{\rm e}^{-(v_0-v_k)t} }{v_0-v_k}
+\end{aligned}
+$$
+（其中当 $v_0-v_k=0$ 时后项积分为 $0$，不影响结论）
+
+令 $t\to0$，作一阶无穷小近似得
+$$
+P_{\geq 2}(t)\sim v_0t-\dfrac{v_0t}{v_0-v_k} + o(t) = o(t),
+$$
+
+于是 $\lim\limits_{t\to0}\dfrac{1-P(t)}{t}=\lim\limits_{t\to0}\dfrac{1-P_{00}(t)}{t}=v_0$. 
+***
+(2) **左边**：
+$$
+P(s+t)=\sum\limits_{k=0}^\infty P_{0k}(s)P_{k0}(t)\geq P_{00}(s)P_{00}(t)=P(s)P(t)
+$$
+
+**右边**：
+$$
+\begin{aligned}
+P(s+t)&=\sum\limits_{k=0}^\infty P_{0k}(s)P_{k0}(t)\\
+&= P(s)P(t)+\sum\limits_{k=1}^\infty P_{0k}(s)P_{k0}(t)\\
+&\leq P(s)P(t)+\sum\limits_{k=1}^\infty P_{0k}(s)\\
+&= P(s)P(t)+1-P(s)
+\end{aligned}
+$$
+***
+(3) 将 (2) 中的 $t$ 替换为 $t-s$
+$$
+P(s)P(t-s)\leq P(s+t-s)\leq 1-P(t-s)+P(s)P(t-s)
+$$
+同减 $P(s)$
+$$
+\begin{aligned}
+P(s)\big[P(t-s)-1\big]\leq P(t)-P(s)&\leq 1-P(t-s)+P(s)P(t-s)-P(s)\\
+&= \big[1-P(t-s)\big]\big[1-P(s)\big]
+\end{aligned}
+$$
+又概率 $P\in[0,1]$，
+$$
+\begin{aligned}
+P(t-s)-1\leq P(s)\big[P(t-s)-1\big]\leq P(t)-P(s)&\leq\big[1-P(t-s)\big]\big[1-P(s)\big]\leq1-P(t-s)
+\end{aligned}
+$$
+左、中、右取绝对值即得 $|P(t)-P(s)|\leq1-P(t-s)$.
+
+进一步地，令 $t=s+\varepsilon$，得  $|P(s+\varepsilon)-P(s)|\leq1-P(\varepsilon)$. $P(t)$ 表示 $t$ 时间内不发生转移的概率，即
+$$
+P(t)=P(T_1>t)={\rm e}^{-v_0t}>1-v_0t
+$$
+于是 $\forall\ \varepsilon>0$，存在 $\delta=v_0\varepsilon$ 使得
+$$
+|P(s+\varepsilon)-P(s)|<v_0\varepsilon=\delta
+$$
+故 $P$ 连续.
+***
+## 5.11
+<Aside type="note" title="习题 5.11">
+1. 对 Yule 过程，验证 $P_{ij}(t)=\displaystyle\binom{j-1}{i-1}{\rm e}^{-i \lambda t}(1-{\rm e}^{-\lambda t})^{j-i}$ 满足向前方程和向后方程
+2. 某 Yule 过程 $X(0)=1$，且在任意时刻 $T$ 过程停止并以一个移民出去的过程代替，其中移民离开以 Poisson 速率 $\mu$ 发生. 以 $\tau$ 记在 $T$ 以后至群体消失所需的时间，求 $\tau$ 的密度函数，并证明 $E[\tau]={\rm e}^{\lambda T}/\mu$
+</Aside>
+**解：**
+
+(1) 在 Yule 生灭过程中，记 $v_i=i\lambda$，则 $q_{ij}=\begin{cases}i \lambda&,j=i+1\\0&,j \neq i+1\end{cases}$. 于是
+$$
+\begin{aligned}
+P_{ij}'(t)&= \binom{j-1}{i-1}\big(-i\lambda{\rm e}^{-i\lambda t}(1-{\rm e}^{-\lambda t})^{j-i}+(j-i)(1-{\rm e}^{-\lambda t})^{j-i-1}\lambda{\rm e}^{-\lambda t}{\rm e}^{-i\lambda t}\big)\\
+&= \binom{j-1}{i-1}\lambda {\rm e}^{-i\lambda t}(1-{\rm e}^{\lambda t})^{j-i-1}(j {\rm e}^{-\lambda t}-i)
+\end{aligned}
+$$
+
+**向后方程组**：
+$$
+\begin{aligned}
+\sum_{k\neq i} q_{ik}P_{kj}(t)-v_iP_{ij}(t)&=q_{i,i+1}P_{i+1,j}(t)-i \lambda P_{ij}(t)\\
+&= i\lambda \binom{j-1}{i} {\rm e}^{-(i+1) \lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}-i \lambda P_{ij}(t)\\
+&= \lambda\binom{j-1}{i-1}(j-i){\rm e}^{-i\lambda t}{\rm e}^{-\lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}-i\lambda\binom{j-1}{i-1}{\rm e}^{-i \lambda t}(1-{\rm e}^{-\lambda t})^{j-i}\\
+&= \binom{j-1}{i-1}\lambda{\rm e}^{-i \lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}(j {\rm e}^{-\lambda t}-i{\rm e}^{-\lambda t}-i+i{\rm e}^{-\lambda t})\\
+&= \binom{j-1}{i-1}\lambda {\rm e}^{-i\lambda t}(1-{\rm e}^{\lambda t})^{j-i-1}(j {\rm e}^{-\lambda t}-i)\\
+&= P_{ij}'(t)
+\end{aligned}
+$$
+
+**向前方程组**：
+$$
+\begin{aligned}
+\sum_{k\neq j} q_{kj}P_{ik}(t)-v_jP_{ij}(t)&=q_{j-1,j}P_{i,j-1}(t)-j \lambda P_{ij}(t)\\
+&= (j-1)\lambda \binom{j-2}{i-1} {\rm e}^{-i\lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}-j \lambda P_{ij}(t)\\
+&= \lambda\binom{j-1}{i-1}(j-i){\rm e}^{-i\lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}-j\lambda\binom{j-1}{i-1}{\rm e}^{-i \lambda t}(1-{\rm e}^{-\lambda t})^{j-i}\\
+&= \binom{j-1}{i-1}\lambda{\rm e}^{-i \lambda t}\left(1-{\rm e}^{-\lambda t}\right)^{j-i-1}(j-i-j+j {\rm e}^{-\lambda t})\\
+&= \binom{j-1}{i-1}\lambda {\rm e}^{-i\lambda t}(1-{\rm e}^{\lambda t})^{j-i-1}(j {\rm e}^{-\lambda t}-i)\\
+&= P_{ij}'(t)
+\end{aligned}
+$$
+***
+(2) 取条件于 Yule 过程停止时的人口数 $X(T)=n$. 考虑 $\tau$ 时间内流失 $n$ 人，相当于求第 $n$ 个人离开所需时间为 $t$ 的概率，故密度函数
+$$
+\begin{aligned}
+f(t)&= \sum\limits_{n=1}^\infty P(S_n=t)\cdot P(X(T)=n)\\
+&= \sum\limits_{n=1}^\infty\dfrac{\mu {\rm e}^{-\mu t}(\mu t)^{n-1} }{(n-1)!}\cdot P(X(T)=n)\\
+\end{aligned}
+$$
+
+令 $P_n(t)=P(X(t)=n)$，由出生率定义可得
+$$
+\begin{cases}
+P_1'(t)=-\lambda P(t)\\
+P_n'(t)=(n-1)\lambda P_{n-1}(t)-n \lambda P_n(t)
+\end{cases}
+$$
+归纳之证得 $P_n(t)={\rm e}^{-\lambda t}(1-{\rm e}^{-\lambda t})^{n-1}$. 于是
+$$
+\begin{aligned}
+f(t)&= \sum\limits_{n=1}^\infty\dfrac{\mu {\rm e}^{-\mu t}(\mu t)^{n-1} }{(n-1)!}\cdot {\rm e}^{-\lambda T}(1-{\rm e}^{-\lambda T})^{n-1}\\
+&= \mu {\rm e}^{-\mu t}{\rm e}^{-\lambda T}\sum\limits_{n=0}^\infty\dfrac{\big(\mu t(1-{\rm e}^{-\lambda T})\big)^n}{n!}\\
+&= \mu{\rm e}^{-\lambda T} \cdot{\rm exp}\big(-\mu t+\mu t(1-{\rm e}^{-\lambda T})\big)\\
+&= \mu{\rm e}^{-\lambda T} \cdot{\rm exp}(-\mu {\rm e}^{-\lambda T}t)
+\end{aligned}
+$$
+这是一个以 $\mu{\rm e}^{-\lambda T}$ 为参数的指数分布，因此
+$$
+E[\tau]=\dfrac{1}{\mu{\rm e}^{-\lambda T} }=\dfrac{ {\rm e}^{-\lambda T} }{\mu}
+$$

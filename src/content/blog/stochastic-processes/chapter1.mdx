@@ -1,0 +1,515 @@
+---
+title: 随机过程作业 Chapter1 再论概率
+description: 'Sheldon M. Ross《随机过程》第二版 习题作业'
+tags:
+ - Homework
+ - stochastic-processes
+publishDate: 2025-03-19
+updateDate: 2025-03-20
+heroImage: { src: './markov-rickroll.jpg', color: '#c9d9ee' }
+---
+import { Aside } from 'astro-pure/user'
+
+Sheldon M. Ross "Stochastic Processes" 2nd Edition 
+随机过程（第二版）习题
+## 1.5
+
+<Aside type="note" title="习题 1.5">
+$n$ 次独立实验，每次的结果以 $p_1\sim p_r$ 的概率出现 $1\sim r$ 之一. 记出现结果 $i$ 的个数为 $N_i\,$. 计算：  
+
+1. $N_1,\cdots,N_r$ 之联合分布  
+2. $\mathrm{Cov}(\,N_{i}\,,\,N_{j}\,)$  
+3. 出现次数为 0 的个数之均值与方差  
+</Aside>
+
+**解：**  
+
+(1) 先按乘法公式给出单个情形的概率，再乘以重复个数. 于是有
+$$
+\begin{aligned}
+P\,\{N_1=n_1\,,\,N_2=n_2\,,\cdots,N_r=n_r\}&=p_1^{n_1}p_2^{n_2}\cdots p_r^{n_r}\cdot{n\choose n_1}{n-n_1\choose n_2}{n-n_1-n_2\choose n_3}\\&\quad\ \cdots{n_{r-1}+n_r\choose n_r}{n_r\choose n_r}
+\end{aligned}
+$$
+组合数的乘积，分母是 $\prod\limits_{j=1}^r\left(n_j!\right)$，分子是 $n$ 乘到 $n-n_1$、再从 $n-n_1$ 乘到 $n-n_1-n_2$，一直下去全乘一起就是 $n!$. 于是所求联合分布
+$$
+P\,\{N_1=n_1\,,\,N_2=n_2\,,\cdots,N_r=n_r\}=p_1^{n_1}p_2^{n_2}\cdots\times\frac{n!}{\prod\limits_{j=1}^r(n_j!)}=n!\times\prod\limits_{j=1}^r\dfrac{p_j^{r_j}}{n_j!}
+$$
+
+***
+(2) 依题意易知 $N_i\sim B\left(n\,,p_i\right)$、$N_j\sim B\left(n\,,p_j\right)$，于是由二项分布的性质立即有
+$$
+\begin{matrix}{\mathrm{Var}}\left(N_i\right)=np_i\left(1-p_i\right)\\{\mathrm{Var}}\left(N_j\right)=np_j\left(1-p_j\right)\end{matrix}
+$$
+
+使用公式 ${\mathrm{Var}}\left(N_i+N_j\right)={\mathrm{Var}}\left(N_i\right)+{\mathrm{Var}}\left(N_j\right)+2{\mathrm{\ Cov}}\left(N_i,N_j\right)$ 计算所求值. 由
+$$
+\begin{aligned}
+P\left(N_i+N_j=k\right)&=\sum\limits_{m=0}^kp_i^mp_j^{k-m}\left(1-p_i-p_j\right)^{n-k}\dfrac{n!}{m!(k-m)!(n-k)!} \\
+&=\left(1-p_i-p_j\right)^{n-k}\dfrac{n!}{(n-k)!k!}\sum\limits_{m=0}^kp_i^mp_j^{k-m}\dfrac{k!}{m!(k-m)!} \\
+&=\left(1-p_i-p_j\right)^{n-k}{n\choose k}\sum\limits_{m=0}^kp_i^mp_j^{k-m}{k\choose m}\\
+&=\left(1-p_i-p_j\right)^{n-k}{n\choose k}\left(p_i+p_j\right)^k\\
+&=\left(p_i+p_j\right)^k\left(1-p_i-p_j\right)^{n-k}{n\choose k}\\
+\end{aligned}
+$$
+得，该分布具有二项分布形式，$N_i+N_j\sim B\left(n\, ,p_i+p_j\right)$. 于是
+$$
+\begin{aligned}
+{\mathrm{Var}}\left(N_i+N_j\right)&=np_i\left(1-p_i\right)+np_j\left(1-p_j\right)+2{\mathrm{\ Cov}}\left(N_i,N_j\right)\\&=n(p_i+p_j)(1-p_i-p_j)
+\end{aligned}
+$$
+移项展开，一次项和平方项恰好消去，解得 ${\mathrm{Cov}}\left(N_i\,,N_j\right)=-np_ip_j$
+
+***
+(3) 由二项分布有 $P\left(N_j=0\right)=(1-p_j)^n$. 令 $I_j=\begin{cases}1,\,N_j=0\\0,\,\text{ohters}\end{cases}$，则出现次数为 0 的个数 $V=\sum\limits I_j$，于是
+$$
+\begin{aligned}
+E\left(V\right)&=\sum\limits E\left(I_j\right)=\sum\limits_{i=1}^r(1-p_j)^n \\ \\
+D\left(V\right)&=\sum\limits D\left(I_j\right)+2\,\mathop{\sum\sum}\limits_{i<j}{\rm \,Cov}\left(I_i\, ,I_j\right) \\
+&=\sum\limits_{i=1}^rn(1-p_j)^n(1-(1-p_j)^n)+2\,\mathop{\sum\sum}\limits_{i<j}\left(E(I_iI_j)-E(I_i)E(I_j)\right)
+\end{aligned}
+$$
+其中 $E(I_i)=(1-p_i)^n$、$E(I_j)=(1-p_j)^n$
+
+事件 $I_iI_j=1$ 表示 $N_i=0$ 且 $N_j=0$，于是$E(I_iI_j)=P(N_i=0\,,N_j=0)=(1-p_i-p_j)^n$，代入 $D(V)$ 式即得解.  
+
+***
+## 1.6
+
+<Aside type="note" title="习题 1.6">
+连续随机变量 $X_1,X_2,\cdots$ 独立同分布. 规定：若 $X_n>\max\left(X_1,\cdots,X_{n-1}\right)$（其中 $X_0=-\infty$），则称在 $n$ 时刻产生了一个记录，记录的值为 $X_n$.  
+1. 时刻 $n$ 时产生的记录个数记为 $N_n$，计算 $E(N_n)$ 和 $D(N_n)$  
+2. 以 $T$ 标记第一次产生记录的时刻 $n$（$n=1$ 不在本题的考虑范围内），求 $P\left(T>n\right)$，并证明 $P(T<\infty)=1$ 和 $E(T)=\infty$  
+3. 以 $T_y$ 标记“第一次产生大于 $y$ 的记录”的时刻，证明 $T_y$ 与 $X_{T_y}$ 独立  
+</Aside>
+**解：**  
+
+(1) 记 $X_i$ 的分布函数为 $F(x_i)$、其PDF为 $f(x_i)$. 由独立性可求得各个时刻产生记录的概率：
+$$
+\begin{aligned}
+P\left(X_2>X_1\right)
+&=\displaystyle\int_{-\infty}^{+\infty}\displaystyle\int_{-\infty}^{x_2}f(x_1)f(x_2)\ {\mathrm d}x_1{\mathrm d}x_2 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}f(x_2)\displaystyle\int_{-\infty}^{x_1}f(x_1)\ {\mathrm d}x_1{\mathrm d}x_2 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}f(x_2)F(x_2)\ {\mathrm d}x_2 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}F(x_2)\ {\mathrm d}F(x_2) \\ 
+&=\displaystyle\int_0^1t\  {\mathrm d}t=\frac12
+\end{aligned}
+$$
+$$
+\begin{aligned}
+P\left(X_3>X_1\,,X_3>X_2\right)
+&=\displaystyle\int_{-\infty}^{+\infty}\displaystyle\int_{-\infty}^{x_3}\displaystyle\int_{-\infty}^{x_3}f(x_1)f(x_2)f(x_3)\ {\mathrm d}x_1{\mathrm d}x_2{\mathrm d}x_3 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}\displaystyle\int_{-\infty}^{x_3}f(x_2)f(x_3)\displaystyle\int_{-\infty}^{x_3}f(x_1)\ {\mathrm d}x_1{\mathrm d}x_2{\mathrm d}x_3 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}f(x_3)\displaystyle\int_{-\infty}^{x_3}f(x_2)F(x_3)\ {\mathrm d}x_2{\mathrm d}x_3 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}f(x_3)F(x_3)\displaystyle\int_{-\infty}^{x_3}f(x_2)\ {\mathrm d}x_2{\mathrm d}x_3 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}f(x_3)F^2(x_3)\ {\mathrm d}x_3 \\ 
+&=\displaystyle\int_{-\infty}^{+\infty}F^2(x_3)\ {\mathrm d}F(x_3) \\ 
+&=\displaystyle\int_0^1t^2\  {\mathrm d}t=\frac13
+\end{aligned}
+$$  
+同理可依次推得 $P\left(X_n>\max\left(X_1,\cdots,X_{n-1}\right)\right)=\dfrac1n$
+
+令 $I_n=\begin{cases}1,\,n时产生记录\\0,\,\text{ohters}\end{cases}$，显然他们相互独立. 于是 $N_n=\sum_1^n I_j$，于是
+$$
+\begin{matrix}
+E\left(N_n\right)=\sum\limits_{j=1}^nE\left(I_j\right)=\sum\limits_{j=1}^nE\left(I_j\right)=\sum\limits_{j=1}^n\dfrac1j\\ 
+D\left(N_n\right)=\sum\limits_{j=1}^nD\left(I_j\right)=\sum\limits_{j=1}^n\dfrac1j\left(1-\dfrac1j\right)
+\end{matrix}
+$$  
+
+***
+(2) 第一次产生记录是在 $n$ 时刻之后，说明在 $n$ 及之前均没有产生记录，即都不比 $X_1$ 大.
+$$
+P(T>n)=P(X_1>X_2\,,X_1>X_3\,,\cdots\,,X_1>X_{n})=\frac1n
+$$
+于是 $P(T<\infty)=\lim\limits_{n\to\infty}P(T<n)=1-\lim\limits_{n\to\infty}P(T\geq n)=1-0=1$
+
+而 $E(T)=\sum_1^{+\infty} nP(T=n)=\sum_1^{+\infty} P(T>n)=\sum_1^{+\infty} 1/n$，调和级数趋无穷，故 $E(T)=\infty$  
+
+***
+(3) 假设 $T_y=n$ 时产生记录，则该条件下记录值的分布为
+$$
+\begin{aligned}
+P\left(X_{T_y}<k\mid T_y=n\right)&=P\left(X_n<k\mid X_n>y\,,X_1<y\,,\cdots,X_{n-1}<y\right)\\
+&=\frac{P\left(y<X_n<k\right)}{P(X_n>y)}\quad(由各个X_j的独立性)\\
+&=\dfrac{F(k)-F(y)}{1-F(y)}\quad(k\leq y\ 时取\ 0)
+\end{aligned}
+$$
+说明 $X_{T_y}$ 的分布与 $T_y$ 的取值 $n$ 无关，于是二者独立
+
+***
+## 1.11
+
+<Aside type="note" title="习题 1.11">
+$X$ 是一个非负整数值随机变量. 对于 $|z|\leq1$，定义函数 $P(z)=E[z^X]=\sum\limits_{j=0}^\infty z^jP(X=j)$，称为 $X$ 的概率生成函数.  
+1. 证明 $\dfrac{\mathrm{d}^{k}}{\mathrm{d}z^{k}}P\left(z\right)|_{z=0}=k\,!\,P\lbrace X=\,k\rbrace$
+2. 证明 $P\lbrace X 是偶数\rbrace =\dfrac{P(-1)+P(1)}{2}$. 0 视为偶数.
+3. 若 $X\sim B(n\,,p)$，证明 $P\lbrace X 是偶数\rbrace ={\dfrac{1+(1-2p)^{n}}{2}}$
+4. 若 $X\sim P(\lambda)$，证明 $P\lbrace X 是偶数\rbrace ={\dfrac{1+{\mathrm e}^{-2\lambda}}{2}}$
+5. 若 $X\sim G(p)$，证明 $P\lbrace X 是偶数\rbrace ={\dfrac{1-p}{2-p}}$
+6. 若 $X$ 服从参数为 $r$ 和 $p$ 的负二项分布，证明 $P\lbrace X 是偶数\rbrace =\dfrac12\left[1+(-1)^r\left(\dfrac{p}{2-p}\right)^r\right]$.（负二项分布：Bernoulli 试验中，恰好成功 $r$ 次时的试验次数，其中试验成功的概率为 $p$）
+</Aside>
+**解：**
+
+(1) 幂级数在其收敛域内可逐项求导，于是 
+$$
+\begin{aligned}
+\dfrac{\mathrm{d}^{k}}{\mathrm{d}z^{k}}P(z)&=\sum\limits_{j=0}^\infty\dfrac{\mathrm{d}^{k}z^j}{\mathrm{d}z^{k}}P\left(X=j\right)\\
+&=\sum\limits_{j=k}^\infty\dfrac{\mathrm{d}^{k}z^j}{\mathrm{d}z^{k}}P\left(X=j\right)\\
+&=\dfrac{\mathrm{d}^{k}z^k}{\mathrm{d}z^{k}}P\left(X=k\right)+\sum\limits_{j=k+1}^\infty a_jz^{j-k}\quad(a_j\in\mathbb{R})\\
+&=k\,!\,P\left(X=k\right)+\sum\limits_{j=k+1}^\infty a_jz^{j-k}\quad(a_j\in\mathbb{R})
+\end{aligned}
+$$
+代入 $z=0$ 后求和项为 0，原式得证.
+
+***
+(2) 从右往左证.
+$$
+\begin{aligned}
+\dfrac{P(-1)+P(1)}{2}&=\frac12\left(\sum\limits_{j=0}^\infty (-1)^jP\left(X=j\right)+\sum\limits_{j=0}^\infty (-1)^jP\left(X=j\right)\right)\\
+&=\frac12\left(\sum\limits_{j=0}^\infty \left(1+(-1)^j\right)P\left(X=j\right)\right)\\
+&=\frac12\left(\sum\limits_{j=0}^\infty \,2P\left(X=2j\right)\right)\\
+&=\sum\limits_{j=0}^\infty P\left(X=2j\right)\\
+&=P\lbrace X 是偶数\rbrace 
+\end{aligned}
+$$  
+
+***
+(3) 由二项分布，$P\left(X=j\right)=\displaystyle\binom{n}{j}p^j(1-p)^{n-j}$，于是
+$$
+P(z)=\sum\limits_{j=0}^n z^j\binom{n}{j}p^j(1-p)^{n-j}=\sum\limits_{j=0}^n \binom{n}{j}(zp)^j(1-p)^{n-j}=\left(zp+1-p\right)^n
+$$
+于是 $P(-1)=(1-2p)^n$、$P(1)=1$，代入 (2) 所得结论即得 $P\lbrace X 是偶数\rbrace ={\dfrac{1+(1-2p)^{n}}{2}}$
+
+***
+(4) 由 Poisson 分布，$P\left(X=j\right)=\dfrac{\lambda^j\,{\mathrm e}^{-\lambda}}{j\,!}$，于是
+$$
+P(z)=\sum\limits_{j=0}^\infty z^j\dfrac{\lambda^j\,{\mathrm e}^{-\lambda}}{j\,!}={\mathrm e}^{z\lambda-\lambda}\sum\limits_{j=0}^\infty\dfrac{(z\lambda)^j\,{\mathrm e}^{-z\lambda}}{j\,!}={\mathrm e}^{z\lambda-\lambda}
+$$
+于是 $P(-1)={\mathrm e}^{-2\lambda}$、$P(1)=1$，代入 (2) 所得结论即得 $P\lbrace X 是偶数\rbrace ={\dfrac{1+{\mathrm e}^{-2\lambda}}{2}}$
+
+***
+(5) 由几何分布，$P\left(X=j\right)=\begin{cases}(1-p)^{j-1}p\,,j>0\\0\quad\quad\quad\quad\,\,,j=0\end{cases}$，于是
+$$
+P(z)=\sum\limits_{j=1}^\infty z^j(1-p)^{j-1}p=\dfrac{p}{1-p}\sum\limits_{j=1}^\infty (z-zp)^j=\dfrac{p(z-zp)}{(1-p)(1-z+zp)}=\dfrac{zp}{1-z+zp}
+$$
+于是 $P(-1)=\dfrac{-p}{2-p}$、$P(1)=\dfrac{p}{p}=1$，代入 (2) 所得结论即得 $P\left\{X是偶数\right\}=\dfrac{2-p-p}{2(2-p)}=\dfrac{1-p}{2-p}{}$
+
+***
+(6) 由负二项分布，$P\left(X=j\right)=\displaystyle\binom{j-1}{r-1}p^r(1-p)^{j-r}\,,j\geq r$，于是
+$$
+\begin{aligned}
+P(z)&=\sum\limits_{j=r}^\infty z^j\displaystyle\binom{j-1}{r-1}p^r(1-p)^{j-r}\\
+&=\left(\dfrac{zp}{1-z+zp}\right)^r\sum\limits_{j=r}^\infty\binom{j-1}{r-1}\left(1-z+zp\right)^r(z-zp)^{j-r}\\
+&=\left(\dfrac{zp}{1-z+zp}\right)^r
+\end{aligned}
+$$  
+于是 $P(-1)=\left(\dfrac{-p}{2-p}\right)^r$、$P(1)=\left(\dfrac{p}{p}\right)^r=1$，代入 (2) 所得结论即得 $P\lbrace X 是偶数\rbrace =\dfrac12\left[1+(-1)^r\left(\dfrac{p}{2-p}\right)^r\right]$
+
+***
+## 1.17
+<Aside type="note" title="习题 1.17">
+连续随机变量 $X_1,X_2,\cdots$ 独立同分布，其分布函数记为 $F$. 以 $X_{i,n}$ 记 $X_1\sim X_n$ 中第 $i$ 小值，记其分布函数为 $F_{i,n}$. 证明：
+1. $F_{i,n}(x)=F(x)F_{i-1,n-1}(x)+\overline{F}(x)F_{i,n-1}(x)$
+2. $F_{i,n-1}(x)=\dfrac inF_{i+1,n}(x)+\dfrac{n-i}{n}F_{i,n}(x)$
+</Aside>
+**解：**
+
+(1) 取条件于是否有 $X_n\leq x$. 
+$$
+P(X_{i,n}<x)=P(X_{i,n}<x\mid X_n\leq x)P(X_n\leq x)+P(X_{i,n}<x\mid X_n>x)P(X_n>x)
+$$
+对于“$n$ 个数中选第 $i$ 小值比 $x$ 小”这个事：
+- 若 $X_n\leq x$，那么相当于剔除占位的 $X_n$、在余下的 $n-1$ 个数选第 $i-1$ 小值比 $x$ 小；
+- 若 $X_n>x$，那么剔除这个很大的 $X_n$ 不影响第 $i$ 小的位置，相当于在余下的 $n-1$ 个数选第 $i$ 小值比 $x$ 小.
+
+于是
+$$
+\begin{aligned}
+F_{i,n}(x)=P(X_{i,n}<x)&=P(X_{i-1,n-1}<x)P(X_n\leq x)+P(X_{i,n-1}<x)P(X_n>x)\\
+&=F_{i-1,n-1}(x)F(x)+F_{i,n-1}(x)\overline{F}(x)
+\end{aligned}
+$$
+
+***
+(2) 取条件于 $X_n$ 是否比第 $i$ 小值大（即 $X_n$ 插入增序列的位置在第 $i$ 名之后还是之前. 是否取等并不重要，因为连续型变量取等概率为0）.
+$$
+P(X_{i,n-1}<x)=P(X_{i,n-1}<x\mid X_n>X_{i,n})P(X_n>X_{i,n})+P(X_{i,n-1}<x\mid X_n\leq X_{i,n})P(X_n\leq X_{i,n})
+$$
+对于“$n-1$ 个数中选第 $i$ 小值比 $x$ 小”这个事：
+- 若 $X_n$ 插在 $i$ 之后，则这个很大的 $X_n$ 不会影响第 $i$ 小元素的位置，因此 $P=P(X_{i,n}<x)$；
+- 若 $X_n$ 插在 $i$ 之前，则第 $i$ 小值变为第 $i+1$ 小值，因此 $P=P(X_{i+1,n}<x)$.
+
+由独立同分布，每个人有均等的机会成为第 $i$ 小，故 $P(X_n>X_{i,n})=\dfrac{n-i}{n}$、$P(X_n\leq X_{i,n})=\dfrac{i}{n}$. 于是
+$$
+\begin{aligned}
+F_{i,n-1}(x)=P(X_{i,n-1}<x)&=P(X_{i,n}<x)\dfrac{n-i}{n}+P(X_{i+1,n}<x)\dfrac{i}{n}\\
+&=F_{i,n}(x)\dfrac{n-i}{n}+F_{i+1,n}(x)\dfrac in
+\end{aligned}
+$$
+
+***
+## 1.20
+<Aside type="note" title="习题 1.20">
+在区间 $\left(0,x\right)$ 上进行填装. 称如下操作为一次生成：生成一个开区间，其长度为 $1$、左端点服从 $\left(0,x-1\right)$ 上的均匀分布. 填装规则如下：首先生成一个开区间，记作 $I_1$，填入区间 $\left(0,x\right)$；重复生成开区间，直到这个开区间不与 $I_1\sim I_{k}$ 中任意一个相交，记为 $I_{k+1}$，填入区间. 反复执行上述操作，直到 $\left(0,x\right)$ 上无法再容下一个单位区间. 记最终填入的开区间数量为 $N(x)$、再令 $M(x)=E\left[N(x)\right]$. 证明：
+$$M(x)=\begin{cases}0,x<1\\\dfrac{2}{x-1}\displaystyle\int_0^{x-1}M(y){\mathrm d}y+1,x>1\end{cases}$$
+</Aside>
+**解：**
+
+$x<1$ 时填不下任何一个区间，显然有 $N(x)=0\Rightarrow E(N(x))=0$.
+
+$x>1$ 时. 只有第一次是没有空间限制的、且其位置分布已知，故取条件于 $I_1$ 左端点的位置 $y$. 填入 $I_1$ 后，将区间分成两个子区间，左侧长度 $y$、右侧长度 $x-(y+1)$，于是原问题分解为两个子问题
+$$
+E(N(x)\mid Y=y)=E(1+N(y)+N(x-y-1))=1+E(N(y))+E(N(x-y-1))
+$$ 
+于是
+$$
+\begin{aligned}
+E(N(x))&=E\big[E(N(x)\mid Y)\big]=\displaystyle\int_0^{x-1}\big[1+E(N(y))+E(N(x-y-1))\big]f(x){\mathrm d}y\\
+&=\dfrac{1}{x-1}\displaystyle\int_0^{x-1}1+E(N(y))+E(N(x-y-1))\, {\mathrm d}y\\
+M(x)&=\dfrac{x-1}{x-1}+\dfrac{1}{x-1}\displaystyle\int_0^{x-1}M(y)\,{\mathrm d}y+\dfrac{1}{x-1}\displaystyle\int_0^{x-1}M(x-y-1)\, {\mathrm d}y\\
+&=1+\dfrac{1}{x-1}\displaystyle\int_0^{x-1}M(y)\,{\mathrm d}y+\dfrac{1}{x-1}\displaystyle\int_0^{x-1}M(t)\,{\mathrm d}t\quad(令\,t=x-y-1)\\
+&=1+\dfrac{2}{x-1}\displaystyle\int_0^{x-1}M(y)\,{\mathrm d}y
+\end{aligned}
+$$
+
+***
+## 1.22
+<Aside type="note" title="习题 1.22">
+定义 $X$ 对给定 $Y$ 的条件方差 $\mathrm{Var}\left(X\mid Y\right)=E\big[\left(X-E(X\mid Y)\right)^2\mid Y\big]$. 证明：
+$$\mathrm{Var}(X)=E\big[\mathrm{Var}(X\mid Y)\big]+\mathrm{Var}(E[X\mid Y])$$
+</Aside>
+**解：**
+
+$$
+\begin{aligned}
+\text{RHS}&=E\big[E[\left(X-E(X\mid Y)\right)^2\mid Y]\,\big]+\mathrm{Var}(E[X\mid Y])\\
+&=E\big[E[X^2\mid Y]-E[\,2XE(X\mid Y)\mid Y]+E[E^2(X\mid Y)\mid Y]\big]+E\big[E^2(X\mid Y)\big]-E^2\big[E[X\mid Y]\big]\\
+&=E\big[E[X^2\mid Y]\big]-E\big[E[\,2XE(X\mid Y)\mid Y]\big]+E\big[E[E^2(X\mid Y)\mid Y]\big]+同上-同上\\
+&=E[X^2]-E\big[2E(X\mid Y)E[X\mid Y]\big]+E[E^2(X\mid Y)\mid Y]+同上-同上\\
+&=E[X^2]-2E\big[E^2(X\mid Y)\big]+E\big[E^2(X\mid Y)\big]+E\big[E^2(X\mid Y)\big]-E^2[X]\\
+&=E[X^2]-E^2[X]\\
+&=\mathrm{Var}(X)
+\end{aligned}
+$$
+
+使用此公式计算例1.5B的方差.
+$$
+\left.\begin{aligned}
+\mathrm{Var}(X\mid Y=1)&=0\\
+\mathrm{Var}(X\mid Y=2)&=\mathrm{Var}(X)\\
+\mathrm{Var}(X\mid Y=3)&=\mathrm{Var}(X)\\
+\end{aligned}\right\} 
+\Rightarrow E\big[\mathrm{Var}(X\mid Y)\big]=\dfrac23\mathrm{Var}(X)
+$$
+$$
+\left.
+\begin{aligned}
+E(X\mid Y=1)&=2\\
+E(X\mid Y=2)&=3+E(X)\\
+E(X\mid Y=3)&=5+E(X)\\
+\end{aligned}
+\right\}
+\Rightarrow\mathrm{Var}(E[X\mid Y])=\dfrac{1}{9}\big(2E^2(X)+8E(X)+14\big)
+$$
+代入 $E(X)=M'(0)=10$，得 $\mathrm{Var}(E[X\mid Y])=\dfrac{294}{9}$，于是 $\mathrm{Var}(X)=\dfrac23\mathrm{Var}(X)+\dfrac{294}{9}$，解得
+$$
+\mathrm{Var}(X)=\dfrac{294}{3}=98
+$$
+
+验证：$E(X^2)=M''(0)=198$，$\mathrm{Var}(X)=E(X^2)-E^2(X)=198-10^2=98$.
+
+***
+## 1.29
+<Aside type="note" title="习题 1.29">
+$X_1\sim X_n$ 独立同分布、服从 $E(\lambda)$. 证明 $\sum\limits_1^n X_i$ 的密度函数为
+$$f(x)=\lambda {\mathrm e}^{-\lambda x}(\lambda x)^{n-1}/(n-1)!$$
+这样的分布称为参数为 $(n,\lambda)$ 的 gamma 分布.
+</Aside>
+**解：**
+
+$X_i$ 的矩母函数 $\psi_i(t)=\dfrac{\lambda}{\lambda-t}$. 则 $\sum\limits X_i$ 的矩母函数
+$$
+\begin{aligned}
+\psi_s(t)=E({\mathrm e}^{t\sum\limits X_i})&=E({\mathrm e}^{tX_1}\cdot{\mathrm e}^{tX_2}\cdots{\mathrm e}^{tX_n})\\
+&=E({\mathrm e}^{tX_1})\cdot E({\mathrm e}^{tX_2})\cdots E({\mathrm e}^{tX_n})\\
+&=\psi_1(t)\psi_2(t)\cdots\psi_n(t)\\
+&=\left(\dfrac{\lambda}{\lambda-t}\right)^n\\
+\end{aligned}
+$$
+题示密度函数对应的矩母函数为
+$$
+\begin{aligned}
+\displaystyle\int_0^{+\infty}{\mathrm e}^{tx}f(x)\,{\mathrm d}x&=\dfrac{\lambda^n}{(n-1)!}\displaystyle\int_0^{+\infty}{\mathrm e}^{(t-\lambda)x}x^{n-1}\,{\mathrm d}x\\
+&=\dfrac{\lambda^n}{(n-1)!}\displaystyle\int_0^{+\infty}\dfrac{1}{\lambda-t}{\mathrm e}^{(t-\lambda)x}(n-1)x^{n-2}\,{\mathrm d}x\\
+&=\dfrac{\lambda^n}{(n-1)!}\dfrac{n-1}{\lambda-t}\displaystyle\int_0^{+\infty}\dfrac{1}{\lambda-t}{\mathrm e}^{(t-\lambda)x}(n-2)x^{n-3}\,{\mathrm d}x\\
+&=\cdots \\ &=\dfrac{\lambda^n}{(n-1)!}\dfrac{(n-1)!}{(\lambda-t)^{n-1}}\displaystyle\int_0^{+\infty}{\mathrm e}^{(t-\lambda)x}\,{\mathrm d}x\\
+&=\left(\dfrac{\lambda}{\lambda-t}\right)^n
+\end{aligned}
+$$
+由矩母函数唯一性即得证.  
+
+***
+## 1.34
+<Aside type="note" title="习题 1.34">
+$X_1$、$X_2$ 连续非负、独立，它们的失效率函数分别为 $\lambda_1(t)$ 和 $\lambda_2(t)$. 证明：
+$$P\{X_{1}\lt X_{2}\mid\min(X_{1}\,,X_{2})=t\}={\frac{\lambda_{1}(t)}{\lambda_{1}(t)+\lambda_{2}(t)}}$$
+</Aside>
+**解：**
+
+$$
+\begin{aligned}
+\text{LHS}&=\dfrac{P(X_1=t\,,X_2>t)}{P(\min(X_1,X_2)=t)}\\
+&=\dfrac{P(X_1=t)\cdot P(X_2>t)}{P(X_1=t)P(X_2>t)+P(X_2=t)P(X_1>t)}\\
+&=\dfrac{f_1(t)\mathrm{d}t\cdot\overline{F_2}(t)}{f_1(t)\mathrm{d}t\cdot\overline{F_2}(t)+f_2(t)\mathrm{d}t\cdot\overline{F_1}(t)}\\
+&=\dfrac{f_1(t)/\overline{F_1}(t)}{f_1(t)/\overline{F_1}(t)+f_2(t)/\overline{F_2}(t)}\\
+&=\dfrac{\lambda_1(t)}{\lambda_1(t)+\lambda_2(t)}
+\end{aligned}
+$$
+
+## 1.35
+<Aside type="note" title="习题 1.35">
+随机变量 $X$ 的密度函数 $f(x)$、矩母函数 $M(t)=E(\mathrm{e}^{tX})$. 定义它的倾斜密度函数
+$$f_t(x)=\dfrac{\mathrm{e}^{tx}f(x)}{M(t)}$$
+令随机变量 $X_t$ 具有密度函数 $f_t(x)$
+1. 证明对任意函数 $h(x)$，$E\left(h(x)\right)=M(t)E\big[{\mathrm e}^{-tX_t}h(X_t)\big]$
+2. 证明对于 $t>0$，有 $P(X>a)\leq M(t){\mathrm e}^{-ta}P(X_t>a)$
+3. 证明：若 $E(X_{t^\star })=a$，那么 $\min\limits_tM(t)\mathrm{e}^{-ta}=M(t^\star)\mathrm{e}^{-t^\star a}{}$
+</Aside>
+**解：**
+
+(1) 
+$$
+\begin{aligned}
+E(h(X))&=\displaystyle\int_{-\infty}^{+infty}h(x)f(x)\,{\rm d}x\\
+&=\displaystyle\int_{-\infty}^{+\infty}h(x)M(t)f_t(x){\rm e}^{-tx}\,{\rm d}x\\
+&=M(t)\displaystyle\int_{-\infty}^{+\infty}{\rm e}^{-tx}h(x)f_t(x)\,{\rm d}x
+\end{aligned}
+$$
+而 $E({\rm e}^{-tX_t}h(X_t))=\displaystyle\int_{-\infty}^{+\infty}{\rm e}^{-tx}h(x)f_t(x)\,{\rm d}x$，代入即得证.
+
+***
+(2)
+$$
+\begin{aligned}
+P(X_t>a)&=\displaystyle\int_a^{+\infty}\dfrac{ {\rm e}^{tx}f(x)}{M(t)}\,{\rm d}x\\
+{\rm e}^{-ta}M(t)P(X_t>a)&=\displaystyle\int_a^{+\infty}{\rm e}^{t(x-a)}f(x)\,{\rm d}x\\
+&\geqslant\displaystyle\int_a^{+\infty}f(x)\,{\rm d}x\quad(因为\,t>0, x>a\Rightarrow{\rm e}^{t(x-a)}>1)\\
+&=P(X>a)
+\end{aligned}
+$$
+***
+(3) 令 $g(t)=M(t){\rm e}^{-ta}$，原命题即证 $\min g(t)$ 在 $t=t^\star$ 时取得.  
+$$
+\begin{aligned}
+g'(t)&=-aM(t){\rm e}^{-ta}+{\rm e}^{-ta}M'(t)\\
+&=-aM(t){\rm e}^{-ta}+{\rm e}^{-ta}\displaystyle\int_{-\infty}^{+\infty}x {\rm e}^{tx}f(x)\,{\rm d}x\\
+&={\rm e}^{-ta}\left(-aM(t)+M(t)\displaystyle\int_{-\infty}^{+\infty}\dfrac{x{\rm e}^{tx}f(x)}{M(t)}\,{\rm d}x\right)\\
+&=M(t){\rm e}^{-ta}\big(E(X_t)-a\big)
+\end{aligned}
+$$
+观察 $X_t$ 的密度函数，分母是分子对 $x$ 的积分，于是 $E(X_t)$ 随 $t$ 单增、$M(t){\rm e}^{-ta}>0$，故 $g(t)$ 先减后增，在 $E(X_t)=a$ 时取得最小值. 而 $E(X_{t^\star })=a$，于是此时 $t=t^\star$，原命题得证.
+
+***
+## 1.37
+<Aside type="note" title="习题 1.37">
+$X_1,X_2,\cdots$ 独立同分布. 若 $X_{n-1}<X_n>X_{n+1}$，则称在时刻 $n$ 出现了一个峰值. 证明：以概率为 $1$ 地，峰值出现的时间比例等于 $\dfrac13$.
+</Aside>
+**解：**
+
+对某个固定的 $k$，由习题1.6.1，$P(\,k\,是峰值)=P(X_{k-1}<X_k>X_{k+1})=\dfrac13$. 
+
+令 $I_i=\begin{cases}1,\ i\,时刻出现峰值 \\ 0,\ i\,时刻不是峰值\end{cases}$，再假设共有 $n$ 个这样的随机变量. 记 $N_n=\sum_1^nI_i$，即峰值个数.
+
+若 $I_1,\cdots,I_n$ 独立，则由 Chebyshev 大数定律，$\dfrac{N_n}{n}$ 以概率1地收敛到 $E[I_i]=P(\,i\,是峰值)=\dfrac13$，即峰值出现的时间比例等于 $\dfrac13$. 但此处它们并不独立，因为显然当 $k$ 为峰值时，$k+1$、$k-1$一定不为峰值.
+
+但是 $I_1,I_4,I_7,\cdots$ 是独立的，可使用 Chebyshev 大数定律，即 $\dfrac{I_1+I_4+\cdots+I_{3n-2}}{n}$ 依概率收敛到 $\dfrac13$，即
+$$
+P\left(\lim\limits_{n\to\infty}\dfrac{I_1+I_4+\cdots+I_{3n-2}}{n}=1/3\right)=1
+$$
+
+同理，$I_2,I_5,I_8,\cdots$、$I_3,I_6,I_9,\cdots$ 是独立的，即
+$$
+\begin{aligned}
+P\left(\lim\limits_{n\to\infty}\dfrac{I_2+I_5+\cdots+I_{3n-1}}{n}=1/3\right)&=1\\
+P\left(\lim\limits_{n\to\infty}\dfrac{I_3+I_6+\cdots+I_{3n}}{n}=1/3\right)&=1
+\end{aligned}
+$$
+
+三式相加即得 $P\left(\lim\limits_{n\to\infty}\dfrac{I_1+I_2+\cdots+I_{n}}{n}=1/3\right)=1$，即峰值出现的时间比例依概率收敛到 $1/3$.
+
+***
+## 1.39
+<Aside type="note" title="习题 1.39">
+$0,1,\cdots,n$ 从左至右排成一排，一质点每一步等可能地移向它的任意一个邻居. 证明：若质点从 $0$ 出发，则到达 $n$ 的步数之期望为 $n^2$.
+</Aside>
+**解：**
+
+考虑质点从 $k$ 出发，到达 $n$ 的步数之期望 $E(k)$. 显然 $E(n)=0$. 欲求 $E(0)$.
+
+- 对于 $0$，它下一步只能移动到 $1$，于是 $E(0)=1+E(1)$；
+- 对于 $1\leqslant k\leqslant n-1$，它有 1/2 概率移动到其左侧、1/2概率移动到其右侧，然后步数加一，即
+$$
+E(k)=\dfrac12\big(E(k-1)+1\big)+\dfrac12\big(E(k+1)+1\big)=\dfrac12E(k-1)+\dfrac12E(k+1)+1
+$$
+
+配凑前后项. 
+$$
+\begin{aligned}
+\dfrac12\big(E(k)-E(k-1)\big)&=\dfrac12\big(E(k+1)-E(k)\big)+1\\
+\big(E(k)-E(k-1)\big)&=\big(E(k+1)-E(k)\big)+2
+\end{aligned}
+$$
+即 $E(k)-E(k-1)$ 为公差为 $-2$ 的等差数列，故设 $E(k)-E(k-1)=-2k+a$. 由 $E(1)-E(0)=-1=-2\times1+a$ 得 $a=1$. 取 $k=1,2,\cdots,n$ 累加上述递推式得
+$$
+E(n)-E(0)=-2\cdot\dfrac{(1+n)n}{2}+na=-n-n^2+n=-n^2
+$$
+于是 $E(0)=E(n)+n^2=n^2$.
+
+***
+## 1.41
+<Aside type="note" title="习题 1.41">
+考虑由一个中心和 $r$ 条射线组成的星形图，其中一条射线由 $m$ 个顶点组成、其他 $r-1$ 条射线由 $n$ 个顶点组成. 质点从 $0$ 出发，每一步都等可能地移向它的邻居，以 $P_r$ 记由 $m$ 个顶点组成的射线上的叶子是最后访问的叶子的概率.
+1. 求 $P_2$.
+2. 用 $P_{r-1}$ 表达 $P_r$
+</Aside>
+**解：**
+
+记由 $m$ 个顶点组成的射线为 $m$ 线，其上的叶子为点 $A$；由 $n$ 个顶点组成的射线为 $n$ 线，其上的叶子为点 $B_i\ (1\leqslant i\leqslant r-1)$
+
+(1) 记事件“在访问 $A$ 前访问 $B$ 并返回 0”为事件 $S$，则 $P_2=P(S)$
+$$
+\begin{aligned}
+P(S\mid 先访问m线)&=\left(1-\dfrac1m\right)P(S)\\
+P(S\mid 先访问n线)&=\dfrac1n+\left(1-\dfrac1n\right)P(S)
+\end{aligned}
+$$
+于是
+$$
+\begin{aligned}
+P(S)&=\dfrac12\left(\left(1-\dfrac1m\right)P(S)+\dfrac1n+\left(1-\dfrac1n\right)P(S)\right)\\
+2P(S)&=P(S)-\left(\dfrac1m+\dfrac1n\right)P(S)+\dfrac1n+P(S)\\
+P(S)&=\dfrac{1}{n\left(1/m+1/n\right)}=\dfrac{m}{n+m}
+\end{aligned}
+$$
+也即 $P_2=\dfrac{m}{n+m}$.
+
+***
+(2) 记事件“在访问 $A$ 前访问完所有 $B_i\ (1\leqslant i\leqslant r-1)$ 并返回 0”为事件 $S_r$，则 $P_{r}=P(S_r)$
+
+- 若先访问 $m$ 线，则和上述情况一致，$P(S_r\mid 先访问m线)=\left(1-\dfrac1m\right)P(S_r)$；
+- 若先访问 $r-1$ 条 $n$ 线之一，记这条线为 $n_0$ 线
+	- 若在返回 0 之前已经走到了 $n_0$ 线的叶子，那么下一步就是“在访问 $A$ 前访问完 $B_i\ (1\leqslant i\leqslant r-2)$ 并返回 0”，概率为 $\dfrac1nP_{r-1}$；
+	- 若在返回 0 时没走到 $n_0$ 线的叶子，那么相等于没有执行任何操作、回到起始情形，概率为 $\left(1-\dfrac1n\right)P(S_r)$
+	- 于是 $P(S_r\mid 先访问n线)=\dfrac1nP_{r-1}+\left(1-\dfrac1n\right)P(S_r)$
+
+于是
+$$
+\begin{aligned}
+P(S_r)&=\dfrac1r\left(\left(1-\dfrac1m\right)P(S_r)\right)+\dfrac{r-1}{r}\left(\dfrac1nP_{r-1}+\left(1-\dfrac1n\right)P(S_r)\right)\\
+rP(S_r)&=P(S_r)-\left(\dfrac1m+\dfrac{r-1}{n}\right)P(S_r)+\dfrac{r-1}{n}P_{r-1}+(r-1)P(S_r)\\
+P(S_r)&=\dfrac{(r-1)P_{r-1} }{n\big(1/m+(r-1)/n\big)}=\dfrac{m(r-1)P_{r-1} }{n+m(r-1)}
+\end{aligned}
+$$
+也即 $P_r=\dfrac{m(r-1)P_{r-1} }{n+m(r-1)}$.
+
+***

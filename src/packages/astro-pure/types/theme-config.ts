@@ -6,7 +6,7 @@ import { HeaderMenuSchema } from '../schemas/header'
 import { LocaleConfigSchema } from '../schemas/locale'
 import { LogoConfigSchema } from '../schemas/logo'
 import { ShareSchema } from '../schemas/share'
-import { SocialLinksSchema } from '../schemas/social'
+import { SocialLinksSchema } from '../schemas/social.ts'
 
 export const ThemeConfigSchema = () =>
   z.object({

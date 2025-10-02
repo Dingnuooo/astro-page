@@ -1,0 +1,145 @@
+---
+title: '数学分析 记忆佛教（上）'
+description: '数学分析（一）考试前重点速通，函数与极限、导数与微分、不定积分、定积分、常微分方程'
+publishDate: 2023-12-30
+updatedDate: 2023-12-30
+tags:
+  - note
+  - math-analysis
+heroImage: { src: './math_analysis_cover_1.png', color: '#8c5f59' }
+language: '中文'
+---
+import { Aside } from 'astro-pure/user'
+
+<Aside type="danger" title="Warning">
+这一份佛脚大概不会再更新了...以后有时间把正片补上吧
+</Aside>
+（上册）
+- 主线第一篇：极限论
+	- Chapter 1 函数与极限
+	- Chapter 2 导数与微分
+	- Chapter 3 函数与极限二周目
+- 主线第二篇：积分学
+	- Chapter 4 不定积分
+	- Chapter 5 定积分
+- 支线 1：Chapter 6 线性空间理论概述
+- 支线 2：Chapter 7 常微分方程
+
+（下册）
+- 主线第三篇：多元微积分
+	- Chapter 8 欧氏空间上的函数与极限
+	- Chapter 9 多元函数微分学
+	- Chapter 10 重积分
+	- Chapter 11 曲线积分与曲面积分
+- 主线第四篇：级数与广义积分
+	- Chapter 12 数项级数
+	- Chapter 13 函数项级数
+	- Chapter 14 广义积分与含参变量积分
+	- Chapter 15 Fourier级数与Fourier积分
+
+
+## Taylor 表
+- 有阶乘：
+	- $\mathrm{e}^x=1+x+\dfrac12x^2+\dfrac16x^3\cdots$
+	- $\sin x=x-\dfrac16x^3+\dfrac{1}{120}x^5\cdots$
+	- $\cos x=1-\dfrac12x^2+\dfrac{1}{24}x^4\cdots$（sin求导）
+	- $(1+x)^\alpha=1+\alpha x+\dfrac{\alpha(\alpha\!-\!1)}{2}x^2+\dfrac{\alpha(\alpha\!-\!1)(\alpha\!-\!2)}{6}x^3\cdots$
+- 不阶乘：
+	- $\dfrac{1}{1-x}=1+x+x^2\cdots$（等比数列求和）
+	- $\dfrac{1}{1+x}=1-x+x^2\cdots$（上式自变量取反）
+	- $\ln(1+x)=x-\dfrac12x^2+\dfrac13x^3\cdots$（第二条公式积分）
+	- $\arctan x=x-\dfrac13x^3+\dfrac15x^5\cdots$（第二条公式令 $x=x^2$ 再积分）
+- 无规律：
+	- $\sqrt{1+x}=1+\dfrac12x-\dfrac18x^2+\dfrac1{16}x^3\cdots$
+	- $\sqrt[3]{1+x}=1+\dfrac13x-\dfrac19x^2+\dfrac5{81}x^3\cdots$
+	- $\tan x=x+\dfrac13x^3+\dfrac2{15}x^5\cdots$
+
+## 积分表
+- 三角函数类
+$$
+\left\{
+\begin{aligned}
+\cot'x&= \dfrac{-1}{\sin^2x}\\
+\tan'x&= \dfrac{1}{\cos^2x}\\
+\end{aligned}
+\right.
+\quad\quad
+\left\{
+\begin{aligned}
+\left(\dfrac1{\sin x}\right)'&= \dfrac{\cos x}{\sin^2x}\\
+\left(\dfrac1{\cos x}\right)'&= \dfrac{-\sin x}{\cos^2x}\\
+\end{aligned}
+\right.
+\quad\quad
+\left\{
+\begin{aligned}
+\textstyle\int \tan x \,\mathrm{d}x&= -\ln|\cos x\,|+C\\
+\textstyle\int \cot x \,\mathrm{d}x&= \ \ \ \ln|\sin x\ |+C\\
+\textstyle\int \dfrac{1}{\sin x} \,\mathrm{d}x&= \dfrac12\ln\left|\dfrac{1-\cos x}{1+\cos x}\right|+C
+\end{aligned}
+\right.
+$$
+- 平方和倒数
+$$
+\int \dfrac{\mathrm{d}x}{a^2+x^2}=\dfrac1a\int \dfrac{\mathrm{d}x}{1+(\frac xa)^2}=\dfrac1a\arctan \left(\dfrac xa\right)+C
+$$
+$$
+\int \dfrac{\mathrm{d}x}{(a^2+x^2)^2}=\dfrac{1}{2a^2}\left[\frac{x}{a^2+x^2}-\frac1a\arctan \left(\frac xa\right)\right]+C
+$$
+- 双曲三角函数
+	- $x=\sinh t\Rightarrow t=\ln(x+\sqrt{x^2+1})$
+	- $x=\cosh t\Rightarrow t=\ln(x+\sqrt{x^2-1})$
+	- 如何判断换成哪个：看根号里面的符号
+		- 换 $\sqrt{x^2{\,\color{red}+\,}1}{}$ 中的元时，用 $\sinh$，根号里面是加
+		- 换 $\sqrt{x^2{\,\color{red}-\,}1}{}$ 中的元时，用 $\cosh$，根号里面是减
+- 点火公式 $\displaystyle\int_0^{\pi/2}(\sin x)^n\,\mathrm{d}x=\displaystyle\int_0^{\pi/2}(\cos x)^n\,\mathrm{d}x=k\cdot\dfrac{(n-1)!!}{n!!}{}$
+	- 当 $n$ 偶时 $k=\pi/2$
+	- 当 $n$ 奇时 $k=1$
+	- 从分母开始倒数
+- 三角有理化
+	- $t=\tan\dfrac x2$，$\mathrm{d}x=\dfrac{2}{1+t^2}\mathrm{d}t$
+	- $\tan x=\dfrac{2t}{1-t^2}{}$，（tan的二倍角公式）
+	- $\sin x=\dfrac{2t}{1+t^2}{}$，（刚才的减号改成了加号）
+	- $\cos x=\dfrac{1-t^2}{1+t^2}{}$，（sin/tan）
+
+## 常微分方程
+- $y(x)$ 不好解时，可以改为求 $x(y)$
+- 永远先尝试看看能不能凑微分，使得可以等式两边同时积分
+- 一阶线性：$y'+P(x)y=Q(x)$
+	- 令 $\boxed{\color{transparent}{\small ccc} }=\mathrm{e}^{\int P(x)\mathrm{d}x}{}$，$y=\dfrac1{\boxed{\color{transparent}{\small ccc} } }\left(C+\displaystyle\int\boxed{\color{transparent}{\small cccc} }\ Q(x)\,\mathrm{d}x\right)$
+	- 变形：Bernoulli 方程 $y'+P(x)y=Q(x)y^n$
+		- 把 $y^n$ 除过去，令 $u=y^{1-n}{}$ 得 $u'+P(x)(1\!-\!n)u=Q(x)(1\!-\!n)$
+		- 若 $n=1$，移项合并 $y$ 直接解即可
+- 二阶线性：$y''+p(x)y'+q(x)y=f(x)$，已知其导出方程（即 $f(x)$ 换成 $0$ 的方程）一个解 $y_1$
+	- Liouville 公式曰：导出方程的另一个解 $y_2=y_1\displaystyle\int\dfrac{\mathrm{e}^{-\int p(x)\mathrm{d}x} }{y_1^2}\,\mathrm{d}x$
+	- 原方程的特解 $y^\star=C_1y_1+C_2y_2$，其中 $C_1$ $C_2$ 满足
+
+$$
+\left\{\begin{aligned}y_1C_1'+y_2C_2'&= 0\\y_1'C_1'+y_2'C_2'&= f(x)\end{aligned}\right.\,\Rightarrow\,\left\{\begin{aligned}C_1=\int\dfrac{-f(x)y_2}{y_1y_2'-y_2y_1'}\,\mathrm{d}x\\C_2=\int\dfrac{f(x)y_1}{y_1y_2'-y_2y_1'}\,\mathrm{d}x\end{aligned}\right.
+$$
+- 常系数齐次 $y^{(n)}+k_1y^{(n-1)}+k_2y^{(n-2)}+\cdots+k_{n-1}y'+k_n=0$
+	- 令 $y=\mathrm{e}^{\lambda x}{}$ 得**特征方程**  
+  $\lambda^n\ \ +k_1\lambda^{n-1}\ \,+k_2\lambda^{n-2}\ \,+\cdots+k_{n-1}\lambda\ +k_n=0$  
+  实数范围内因式分解之，例如 $(\lambda-a)(\lambda-b)^s(\lambda^2+c \lambda+d)(\lambda^2+m \lambda+n)^t\cdots=0$
+	- 单重实根 $\lambda=a$ 时，$y_1=\mathrm{e}^{ax}{}$
+	- 多重实根 $\lambda=b$ 时，$y_1=y_2=\cdots=y_s=\mathrm{e}^{bx}{}$
+	- 单重复根对 $\lambda=\alpha\pm\mathrm{i}\beta$ 时，$\left\{\begin{aligned}y_{11}&= \mathrm{e}^{\alpha x}\cos\beta x\\y_{12}&= \mathrm{e}^{\alpha x}\sin\beta x\end{aligned}\right.$
+	- 多重复根对 $\lambda=\alpha\pm\mathrm{i}\beta$ 时，$\left\{\begin{aligned}y_{11}=\mathrm{e}^{\alpha x}\cos\beta x,\,y_{21}=x\mathrm{e}^{\alpha x}\cos\beta x,\cdots,y_{t1}=x^{t-1}\mathrm{e}^{\alpha x}\cos\beta x\\y_{12}=\mathrm{e}^{\alpha x}\sin\beta x,\,y_{22}=x\mathrm{e}^{\alpha x}\sin\beta x,\cdots,y_{t2}=x^{t-1}\mathrm{e}^{\alpha x}\sin\beta x\end{aligned}\right.$
+- 常系数非齐次（例如 $y'''+by''+cy'+d=f(x)$），只讲特解的求法
+	- 当 $f(x)=P_m(x)\mathrm{e}^{tx}{}$ 时：设特解 $y^\star=Q(x)\mathrm{e}^{tx}{}$，其中 $Q(x)=x^r\!\cdot\!(R_m)$，$r$ 的值取决于 $t$ 是特征方程的几重根。然后代入方程用待定系数法求。这里给出代入方程并初步化简后的结果：  
+	$$
+	(t^3\!+\!bt^2\!\underbrace{+ct\!+\!d)Q+(3t^2+}_{对t导后\div1}2\underbrace{bt\!+\!c)Q'+(3t}_{对t导后\div2}\!+\!\underbrace{b)Q''+1}_{对t导后\div3}Q'''=P
+	$$
+	- 当 $f(x)=P_m(x)\mathrm{e}^{tx}\cos\omega x$ 或 $f(x)=P_m(x)\mathrm{e}^{tx}\sin\omega x$ 时：设特解 $y^\star=x^r\mathrm{e}^{tx}\big(Q_m(x)\cos\omega x+R_m(x)\sin\omega x\big)$，其中 $r$ 的值取决于 $t$ 是特征方程的几重根
+- Euler 方程 $\sum\limits a_ix^iy^{(i)}=f(x)$
+	- 令 $x=\mathrm{e}^t$，算子 $D=\dfrac{\mathrm{d}}{\mathrm{d}t}{}$，得$x^ky^{(k)}=D(D-1)(D-2)\cdots(D-(k\!-\!1))y$，记几个常见的
+		- $k=1$：$(xy')=\dot{y}{}$
+		- $k=2$：$(x^2y'')=\ddot{y}-\dot{y}{}$
+
+## 定积分的几何应用
+- 弧长公式 $L=\displaystyle\int_\alpha^\beta\sqrt{(\dot x)^2+(\dot y)^2}\,\mathrm{d}t$
+- 曲率公式 $\kappa=\dfrac{|\mathrm{d}\theta|}{|\mathrm{d}L|}=\dfrac{|\mathrm{d}\theta/\mathrm{d}t|}{|\mathrm{d}L/\mathrm{d}t|}=\dfrac{|\ddot{y}\dot{x}-\dot{y}\ddot{x}|}{\quad\big((\dot x)^2+(\dot y)^2\big)^{3/2} }$，圆的曲率 $\kappa=\dfrac1R$
+- 极坐标弧长 $L=\displaystyle\int_\alpha^\beta\sqrt{r^2+(r')^2}\,\mathrm{d}\theta$
+- 极坐标扇形面积 $S=\dfrac12\displaystyle\int_\alpha^\beta r^2\,\mathrm{d}\theta$
+- 旋转体侧面积 $S=2\pi\displaystyle\int_a^bf\sqrt{1+(f')^2}\,\mathrm{d}x$
+- 旋转体体积 $V=\pi\displaystyle\int_a^bf^2\,\mathrm{d}x$

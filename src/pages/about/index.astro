@@ -17,8 +17,9 @@ const headings = [
   <p>
     你好，我是 Dingnuooo，通信工程 + 人工智能在读本科生。
     这里是正在装修中的博客站，您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="text-orange-500 hover:underline">旧版博客站</a>。
-    新站将陆续上传读书笔记、讲义、心得、摘录等文字内容，写得不好，但我很享受分享的快乐。
-    <br><br>
+    新站将陆续上传读书笔记、讲义、心得、摘录等文字内容。写得不好，但我享受将知识翻译为人话的过程，我也很乐意将个人的见解分享出来。
+  </p>
+  <p>
     握紧你的锄头，往前走，不要回头。
   </p>
   <p>
@@ -29,69 +30,39 @@ const headings = [
   {/* general-talk */}
   <h2 id='hobbies'>Hobbies</h2>
   <ul>
-    <li>推理/侦探小说，喜欢黄金时代、新本格和社会派推理。</li>
-    <li>高考/竞赛数学解题技巧，持续追踪地方高质量模拟题。</li>
-    <li>游戏：Minecraft生电/建筑；音乐游戏（Project Sekai / Phigros / Arcaea / maimai）。</li>
+    <li>INTJ</li>
+    <li>我阅读侦探小说，尤爱黄金时代和社会派推理。</li>
+    <li>我持续追踪各地高考模拟题。因为怀念高三那年 每天考完试和兄弟们battle的时光。</li>
+    <li>独自娱乐是一种清福。<br>我游玩 Minecraft（生电 / 建筑）与音游（PJSK / Phigros / Arcaea / maimai）。</li>
   </ul>
 
   {/* tools */}
   <h2 id='tools'>Tools</h2>
-  <p>我使用的工具</p>
-  <ToolSection
-    class='mb-5'
-    title='Design'
-    tools={[
-      {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
-      },
-      {
-        name: 'Illustrator',
-        description: 'Vector Drawing',
-        href: 'https://www.adobe.com/products/illustrator',
-        icon: import('@/assets/tools/illustrator.svg?raw')
-      },
-      {
-        name: 'After Effects',
-        description: 'Motion Graphics',
-        href: 'https://www.adobe.com/products/aftereffects',
-        icon: import('@/assets/tools/aftereffects.svg?raw')
-      },
-      {
-        name: 'Premiere Pro',
-        description: 'Video Editing',
-        href: 'https://www.adobe.com/products/premiere',
-        icon: import('@/assets/tools/premiere.svg?raw')
-      }
-    ]}
-  />
   <ToolSection
     class='mb-5'
     title='Productivity'
     tools={[
       {
         name: 'Chrome',
-        description: '浏览器',
+        description: 'Browser',
         href: 'https://www.google.com/chrome/',
         icon: import('@/assets/tools/chrome.svg?raw')
       },
       {
         name: 'Firefox',
-        description: '浏览器（移动端）',
+        description: 'Browser (Mobile)',
         href: 'https://www.mozilla.org/en-US/firefox',
         icon: import('@/assets/tools/firefox.svg?raw')
       },
       {
         name: 'Obsidian',
-        description: '笔记与知识库 / Markdown 编辑器',
-        href: 'https://https://obsidian.md/',
+        description: 'Note Base / Markdown Editor',
+        href: 'https://obsidian.md/',
         icon: import('@/assets/tools/obsidian.svg?raw')
       },
       {
         name: 'Typora',
-        description: 'Markdown 编辑器',
+        description: 'Markdown Editor',
         href: 'https://typora.io/',
         icon: import('@/assets/tools/typora.svg?raw')
       }
@@ -102,23 +73,41 @@ const headings = [
     title='Development'
     tools={[
       {
-        name: 'VS Code',
+        name: 'Visual Studio Code',
         description: 'IDE',
         href: 'https://code.visualstudio.com/',
         icon: import('@/assets/tools/vscode.svg?raw')
       },
       {
-        name: 'Neovim',
-        description: 'IDE',
-        href: 'https://neovim.io/',
-        icon: import('@/assets/tools/neovim.svg?raw')
+        name: 'Warp',
+        description: 'Terminal',
+        href: 'https://www.warp.dev/',
+        icon: import('@/assets/tools/warp.svg?raw')
+      }
+    ]}
+  />
+  <ToolSection
+    class='mb-5'
+    title='Design'
+    tools={[
+      {
+        name: 'Easy Paint Tool SAI',
+        description: 'Digital Drawing',
+        href: 'https://www.systemax.jp/ja/sai/',
+        icon: import('@/assets/tools/sai.svg?raw')
       },
       {
-        name: 'Sublime Text',
-        description: 'IDE',
-        href: 'https://www.sublimetext.com/',
-        icon: import('@/assets/tools/sublime.svg?raw')
-      }
+        name: 'Photoshop',
+        description: 'Picture Editing',
+        href: 'https://www.adobe.com/products/photoshop',
+        icon: import('@/assets/tools/photoshop.svg?raw')
+      },
+      {
+        name: 'Blender',
+        description: '3D Modeling & Rendering',
+        href: 'https://www.blender.org/',
+        icon: import('@/assets/tools/blender.svg?raw')
+      },
     ]}
   />
   <ToolSection
