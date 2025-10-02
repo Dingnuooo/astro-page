@@ -5,7 +5,8 @@ publishDate: 2025-01-20
 updatedDate: 2025-01-21
 tags:
   - default
-heroImage: { src: './cover.png', color: '#2472aa' }
+  - reading
+heroImage: { src: './hammer.png', color: '#2472aa' }
 language: '中文'
 ---
 
