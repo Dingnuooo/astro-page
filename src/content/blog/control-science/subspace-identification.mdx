@@ -1,0 +1,569 @@
+---
+title: 控制科学笔记 - 子空间辨识
+description: 《控制科学Ⅰ》期末速通笔记。课件太抽象了 咱来点接地气的
+tags:
+ - note
+ - control-science
+publishDate: 2025-06-11
+updateDate: 2025-06-16
+---
+import { Aside } from 'astro-pure/user'
+
+<Aside type="danger">
+更新中
+</Aside>
+
+本章解决这样一个问题：对于一个 LTI 离散状态空间方程模型（注意与系统建模中的区别）
+$$
+\left\{
+\begin{aligned}
+x_{k+1}&= Ax_k+Bu_k\\
+y_k&= Cx_k+Du_k
+\end{aligned}
+\right.
+$$
+给定系统若干个输入 $u_0,\cdots,u_{s-1}{}$ 和对应的 $s$ 个输出 $y_k$（输入为 $m$ 维列向量、输出为 $l$ 维列向量），求出：
+- 系统的阶数 $n$
+- 四个矩阵 $A$、$B$、$C$、$D$（相似变换意义下等价即可）
+
+## 子空间方程
+### 推导
+假定当前时刻 $k=i$. 取 $k=0\sim (i-1)$ 这 $i$ 个下标，也就是相对于当前时刻的所有“过去状态”：
+$$
+\left|\ 
+\begin{aligned}
+x_1&= Ax_0+Bu_0\\
+x_2&= Ax_1+Bu_1\\
+&= A^2x_0+ABu_0+Bu_1\\
+x_3&= Ax_2+Bu_2\\
+&= A^3x_0+A^2Bu_0+ABu_1+Bu_2\\
+&\cdots\\
+x_i&= A^ix_0+\sum\limits_{k=0}^{(i-1)}A^{(i-1)-k}Bu_k
+\end{aligned}
+\right.
+\quad
+\left|\ 
+\begin{aligned}
+y_0 &= C x_0 + D u_0\\
+y_1 &= Cx_1+Du_1\\
+&= C A x_0 + C B u_0 + D u_1\\
+y_2 &= Cx_2+Du_2\\
+&= C A^2 x_0 + C A B u_0 + C B u_1 + D u_2\\
+&\cdots\\
+y_{i-1} &= CA^{i-1}x_0+\sum\limits_{k=0}^{(i-2)}CA^{(i-2)-k}Bu_k+Du_{i-1}
+\end{aligned}
+\right.
+$$
+把 $y$ 的部分写成矩阵形式
+$$
+\begin{bmatrix}
+y_0\\y_1\\\vdots\\y_{i-2}\\y_{i-1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+C\\
+CA\\
+\vdots\\
+CA^{i-2}\\
+CA^{i-1}
+\end{bmatrix}
+x_0
++
+\begin{bmatrix}
+D & 0 & \cdots & 0 & 0\\
+CB & D & \cdots & 0 & 0\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+CA^{i-3}B & CA^{i-4}B & \cdots & D  & 0\\
+CA^{i-2}B & CA^{i-3}B & \cdots & CB & D
+\end{bmatrix}
+\begin{bmatrix}
+u_0\\u_1\\\vdots\\u_{i-2}\\u_{i-1}
+\end{bmatrix}
+$$
+记 $\Gamma_i$ 为 $x_0$ 前面的那一坨大矩阵、记 $H_i$ 为 $u$ 前面的那一坨系数矩阵. 于是可将表达式压缩为
+$$
+\begin{bmatrix}
+y_0\\y_1\\
+\vdots\\
+y_{i-1}
+\end{bmatrix}
+=
+\Gamma_ix_0
++
+H_i
+\begin{bmatrix}
+u_0\\u_1\\\vdots\\u_{i-1}
+\end{bmatrix}
+$$
+
+刚才我们的 $k$ 是从 $0\sim(i-1)$. 如果我们把下标整体往后移一位，即 $k$ 从 $1\sim i$，这样等号左边的 $y$ 矩阵就是 $y_1\sim y_i$，右边就是 $x_1$，$u$ 矩阵就是 $u_1\sim u_i$. 很巧妙的在于，$\Gamma_i$ 和 $H_i$ 并不会变，因为这两个系数矩阵实际上表达的是“相对于第一项的关系”，而量的个数没有变（都是 $i$），也就是说相对于 $x_1$，后面的 $i$ 个数都有相同的矩阵表示. 同理，整体移动两位、三位……，两个系数矩阵都是一样的. 因此，把多个 $y$ 矩阵横着拼到一起时，系数矩阵可以提取出来. 
+
+从 $0$ 拼到 $j-1$（$j$ 只是一个参数，表示我们将使用多少数据进行分析. 有点像以前的迭代次数）
+$$
+\begin{bmatrix}
+y_0      & y_1      & \cdots & y_{j-1}     \\
+y_1      & y_2      & \cdots & y_{j}       \\
+\vdots   & \vdots   & \ddots & \vdots      \\
+y_{i-1}  & y_{i}    & \cdots & y_{i+j-2}
+\end{bmatrix}
+=
+\Gamma_i
+\begin{bmatrix}
+x_0 & x_1 & \cdots & x_{j-1}
+\end{bmatrix}
++
+H_i
+\begin{bmatrix}
+u_0      & u_1      & \cdots & u_{j-1}     \\
+u_1      & u_2      & \cdots & u_{j}       \\
+\vdots   & \vdots   & \ddots & \vdots      \\
+u_{i-1}  & u_{i}    & \cdots & u_{i+j-2}
+\end{bmatrix}
+$$
+我们再次压缩表达式为
+$$
+Y_p=\Gamma_iX_p+H_iU_p
+$$
+这里的 $p$ 就是 past“过去状态”的意思。
+***
+现在考虑“未来状态”，特别地，是未来状态相对于当前状态（即 $k=i$）的情况，因此下标又要整体移动 $i$，也即从 $i$ 拼到 $i+j-1$：
+$$
+\begin{bmatrix}
+y_i      & y_{i+1}  & \cdots & y_{i+j-1}     \\
+y_{i+1}  & y_{i+2}  & \cdots & y_{i+j}       \\
+\vdots   & \vdots   & \ddots & \vdots        \\
+y_{2i-1} & y_{2i}   & \cdots & y_{2i+j-2}
+\end{bmatrix}
+=
+\Gamma_i
+\begin{bmatrix}
+x_i & x_{i+1} & \cdots & x_{i+j-1}
+\end{bmatrix}
++
+H_i
+\begin{bmatrix}
+u_i      & u_{i+1}  & \cdots & u_{i+j-1}     \\
+u_{i+1}  & u_{i+2}  & \cdots & u_{i+j}       \\
+\vdots   & \vdots   & \ddots & \vdots        \\
+u_{2i-1} & u_{2i}   & \cdots & u_{2i+j-2}
+\end{bmatrix}
+$$
+压缩表达式为
+$$
+Y_f=\Gamma_iX_f+H_iU_f
+$$
+这里的 $f$ 就是 future 的意思。
+***
+过去和未来的情况都有了，我们使用一开始算出来的各个 $x$ 的表达式，在过去与未来之间建立联系. 将 $i$ 时刻和 $0$ 时刻之间的关系 $x_i= A^ix_0+\sum\limits_{k=0}^{(i-1)}A^{(i-1)-k}Bu_k$ 写成矩阵形式、并压缩表达式为：
+$$
+x_i= A^ix_0+\begin{bmatrix}A^{i-1}B&A^{i-2}B&\cdots&AB&B\end{bmatrix}\begin{bmatrix}u_0\\u_1\\\vdots\\u_{i-2}\\u_{i-1}\end{bmatrix}=A^ix_0+\Delta_i\begin{bmatrix}u_0\\u_1\\\vdots\\u_{i-1}\end{bmatrix}
+$$
+
+同样地，依然可以把下标整体移动，而两个系数矩阵不变. 然后再把 $0$ 到 $j-1$ 拼到一起：
+$$
+\begin{bmatrix}x_i&x_{i+1}&\cdots&x_{i+j-1}\end{bmatrix}=A^i\begin{bmatrix}x_0&x_1&\cdots&x_{j-1}\end{bmatrix}+\Delta_i\begin{bmatrix}u_0&u_1&\cdots&u_{j-1}\\u_1&u_2&\cdots&u_j\\\vdots&\vdots&\ddots&\vdots\\u_{i-1}&u_i&\cdots&u_{i+j-2}\end{bmatrix}
+$$
+自然地，过去与未来 $x$ 被分别打包在一起了，因此可以再次压缩表达式为
+$$
+X_f=A^iX_p+\Delta_iU_p
+$$
+***
+最后一步. 我们实际上只想知道输入 $Y$ 和输出 $U$，状态变量可以进一步消去
+- 第①式移项后代入第③式消 $X_p$，压缩表达式为
+$$
+\begin{aligned}X_f&= A^i\Gamma_i^\dagger(Y_p-H_iU_p)+\Delta_iU_p\\&= \begin{bmatrix}A^i\Gamma_i^\dagger&,&\Delta_i-A^i\Gamma_i^\dagger H_i\end{bmatrix}\begin{bmatrix}Y_p\\U_p\end{bmatrix}\\X_f&= L_pW_p\end{aligned}
+$$
+- 相应地第②式改为 $Y_f=\Gamma_iX_f+H_iU_f=\Gamma_iL_pW_p+H_iU_f$
+***
+### 小结
+对一个 $m$ 维输入、$l$ 维输出的状态空间方程模型
+$$
+\left\{
+\begin{aligned}
+x_{k+1}&= Ax_k+Bu_k\\
+y_k&= Cx_k+Du_k
+\end{aligned}
+\right.
+$$
+我们有三条子空间辨识方程：
+
+<Aside type="note" title="子空间辨识方程">
+1. 将过去状态的 $y$ 拼起来，得 $Y_p=\Gamma_iX_p+H_iU_p$
+2. 将未来状态的 $y$ 拼起来，得 $Y_f=\Gamma_iX_f+H_iU_f$
+3. 相隔 $i$ 时长的 $x$ 拼起来，得 $X_f=A^iX_p+\Delta_iU_p$
+</Aside>
+其中
+$$
+\begin{aligned}
+X_p&= \begin{bmatrix}x_0&x_1&\cdots&x_{j-1}\end{bmatrix}\\
+X_f&= \begin{bmatrix}x_i&x_{i+1}&\cdots&x_{i+j-1}\end{bmatrix}
+\end{aligned}
+$$
+$$
+Y_p=\begin{bmatrix}
+y_0      & y_1      & \cdots & y_{j-1}     \\
+y_1      & y_2      & \cdots & y_{j}       \\
+\vdots   & \vdots   & \ddots & \vdots      \\
+y_{i-1}  & y_{i}    & \cdots & y_{i+j-2}
+\end{bmatrix}\quad
+Y_f=\begin{bmatrix}
+y_i      & y_{i+1}  & \cdots & y_{i+j-1}     \\
+y_{i+1}  & y_{i+2}  & \cdots & y_{i+j}       \\
+\vdots   & \vdots   & \ddots & \vdots        \\
+y_{2i-1} & y_{2i}   & \cdots & y_{2i+j-2}
+\end{bmatrix}
+$$
+$$
+U_p=\begin{bmatrix}u_0&u_1&\cdots&u_{j-1}\\u_1&u_2&\cdots&u_j\\\vdots&\vdots&\ddots&\vdots\\u_{i-1}&u_i&\cdots&u_{i+j-2}\end{bmatrix}\quad
+U_f=\begin{bmatrix}
+u_i      & u_{i+1}  & \cdots & u_{i+j-1}     \\
+u_{i+1}  & u_{i+2}  & \cdots & u_{i+j}       \\
+\vdots   & \vdots   & \ddots & \vdots        \\
+u_{2i-1} & u_{2i}   & \cdots & u_{2i+j-2}
+\end{bmatrix}
+$$
+$$
+\Gamma_i=\begin{bmatrix}
+C\\
+CA\\
+\vdots\\
+CA^{i-2}\\
+CA^{i-1}
+\end{bmatrix}\quad
+H_i=\begin{bmatrix}
+D & 0 & \cdots & 0 & 0\\
+CB & D & \cdots & 0 & 0\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+CA^{i-3}B & CA^{i-4}B & \cdots & D  & 0\\
+CA^{i-2}B & CA^{i-3}B & \cdots & CB & D
+\end{bmatrix}
+$$
+$$
+\Delta_i=\begin{bmatrix}A^{i-1}B&A^{i-2}B&\cdots&AB&B\end{bmatrix}
+$$
+
+消去状态变量的形式：
+<Aside type="note" title="消去状态变量的形式">
+$$
+Y_f=\Gamma_iL_pW_p+H_iU_f
+$$
+</Aside>
+其中
+$$
+L_p=\begin{bmatrix}A^i\Gamma_i^\dagger&,&\Delta_i-A^i\Gamma_i^\dagger H_i\end{bmatrix}\quad\quad W_p=\begin{bmatrix}Y_p\\U_p\end{bmatrix}
+$$
+
+## 三条假设与两条推论
+
+为了让辨识算法有效，需要假定系统足够好，即满足：
+
+<Aside type="note" title="Assumptions">
+1. ${\rm r}(X_p)=n$，*因为是 $n$ 阶系统，否则系统不可达*
+2. ${\rm r}\left(\begin{bmatrix}U_p\\U_f\end{bmatrix}\right)=2im$，*即输入样本要满秩，保证输入样本可以探索到整个输入空间. $2im$ 是因为，输入是 $m$ 列，总共有 $2i$ 行输入数据，past 和 future 各 $i$ 行*
+3. ${\rm row}(U_p)\,\cap\,{\rm row}(X_p)=\varnothing$，*输入空间与状态空间独立，保证系统开环，排除反馈信号的可能*
+</Aside>
+若系统满足上述三个条件，有两个推论
+
+<Aside type="note" title="推论1">
+$$
+{\rm r}(X_f)=n
+$$
+</Aside>
+证：$X_f=A^iX_p+\Delta_iU_p=\begin{bmatrix}A^i & \Delta_i\end{bmatrix}\begin{bmatrix}X_p \\U_p\end{bmatrix}$  
+由第二条，${\rm r}(U_p) = im$ 行满秩；由第三条，两行空间不交，故 $\begin{bmatrix}X_p \\U_p\end{bmatrix}$ 亦行满秩，故
+$$
+{\rm r}(X_f) = {\rm r}(\begin{bmatrix}A^i&\Delta_i\end{bmatrix})\geq {\rm r}(\Delta_i)=n
+$$
+最后一步是因为 $\Delta_i$ 行满秩  
+又 ${\rm span}(X_f)$ 是 n 维状态空间的子空间，于是 ${\rm r}(X_f) \leq n$. 故 ${\rm r}(X_f) = n$
+
+<Aside type="note" title="推论2">
+$$
+{\rm span}(X_f)={\rm span}(W_p)\cap {\rm span}(W_f)
+$$
+（其中 $W_p=\begin{bmatrix}Y_p\\U_p\end{bmatrix}$，$W_f=\begin{bmatrix}Y_f\\U_f\end{bmatrix}$）
+
+这意味着，$X_f$ 是过去数据空间和未来数据交集的一组基
+</Aside>
+证：(1) 证明 $\text{span}(X_f) \subseteq \text{span}(W_p) \cap \text{span}(W_f)$
+
+由于系统是可达和可观测，系统的状态 $X_f$ 可以由输入输出数据唯一确定。因此，$X_f$ 必定是 $W_p$ 和 $W_f$ 张成空间中的一个元素，所以 $X_f \in \text{span}(W_p)$ 且 $X_f \in \text{span}(W_f)$，也即
+$$
+\text{span}(X_f) \subseteq \text{span}(W_p) \cap \text{span}(W_f)
+$$
+
+(2) 证明 $\text{span}(W_p) \cap \text{span}(W_f) \subseteq \text{span}(X_f)$
+
+$\forall\,v \in \text{span}(W_p) \cap \text{span}(W_f)$，$\exists\,a,\,b\,\ \text{s.t.}{}$
+$$
+v = W_p\cdot a = W_f\cdot b
+$$
+而 $W_p$ 和 $W_f$ 都是由 $X_f$ 以及他们自身线性组合得到的，所以交集中的向量 $v$ 必定可表示为 $X_f\cdot c$，所以 $v \in \text{span}(X_f)$，也即 、
+$$
+\text{span}(W_p) \cap \text{span}(W_f) \subseteq \text{span}(X_f)
+$$
+
+## 确定性子空间辨识
+### N4SID
+**N**umerical algorithm for **S**ubspace **S**tate **S**pace **S**ystem **ID**entification 子空间状态空间系统辨识的数值算法
+
+使用消去状态变量的形式 $Y_f=\Gamma_iL_pW_p+H_iU_f$，做斜交投影：
+$$
+\begin{aligned}
+Y_f/\!_{U_f}W_p&= \Gamma_iL_pW_p/\!_{U_f}W_p+H_iU_f/\!_{U_f}W_p\\
+&= \Gamma_iL_pW_p\\
+&= \Gamma_iX_f
+\end{aligned}
+$$
+
+对 $\mathcal{O}=Y_f/\!_{U_f}W_p$ 做 SVD
+$$
+\mathcal{O}=\left[ U_1 \quad U_2 \right] \begin{bmatrix} \Sigma_r & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} V_1^\mathrm{T} \\ V_2^\mathrm{T}\end{bmatrix}=U_1\Sigma_rV_1^\mathrm{T}\;(\,=\Gamma_iX_f)
+$$
+为了得到 $\Gamma_iX_f$，从 $\Sigma_r$ 中间劈成两个矩阵相乘，劈开处乘上相似变换阵（非奇异即可）：
+- $\Gamma_i = U_1 \Sigma_r^{1/2}\color{red}T$
+- $X_f = {\color{red}T^{-1} }\Sigma_r^{1/2} V_1^\mathrm{T}{}$
+***
+下面就可以进行辨识了。由于 $T$、$V_1$ 都满秩，得 $n=\mathrm{r}(X_f)=\mathrm{r}(\Sigma_r)$，也即系统维数为 $\mathcal O$ 矩阵非零奇异值的个数。
+
+然后就是求 $ABCD$。我们知道 $X_f=[x_{i},\,x_{i+1},\,\cdots,\,x_{i+j-1}]$，把所有涉及这些 $x$ 的状态空间方程都写出来，写成矩阵形式并压缩表达式为
+$$
+\begin{bmatrix}
+X_{i+1,\,j-1} \\
+Y_{i,\,j-1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+A & B \\
+C & D
+\end{bmatrix}
+\begin{bmatrix}
+X_{i,\,j-1} \\
+U_{i,\,j-1}
+\end{bmatrix}
+$$
+其中大写的 $X$、$Y$、$U$ 表示把小写打包，下角标两个数，第一个数表示打包的起点，第二个数表示打包的个数，即
+$$
+\begin{aligned}
+X_{i+1,\,j-1} &= [x_{i+1},\,\cdots,\,x_{i+j-1}]\\
+Y_{i,\,j-1}   &= [y_{i},\,y_{i+1},\,\cdots,\,y_{i+j-2}]\\
+X_{i,\,j-1}   &= [x_{i},\,x_{i+1},\,\cdots,\,x_{i+j-2}]\\
+U_{i,\,j-1}   &= [u_{i},\,u_{i+1},\,\cdots,\,u_{i+j-2}]\\
+\end{aligned}
+$$
+既然 $X_f$ 都算出来了，那刚才定义的这四个东西就都是已知的，因此 $ABCD$ 可以用最小二乘法解出（注意这里是估系数矩阵，所以和传统的最小二乘在结论上有一些区别，但推导是一样的）
+$$
+y= \Theta x
+$$
+$$
+\begin{aligned}
+\dfrac{ {\partial}\|y-\Theta x\|^2}{ {\partial}\Theta}&= 2(y-\Theta x)x^\mathrm{T}=0\\
+\hat\Theta&= yx^\mathrm{T}(xx^\mathrm{T})^{-1}
+\end{aligned}
+$$
+***
+==现在剩下一个没弄明白的点：为什么要在 $\Sigma_r$ 中间劈开？？==
+### MOESP
+**M**ultivariable **O**utput **E**rror **S**tate s**P**ace 多变量输出误差状态空间
+
+做LQ分解
+$$
+\begin{bmatrix}U_p\\Y_p\end{bmatrix}= \begin{bmatrix}L_{11}&0\\L_{21}&L_{22}\end{bmatrix}\begin{bmatrix}Q_1^{\mathrm T}\\Q_2^{\mathrm T}\end{bmatrix}
+$$
+
+$$
+\Rightarrow\,\left\{
+\begin{aligned}
+U_p&= L_{11}Q_1^{\mathrm T}\\
+Y_p&= L_{21}Q_1^{\mathrm T}+L_{22}Q_2^{\mathrm T}\\
+\end{aligned}
+\right.
+$$
+
+由子空间方程之“过去状态拼一起”：$Y_p=\Gamma_iX_p+H_iU_p$，把 $Y_p$ 和 $U_p$ 的 LQ 表达式代进去：
+$$
+\boxed{\Gamma_iX_p+H_iL_{11}Q_1^{\mathrm T}= L_{21}Q_1^{\mathrm T}+L_{22}Q_2^{\mathrm T} }\tag{1}
+$$
+两边右乘 $Q_2$ 得
+$$
+\Gamma_iX_pQ_2=L_{22}
+$$
+和 N4SID 类似，为了得到 $\Gamma_iX_pQ_2$，只需对 $L_{22}{}$ 做奇异值分解：
+$$
+L_{22}=\left[ U_1 \quad U_2 \right] \begin{bmatrix} \Sigma_r & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} V_1^\mathrm{T} \\ V_2^\mathrm{T}\end{bmatrix}=U_1\Sigma_rV_1^{\mathrm T}\ (\,=\Gamma_iX_pQ_2)
+$$
+然后从 $\Sigma_r$ 中间劈开得（==同样的，没懂，为啥这样劈开？？==）
+- $\Gamma_i= U_1\Sigma_r^{1/2}{}$
+- $X_pQ_2= \Sigma_r^{1/2}V_1^\mathrm{T}{}$
+***
+然后就可以开始辨识了：$n=\mathrm{r}(X_p)={\mathrm r}(\Sigma_r)$（因为 $Q_2$ 正交，即满秩）
+
+而 $\Gamma_i=\begin{bmatrix}C\\CA\\\vdots\\CA^{i-1}\end{bmatrix}$，于是可以解 $A$ 和 $C$：
+- $\Gamma_i$ 的开头 $l$ 行就是矩阵 $C$
+- $(\Gamma_i$ 去掉开头 $l$ 行$)=(\Gamma_i$ 去掉最后 $l$ 行$)\times A$，解方程即得 $A$
+
+至于 $B$ 和 $D$，我们再次回到 (1) 式，两边同时左乘 $U_2^\mathrm{T}{}$；因为 $\Gamma_i$ 和 $L_{22}{}$ 都是以 $U_1$ 开头的，由 $U$ 正交性得，左乘 $U_2^\mathrm{T}{}$ 时整个项都变成 0，于是
+$$
+\begin{aligned}
+\bcancel{U_2^\mathrm{T}\Gamma_iX_p}+U_2^\mathrm{T}H_iL_{11}Q_1^{\mathrm T}= U_2^\mathrm{T}L_{21}Q_1^{\mathrm T}+\bcancel{U_2^\mathrm{T}L_{22}Q_2^{\mathrm T} }
+\end{aligned}
+$$
+去掉 $Q_1^\mathrm{T}{}$，$L_{11}{}$ 移到右边去，把 $H_i$ 的具体表达式代入：
+$$
+U_2^\mathrm{T}\begin{bmatrix}
+D & 0 & \cdots & 0 & 0\\
+CB & D & \cdots & 0 & 0\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+CA^{i-3}B & CA^{i-4}B & \cdots & D  & 0\\
+CA^{i-2}B & CA^{i-3}B & \cdots & CB & D
+\end{bmatrix}=U_2^\mathrm{T}L_{21}L_{11}^{-1}
+$$
+中间这个大矩阵 $H_i$ 就是待求的，其他东西都是已知的。我们把左边 $U_2^\mathrm{T}{}$ 每 $l$ 列分块、右边每 $m$ 列分块（以匹配 $H_i$ 的分块模式），可以分成 $i$ 块
+$$
+\begin{aligned}
+U_2^\mathrm{T}&=[\mathcal{L}_1,\,\mathcal{L}_2,\,\cdots,\,\mathcal{L}_i]\\
+U_2^\mathrm{T}L_{21}L_{11}^{-1}&=[\mathcal{M}_1,\,\mathcal{M}_2,\,\cdots,\,\mathcal{M}_i]
+\end{aligned}
+$$
+分块之后，实际上是阶梯型，而且 $B$ 和 $D$ 可以彻底分开
+$$
+\begin{aligned}
+\mathcal{M}_1&=\mathcal{L}_1 D + (\mathcal{L}_2 C + \cdots + \mathcal{L}_{i-1} C A^{i-3} + \mathcal{L}_i C A^{i-2})B  \\
+\mathcal{M}_2&=\mathcal{L}_2 D + (\mathcal{L}_3 C  + \cdots + \mathcal{L}_i C A^{i-3}) B  \\
+&\ \ \vdots \\
+\mathcal{M}_{i-1}&= \mathcal{L}_{i-1} D + (\mathcal{L}_i C )B \\
+\mathcal{M}_{i}&=\mathcal{L}_i D 
+\end{aligned}
+$$
+注意到括号里面很像 $\Gamma_i$，于是记 $\bar{\mathcal{L}_k}=\left[\mathcal{L}_k, \mathcal{L}_{k+1}, \cdots, \mathcal{L}_i\right]$，就可以写成矩阵表达式
+$$
+\begin{bmatrix}
+\mathcal{M}_1 \\
+\mathcal{M}_2 \\
+\vdots \\
+\mathcal{M}_{i-1} \\
+\mathcal{M}_i
+\end{bmatrix}
+=
+\begin{bmatrix}
+\mathcal{L}_1 & \bar{\mathcal{L}_2}\Gamma_{i-1} \\
+\mathcal{L}_2 & \bar{\mathcal{L}_3}\Gamma_{i-2} \\
+\vdots & \vdots \\
+\mathcal{L}_{i-1} & \bar{\mathcal{L}_i}\Gamma_1 \\
+\mathcal{L}_i & 0
+\end{bmatrix}
+\begin{bmatrix}
+D \\
+B
+\end{bmatrix}
+$$
+然后只需要使用最小二乘法（传统的就行了）就能解 $B$ 和 $D$
+
+==BD这一段的构造，逻辑还是不够丝滑==
+
+## 随机子空间辨识
+### 问题描述
+在状态空间方程中引入一个随机偏移
+$$
+\left\{
+\begin{aligned}
+x_{k+1}&= Ax_k+Bu_k+w_k\\
+y_k&= Cx_k+Du_k+v_k
+\end{aligned}
+\right.
+$$
+其中 $w_k$ 和 $v_k$ 是均值为 $\vec 0$ 的白噪向量，它们的协方差如下定义
+$$
+\begin{aligned}
+Q&= E[w_kw_k^\mathrm{T}]\\
+R&= E[v_kv_k^\mathrm{T}]\\
+S&= E[w_kv_k^\mathrm{T}]
+\end{aligned}
+$$
+注意中括号里头，两个角标必须一致，角标不一致时协方差为零（因为白噪的意思就是不同时刻互相独立）。并且进一步假定 $E[x_kw_k^\mathrm{T}]=E[x_kv_k^\mathrm{T}]=0$
+
+考试只考没有 $B$ 和 $D$ 的情形，也即只考虑
+$$
+\left\{
+\begin{aligned}
+x_{k+1}&= Ax_k+w_k\\
+y_k&= Cx_k+v_k
+\end{aligned}
+\right.
+$$
+
+### 记号
+定义：
+1. 状态协方差 $\Sigma=E[x_kx_k^\mathrm{T}]$
+2. 输出协方差 $\Lambda_i=E[y_{k+i}\,y_k^\mathrm{T}]$（相差 $i$ 时间的）
+3. 状态输出协方差 $G=E[x_{k+1}y_k^\mathrm{T}]$
+
+这些协方差应当与 $k$ 无关，表示系统足够稳定。于是：
+
+$$
+\begin{aligned}
+\Sigma&= E[x_{k+1}x_{k+1}^\mathrm{T}]\\
+&= E\big[(Ax_k+w_k)(Ax_k+w_k)^\mathrm{T}\big]\\
+&= AE[x_kx_k^\mathrm{T}]A^\mathrm{T}+E[w_kw_k^\mathrm{T}]\\
+&= A\Sigma A^\mathrm{T}+Q
+\end{aligned}
+$$
+$$
+\begin{aligned}
+G&= E[x_{k+1}y_{k}^\mathrm{T}]\\
+&= E\big[(Ax_k+w_k)(Cx_k+v_k)^\mathrm{T}\big]\\
+&= AE[x_kx_k^\mathrm{T}]C^\mathrm{T}+E[w_kv_k^\mathrm{T}]\\
+&= A\Sigma C^\mathrm{T}+S
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\Lambda_0&= E[y_{k}y_{k}^\mathrm{T}]\\
+&= E\big[(Cx_k+v_k)(Cx_k+v_k)^\mathrm{T}\big]\\
+&= CE[x_kx_k^\mathrm{T}]C^\mathrm{T}+E[v_kv_k^\mathrm{T}]\\
+&= C\Sigma C^\mathrm{T}+R
+\end{aligned}
+$$
+
+现在考虑 $\Lambda_i$，先把前面一个 $y$ 用 $Cx+v$ 转成 $x$，再用 $Ax+w$ 一直向前递归直到 $x_{k+1}{}$：
+$$
+\begin{aligned}
+\Lambda_i&= E[y_{k+i}y_{k}^\mathrm{T}]\\
+&= E\big[(Cx_{k+i}+v_{k+i})y_{k}^\mathrm{T}\big]=CE\big[x_{k+i}y_{k}^\mathrm{T}\big]+0\\
+&= CE\big[(Ax_{k+i-1}+w_{k+i-1})y_{k}^\mathrm{T}\big]=CAE\big[x_{k+i-1}y_{k}^\mathrm{T}\big]+0\\
+&= CAE\big[(Ax_{k+i-2}+w_{k+i-2})y_{k}^\mathrm{T}\big]=CA^2E\big[x_{k+i-2}y_{k}^\mathrm{T}\big]+0\\
+&=\ \ \cdots\ \ =CA^{i-1}E\big[x_{k+1}y_{k}^\mathrm{T}\big]+0\\
+&= CA^{i-1}G
+\end{aligned}
+$$
+
+<Aside type="danger">
+以下仍在施工中，实在是不懂怎么写得丝滑一些，，，这段东西太几把逆天了，课件上一点前因后果都看不出来的那种，莫名其妙。我赌它不考
+</Aside>
+
+### 核心原理
+说穿了其实就是“用样本均值代替期望”。也即，只要观测的次数 $j$ 足够大，我就可以认为
+$$
+E[X]=\dfrac1j\sum\limits_{k=0}^{j-1}x_k
+$$
+
+用这个思路，有如下观察：
+$$
+\begin{aligned}
+\Lambda_i&= E[y_{k+i}y_k^\mathrm{T}]\\
+&= \dfrac1j\sum\limits_{k=0}^{j-1}y_{k+i}y_k^\mathrm{T}\\
+&= \dfrac1j\begin{bmatrix}y_i&y_{i+1}&\cdots&y_{i+j-1}\end{bmatrix}\begin{bmatrix}y_0^\mathrm{T}\\y_{1}^\mathrm{T}\\\vdots\\y_{j-1}^\mathrm{T}\end{bmatrix}\\
+&= \dfrac1jY_{i,\,j}Y_{0,\,j}^\mathrm{T}
+\end{aligned}
+$$
+其中大写 $Y$ 的含义和 N4SID 中提到的是一样的，下角标第一个数表示打包的起点，第二个数表示打包的个数
+
+此时我定义：
+$$
+\Phi_{[A,\,B]}=\dfrac1jAB^\mathrm{T}
+$$
+
+那么
+$$
+\Lambda_i=\Phi_{[Y_{i,\,j},\,Y_{0,\,j}]}
+$$
