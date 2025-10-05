@@ -4,6 +4,35 @@ import AstroPureIntegration from 'astro-pure'
 import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import sitemap from '@astrojs/sitemap'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import matter from 'gray-matter'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const postsDir = path.join(__dirname, 'src/content/blog')
+const postFiles = fs.readdirSync(postsDir).filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
+
+const postUrls = new Map()
+
+for (const file of postFiles) {
+  const filePath = path.join(postsDir, file)
+  const content = fs.readFileSync(filePath, 'utf-8')
+  const { data } = matter(content)
+
+  if (data.publishDate) {
+    const lastmod = data.updateDate ? new Date(data.updateDate) : new Date(data.publishDate)
+    const slug = path.relative(postsDir, filePath).replace(/\\/g, '/').replace(/\.(md|mdx)$/, '')
+    postUrls.set(`/blog/${slug}`, lastmod)
+  }
+}
+
+console.log('Post URLs Map:', Array.from(postUrls.entries()))
+
+process.on('exit', () => {}) // 清空日志输出
 
 // Others
 // import { visualizer } from 'rollup-plugin-visualizer'
@@ -53,12 +82,29 @@ export default defineConfig({
     // astro-pure will automatically add sitemap, mdx & unocss
     // sitemap(),
     // mdx(),
-    AstroPureIntegration(config)
+    AstroPureIntegration(config),
     // (await import('@playform/compress')).default({
     //   SVG: false,
     //   Exclude: ['index.*.js']
     // }),
-
+    sitemap({
+      changefreq: 'weekly',
+      priority: 1.0,
+      lastmod: new Date(),
+      serialize(item) {
+        const relativeUrl = item.url.replace('https://dingnuooo.top', '').replace(/\/$/, '')
+        if (relativeUrl && postUrls.has(relativeUrl)) {
+          const lastmod = postUrls.get(relativeUrl)
+          if (lastmod) {
+            return {
+              ...item,
+              lastmod: lastmod.toISOString()
+            }
+          }
+        }
+        return item
+      }
+    }),
     // Temporary fix vercel adapter
     // static build method is not needed
   ],
