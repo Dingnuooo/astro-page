@@ -15,7 +15,7 @@ let social = footerConf.social || {}
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
-<script src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" defer></script>
+<!-- <script src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" defer></script> -->
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
   <div class='border-t pt-3'>
@@ -92,6 +92,8 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
                 class='inline-block text-muted-foreground transition-all hover:text-muted-foreground/75'
                 href={url}
                 aria-label={label}
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 <Icon name={platform as keyof typeof footerConf.social} />
               </a>

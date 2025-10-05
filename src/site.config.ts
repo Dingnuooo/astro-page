@@ -122,8 +122,8 @@ export const integ: IntegrationUserConfig = {
     applyTip: [
       { name: 'Name', val: theme.title },
       { name: 'Desc', val: theme.description || 'Null' },
-      { name: 'Link', val: 'https://astro-pure.js.org/' },
-      { name: 'Avatar', val: 'https://astro-pure.js.org/favicon/favicon.ico' }
+      { name: 'Link', val: 'https://dingnuooo.top/' },
+      { name: 'Avatar', val: 'https://dingnuooo.top/favicon/favicon.ico' }
     ]
   },
   // Enable page search function
