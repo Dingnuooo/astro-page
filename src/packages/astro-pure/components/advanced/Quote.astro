@@ -4,21 +4,46 @@ import { cn } from '../../utils'
 const { class: className } = Astro.props
 ---
 
-<quote-component class={cn('not-prose inline-block', className)} >
-  <a href='./blog/default/never-put-down-your-hammer'>
-  <div
-    class='flex flex-row items-center gap-x-3 rounded-full border px-4 py-2 shadow-sm text-sm'
-  >
-    <span class='relative flex items-center justify-center'>
-      <span
-        class='absolute size-2.2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
-      ></span>
-      <span class='size-2 rounded-full bg-green-400'></span>
-    </span>
-    <p id='quote-sentence' class='font-medium text-foreground'>
-      Never put down your hammer.
-    </p>
-  </div>
+<quote-component class={cn('not-prose inline-block', className)}>
+  <a href='./blog/default/never-put-down-your-hammer' class='group'>
+    <div
+      class='flex flex-row items-center gap-x-0.5 rounded-full border px-4 py-2 text-sm shadow-sm transition-all hover:bg-primary-foreground'
+    >
+      <div class='flex flex-row items-center gap-x-3'>
+        <span class='relative flex items-center justify-center'>
+          <span
+            class='absolute size-2.2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
+          ></span>
+          <span class='size-2 rounded-full bg-green-400'></span>
+        </span>
+        <p id='quote-sentence' class='my-0 font-medium text-foreground'>
+          Never put down your hammer.
+        </p>
+      </div>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        width='16'
+        height='16'
+        viewBox='0 0 24 24'
+        fill='none'
+        stroke-width='2.5'
+        stroke-linecap='round'
+        stroke-linejoin='round'
+        class='stroke-muted-foreground group-hover:stroke-primary'
+      >
+        <line
+          x1='5'
+          y1='12'
+          x2='19'
+          y2='12'
+          class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:scale-x-100'
+        />
+        <polyline
+          points='12 5 19 12 12 19'
+          class='translate-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1'
+        />
+      </svg>
+    </div>
   </a>
 </quote-component>
 

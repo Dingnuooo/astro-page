@@ -35,12 +35,13 @@ npm install
 这一步文件比较多 要等一会儿
 
 如果是 windows 系统，注意在根目录下的 `package.json` 文件中，要把 clean 的指令改一下，windows 没有 `rm`
-```json
+```json title="package.json"
 {
   // ...
   "scripts": {
     // ...
-    "clean": "rmdir /s /q .astro .vercel dist"
+    "clean": "rm -rf .astro .vercel dist", // [!code --]
+    "clean": "rmdir /s /q .astro .vercel dist"// [!code ++]
   },
   // ...
 }
@@ -55,27 +56,25 @@ npm run dev
 
 ### Step 5：删除 docs 目录
 这里是存放 pure 主题官方文档的地方。删掉 `src/pages/docs` 文件夹，然后在配置文件中删除 docs 相关的内容：
-```diff
-// src/site.config.ts :
-
+```ts title="src/site.config.ts"
 export const theme: ThemeUserConfig = {
    // ...
    header: {
       menu: [
          { title: 'Blog', link: '/blog' },
--        { title: 'Docs', link: '/docs' }, 
+         { title: 'Docs', link: '/docs' },  // [!code --]
          { title: 'Projects', link: '/projects' },
          // ...
       ],
    },
 }
-
-// src/content.config.ts :
-- const docs = defineCollection({
-- 	// ...
-- })
-- export const collections = { blog, docs } 
-+ export const collections = { blog }
+```
+```ts title="src/content.config.ts"
+const docs = defineCollection({ // [!code --]
+	// ... // [!code --]
+}) // [!code --]
+export const collections = { blog, docs } // [!code --]
+export const collections = { blog } // [!code ++]
 ```
 
 注：官方文档中建议删除 packages 目录。`packages/pure` 里头是 astro-pure 的依赖包，而在安装依赖项的时候已经装到 `node_modules` 里面了。但是我的习惯是留着 `packages`，并做以下处理：
@@ -150,9 +149,9 @@ const { class: className } = Astro.props
 ### Step 4：修改引用
 回到引用 Quote 的 import 语句处（即 `src/pages/index.astro`），修改引用方式。
 
-```diff 
-- import { Quote } from 'astro-pure/advanced'
-+ import { Quote } from '../packages/astro-pure/components/advanced/index.ts'
+```astro title="src/pages/index.astro" 
+import { Quote } from 'astro-pure/advanced' // [!code --]
+import { Quote } from '../packages/astro-pure/components/advanced/index.ts' // [!code ++]
 ```
 
 这与原始的引用逻辑看起来不太一样。
@@ -224,52 +223,29 @@ npm run new <title>
 
 
 ## 阶段四：Sitemap
-webmaster
+#### Bing
+进入 bing webmaster，添加网站。然后验证网站，使用第一种，下载 `BingSiteAuth.xml`，提交到网站的根目录中（在 astro 中也即放到 public 目录中），更新网站后点击验证
 
-以下是一个标准的 sitemap.xml 文件格式示例，适用于向搜索引擎（如 Google、Bing 等）提交站点地图，以帮助其更好地抓取和索引您的网站内容。
-示例代码：
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <!-- 示例：主页 -->
-    <url>
-        <loc>https://www.example.com/</loc>
-        <lastmod>2025-09-01</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
+然后是 sitemap，astro-pure 会在构建时自动生成 sitemap
 
-    <!-- 示例：关于页面 -->
-    <url>
-        <loc>https://www.example.com/about</loc>
-        <lastmod>2025-08-25</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-
-    <!-- 示例：博客文章 -->
-    <url>
-        <loc>https://www.example.com/blog/post1</loc>
-        <lastmod>2025-08-30</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-    </url>
-</urlset>
-```
-
-元素说明：
+sitemap 里头的元素说明：
 - `<urlset>`: 根元素，包含所有 URL 信息。必须包含 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 命名空间。
 - `<url>`: 每个 URL 的信息块。
 - `<loc>`: 页面 URL，必须是绝对路径（包括协议，如 https://）。
 - `<lastmod>`: 页面最后修改时间（可选），格式为 YYYY-MM-DD。
 - `<changefreq>`: 页面内容更新频率（可选），值包括：always（始终）、hourly（每小时）、daily（每天）、weekly（每周）、monthly（每月）、yearly（每年）、never（从不）。
 - `<priority>`: 页面优先级（可选），范围为 0.0 到 1.0，默认值为 0.5。
+- 注意事项：
+	1. 编码: 文件必须使用 UTF-8 编码。
+	2. 文件大小限制: 单个 sitemap.xml 文件不能超过 50MB 或包含超过 50,000 个 URL。如果超出限制，可以使用 sitemap index 文件。
 
-注意事项：
-1. 编码: 文件必须使用 UTF-8 编码。
-2. 文件大小限制: 单个 sitemap.xml 文件不能超过 50MB 或包含超过 50,000 个 URL。如果超出限制，可以使用 sitemap index 文件。
-3. 提交方式: 将 sitemap.xml 文件上传到网站根目录（如 https://www.example.com/sitemap.xml）。在搜索引擎的站长工具（如 Google Search Console）中提交。
+在 webmaster 中上传 sitemap，这里可以用 `https://www.example.com/sitemap-0.xml` 或者 `https://www.example.com/sitemap-index.xml`
 
+最后要让 bing 自动更新 url，使用 [indexnow](https://www.bing.com/indexnow/getstarted)，划到下面，下载 key（通常是一个 txt 文件，文件名及其内容是一串字符），放到 public 目录下，更新网站，然后在浏览器访问（把 `<yourkey>` 换成那一串字符）
+```
+https://www.bing.com/indexnow?url=https://www.example.com&key=<yourkey>
+```
+刷新几次确认连上了就可以关了。回到 webmaster，看看 indexnow 那一栏里头有没有刚刚提交过的 url 列表。
 ## bug
 ### 名言条动画
 名言左侧的绿色原点，有一个动画（tailwind 实现的，`animate-ping`），没有动起来。一般不会有问题，可能是 tailwindcss 的问题，于是在 `app.css` 中重写了这个动画
@@ -294,33 +270,24 @@ webmaster
 ```
 
 ### rehype-tabs 报错的解决
-```diff
+```ts title="src\packages\astro-pure\plugins\rehype-tabs.ts"
 // ...
-- interface Panel {
-+ export interface Panel {
+interface Panel { // [!code --]
+export interface Panel { // [!code ++]
   panelId: string
   tabId: string
   label: string
 }
 // ...
-
-- export const processPanels = (html: string) => {
--   const file = tabsProcessor.processSync({ value: html })
--   return {
--     /** Data for each tab panel. */
--     panels: file.data.panels,
--     /** Processed HTML for the tab panels. */
--     html: file.toString()
--   }
-- }
-
-+ export const processPanels = (html: string): { panels: Panel[]; html: string } => {
-+   const file = tabsProcessor.processSync({ value: html })
-+   return {
-+     panels: file.data.panels as Panel[],
-+     html: file.toString()
-+   }
-+ }
+export const processPanels = (html: string) => { // [!code --]
+export const processPanels = (html: string): { panels: Panel[]; html: string } => { // [!code ++]
+  const file = tabsProcessor.processSync({ value: html })
+  return {
+    panels: file.data.panels, // [!code --]
+    panels: file.data.panels as Panel[], // [!code ++]
+    html: file.toString()
+  }
+}
 ```
 
 ### 数学公式
@@ -329,22 +296,22 @@ latex 正常写。行间公式必须单独成行，并且双美元也要单独�
 ### 暗色模式颜色
 标题：从二级标题开始写。
 
-行内代码和引用文字的颜色：
-```diff json
-// uno.config.ts
+行内代码和引用文字的颜色：做如下修改
+```json title="./uno.config.ts"
 const typographyConfig = {
 	cssExtend: {
-+   	 '.dark blockquote': {
-+   	   color: 'hsl(var(--muted-foreground))'
-+   	 },
-+   	 '.dark :not(pre) > code': {
-+   	   color: 'hsl(var(--foreground))'
-+   	 },
+    //...
+   	'.dark blockquote': { // [!code ++]
+   	  color: 'hsl(var(--muted-foreground))' // [!code ++]
+   	}, // [!code ++]
+   	'.dark :not(pre) > code': { // [!code ++]
+   	  color: 'hsl(var(--foreground))' // [!code ++]
+   	}, // [!code ++]
 		// Blockquote
-    	blockquote: {
-    		//...
-    	},
-    	//,,,
+    blockquote: {
+    	//...
+    },
+    //...
 	//...
 	}
 }
