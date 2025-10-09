@@ -31,6 +31,14 @@ const typographyConfig = {
     'h1:target>a,h2:target>a,h3:target>a,h4:target>a,h5:target>a,h6:target>a': {
       opacity: 1
     },
+    
+    '.dark blockquote': {
+      color: 'hsl(var(--muted-foreground))'
+    },
+    '.dark :not(pre) > code': {
+      color: 'hsl(var(--foreground))'
+    },
+    
     // Blockquote
     blockquote: {
       position: 'relative',
