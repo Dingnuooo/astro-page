@@ -6,7 +6,6 @@ tags:
 publishDate: 2024-05-30
 updatedDate: 2024-05-30
 heroImage: { src: './baduanjin.png', color: '#34DD9A' }
-language: '中文'
 ---
 
 ## 要点与起式
