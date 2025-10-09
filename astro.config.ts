@@ -60,9 +60,8 @@ export default defineConfig({
     //   Exclude: ['index.*.js']
     // }),
     sitemap({
-      changefreq: 'weekly',
       priority: 1.0,
-      lastmod: new Date('2025-09-15'),
+      lastmod: new Date('2025-10-09'),
     }),
     // Temporary fix vercel adapter
     // static build method is not needed
