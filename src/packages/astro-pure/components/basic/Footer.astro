@@ -15,7 +15,7 @@ let social = footerConf.social || {}
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
-<!-- <script src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" defer></script> -->
+<script async src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" data-offset="350"></script>
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
   <div class='border-t pt-3'>
@@ -58,6 +58,13 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             </span>
           )
         }
+        {/* View count */}
+        {
+          <div class="text-muted-foreground text-sm">
+            Total visits
+            <span id="busuanzi_site_pv">加载中...</span>
+          </div>
+        }
         {/* ICP */}
         {
           footerLink1.length > 0 && (
@@ -73,13 +80,7 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             </div>
           )
         }
-        <!-- {/* View count */}
-        {
-          <div class="text-muted-foreground text-sm">
-            Total visits
-            <span id="busuanzi_site_pv">加载中...</span>
-          </div>
-        } -->
+        
         
       </div>
 
