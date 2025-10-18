@@ -19,8 +19,8 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 
 <script is:inline>
   document.addEventListener("DOMContentLoaded", function () {
-    const uvE = document.getElementById('busuanzi_value_site_uv');
-    const pvE = document.getElementById('busuanzi_value_site_pv');
+    const uvE = document.getElementById('busuanzi_site_uv');
+    const pvE = document.getElementById('busuanzi_site_pv');
     const uvObs = new MutationObserver((mutationsList) => {
         for (let mutation of mutationsList) {
             if (mutation.type === 'childList') {
@@ -46,6 +46,7 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
     pvObs.observe(pvE, config);
   });
 </script>
+
 <footer class='mx-auto mb-5 mt-16 w-full'>
   <div class='border-t pt-3'>
     <div class='flex items-center gap-y-3 max-sm:flex-col sm:justify-between sm:gap-y-0'>
