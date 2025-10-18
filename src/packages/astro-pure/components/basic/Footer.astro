@@ -15,7 +15,82 @@ let social = footerConf.social || {}
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
-<script async src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" data-offset="350"></script>
+<script is:inline>
+  var bszCaller = {
+    fetch: function (u, c) {
+      var n = 'bszCallback_' + Math.floor(1099511627776 * Math.random())
+      window[n] = function (d) {
+        try {
+          c(d)
+        } catch (e) {
+          console.error('处理统计数据时出错:', e)
+        } finally {
+          var s = document.getElementById(n)
+          s && s.parentNode.removeChild(s)
+          delete window[n]
+        }
+      }
+      var f = u.replace('=bszCallback', '=' + n),
+        s = document.createElement('script')
+      s.id = n
+      s.src = f
+      s.type = 'text/javascript'
+      s.defer = true
+      document.getElementsByTagName('head')[0].appendChild(s)
+    }
+  }
+  var bszTag = {
+    bszs: ['site_pv', 'page_pv', 'site_uv', 'today_pv', 'today_uv'],
+    texts: function (d) {
+      d.message ? this.a(d.message) : this.b(d)
+    },
+    a: function (m) {
+      this.bszs.forEach(function (t) {
+        var e = document.getElementById('busuanzi_' + t)
+        e && (e.innerHTML = m)
+      })
+    },
+b: function (d) {
+      this.bszs.forEach(function (t) {
+        var e = document.getElementById('busuanzi_' + t)
+        e && (e.innerHTML = d[t])
+      })
+    }
+  }
+  bszCaller.fetch('https://cdn.busuanzi.cc/busuanzi/?jsonpCallback=bszCallback', function (d) {
+    bszTag.texts(d)
+  })
+</script>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const uvE = document.getElementById('busuanzi_site_uv');
+    const pvE = document.getElementById('busuanzi_site_pv');
+    const uvObs = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                uvObs.disconnect();
+                mutation.target.innerHTML = parseInt(mutation.target.innerHTML) + 350;
+                break;
+            }
+        }
+    });
+    const pvObs = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                pvObs.disconnect();
+                mutation.target.innerHTML = parseInt(mutation.target.innerHTML) + 650;
+                break;
+            }
+        }
+    });
+    const config = {
+        childList: true
+    };
+    uvObs.observe(uvE, config);
+    pvObs.observe(pvE, config);
+});
+</script>
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
   <div class='border-t pt-3'>
