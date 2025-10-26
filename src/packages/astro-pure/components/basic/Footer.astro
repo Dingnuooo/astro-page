@@ -15,7 +15,7 @@ let social = footerConf.social || {}
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
-<script is:inline>
+<!-- <script is:inline>
   // 定义一个 bszTag 对象，重写其 texts 方法以添加初始值
   var bszTag = {
     texts: function (d) {
@@ -46,7 +46,7 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
     bszs: ['site_pv', 'page_pv', 'site_uv', 'today_pv', 'today_uv']
   };
 </script>
-<script src="//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+<script src="//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script> -->
 
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
@@ -90,13 +90,13 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             </span>
           )
         }
-        {/* View count */}
+        <!-- {/* View count */}
         {
           <div class="text-muted-foreground text-sm">
             Total visits
             <span id="busuanzi_site_pv">加载中...</span>
           </div>
-        }
+        } -->
         {/* ICP */}
         {
           footerLink1.length > 0 && (

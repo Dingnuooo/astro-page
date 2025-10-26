@@ -1,0 +1,193 @@
+---
+title: 强化学习 - Markov 决策过程
+description: '习题作业'
+tags:
+ - homework
+ - reinforcement-learning
+publishDate: 2025-10-11
+updateDate: 2025-10-11
+heroImage: { src: './RL/hw1-cover.png', color: '#578a84' }
+---
+import { Aside } from 'astro-pure/user'
+import { Image } from 'astro:assets';
+import gridworldGame from './RL/hw1-gridworld-game.png';
+import gridworldT1 from './RL/hw1-gridworld-t1.png';
+import gridworldT2 from './RL/hw1-gridworld-t2.png';
+
+## 1 马尔可夫决策过程
+
+<Aside type="note" title="习题1">
+你来到一家高端电竞馆！你手上有 20 元，会一直玩下去，直到输光所有钱，或者本金翻倍（即持有金额至少达到 40 元）。你可以从两台老虎机中选择一台进行游戏:
+
+1. **老虎机 A**: 每次下注 10 元，有 0.05 的概率获得 20 元（即净赚 10 元），否则获得 0 元（即输掉 10 元）。
+2. **老虎机 B**: 每次下注 20 元，有 0.01 的概率获得 30 元（即净赚 10 元），否则获得 0 元（即输掉 20 元）。
+
+在结束之前，你每轮都要选择玩老虎机 A 还是老虎机 B。请在下方给出一个能够刻画上述情景的 MDP，描述其状态空间、动作空间、奖励函数与转移概率。假设折扣因子 $\gamma = 1$。你可以用方程、表格或图示来表达解答。
+</Aside>
+**解答:**
+
+(1) 状态空间即手中金钱数量 $S = \{0,\,10,\,20,\,30,\,40\}$；
+
+(2) 动作空间 $A=\left\{停止,\,玩A,\,玩B\right\}$；
+
+(3) 转移概率 $P$：如下表所示。其中 $S=0$、$S=40$ 是终止状态，当且仅当进入终止状态时停止游玩；$S=20$ 是初始状态；$S=10$ 时，由于玩 B 需要本金 20 元，因此该状态只能选择玩 A。
+
+| 当前状态 $s$ | 动作 $a$ | 可能的结果 | 下一状态 $s'$ | 转移概率 $P^a_{ss'}$ |
+| :------- | :----- | :---- | :-------- | :--------------- |
+| 0        | 停止     | /     | /         | 1.00             |
+| 10       | 玩 A    | 赢10元  | 20        | 0.05             |
+|          |        | 输10元  | 0         | 0.95             |
+| 20       | 玩 A    | 赢10元  | 30        | 0.05             |
+|          |        | 输10元  | 10        | 0.95             |
+|          | 玩 B    | 赢10元  | 30        | 0.01             |
+|          |        | 输20元  | 0         | 0.99             |
+| 30       | 玩 A    | 赢10元  | 40        | 0.05             |
+|          |        | 输10元  | 20        | 0.95             |
+|          | 玩 B    | 赢10元  | 40        | 0.01             |
+|          |        | 输20元  | 10        | 0.99             |
+| 40       | 停止     | /     | /         | 1.00             |
+
+(4) 奖励函数：定义 0 状态的奖励为 $0$，40 状态的奖励为 $40$，其他状态的奖励为该次游玩后手中金钱的变化量。这导致模型会以尽可能少输钱的方式达到 $40$ 元
+
+## 2 Gridworld 小游戏
+
+
+考虑如下的网格环境:
+
+- 从任意非阴影的格子出发，你可以向上、向下、向左或向右移动。动作是是确定性的，意味着动作执行后一定会从一个状态到达另一个状态（例如从状态 13 向上走，可以连接到状态 9）。
+- 较粗的边表示墙壁，尝试向墙壁方向移动将会导致智能体原地不动（例如从状态 13 向右走，无法到达状态 14，仍会停留在原状态 13）。
+- 在绿色目标格子（编号 3）采取任何动作将获得奖励 $r_g$（因此 $r(3, a) = r_g$ 对所有动作 $a$ 成立），并结束回合。在红色死亡格（编号 14）采取任何动作将获得奖励 $r_r$ （因此 $r(14, a) = r_r$ 对所有动作 $a$ 成立），并结束回合。
+- 在其他所有格子中，采取任何动作都与奖励 $r_s \in \{-1, 0, +1\}$ 相关（即使该动作导致智能体保持在原地）。
+
+除了特殊规定外，以下假设折扣因子 $\gamma = 1$，$r_g = +3$，且 $r_r = -3$。
+
+<Image src={gridworldGame} width={300} alt="hw1-gridworld-game" />
+
+***
+### 2(a) 最短路径策略
+<Aside type="note" title="习题2(a)">
+定义 $r_s$ 的值，使得最优策略会返回绿色目标格子（编号3）的最短路径。使用这个 $r_s$，找到每个格子的最优价值。
+</Aside>
+**解答:**
+
+定义 $r_s=-1$，即每走一格都给出一个负奖励，即对于最终奖励，将要扣除路程的长度。这样到达绿色目标的路径越短，路程上的损失越少，因此在最大化过程中，最优策略将会返回最短路径。
+
+根据最短路观察，可定义策略 $\pi$：除了绿色和红色，在满足“使得到绿色目标格子距离减少”的所有允许动作中均匀随机选择；绿色和红色状态在所有允许动作中随机均匀选择。也即，记向上、下、左、右动作为 $\mathrm{u}$、$\mathrm{d}$、$\mathrm{l}$、$\mathrm{r}$，那么
+
+$$
+\begin{aligned}
+\pi(\mathrm{u}|s)&=
+\begin{cases}
+1&\mathrm{for}\ s=5,\,7,\,9,\,11,\,13,\,15\\
+0.5&\mathrm{for}\ s=6,\,10,\,14\\
+0&\mathrm{for}\ s=1,\,2,\,3,\,4,\,8,\,12,\,16
+\end{cases}
+\\\\
+\pi(\mathrm{d}|s)&=
+\begin{cases}
+1&\mathrm{for}\ s=4,\,8,\,12\\
+0.5&\mathrm{for}\ s=3\\
+0&\mathrm{for}\ s=1,\,2,\,5,\,6,\,7,\,9,\,10,\,11,\,13,\,14,\,15,\,16
+\end{cases}
+\\\\
+\pi(\mathrm{l}|s)&=
+\begin{cases}
+1&\mathrm{for}\ s=16\\
+0.5&\mathrm{for}\ s=3\\
+0&\mathrm{for}\ s=1,\,2,\,4,\,5,\,6,\,7,\,8,\,9,\,10,\,11,\,12,\,13,\,14,\,15
+\end{cases}
+\\\\
+\pi(\mathrm{r}|s)&=
+\begin{cases}
+1&\mathrm{for}\ s=1,\,2\\
+0.5&\mathrm{for}\ s=6,\,10,\,14\\
+0&\mathrm{for}\ s=3,\,4,\,5,\,6,\,7,\,8,\,9,\,11,\,12,\,13,\,15,\,16
+\end{cases}
+\end{aligned}
+$$
+
+
+由状态价值函数的 Bellman equation，代入 $r_s=-1$、$\gamma=1$ 得，对一切 $s\ne 3 \mathrm{\ and\ }14$
+$$
+\begin{aligned}
+V^\pi(s)&=\mathbb{E}[R_{t+1}+\gamma V^\pi(S_{t+1})\mid S_t=s]\\
+&=-1+\mathbb{E}[V^\pi(S_{t+1})\mid S_t=s]\\
+&=-1+\sum\limits_a \pi(a|s)V^\pi(s')
+\end{aligned}
+$$
+注意到，对任意非红色格子，按照该策略进行一步移动，均导致离绿色目标格子的距离减小一格，因此对于 $\pi=0.5$ 的情形，两个概率将合并；又进入绿色状态时 $V^\pi(3)=r_g=+3$，到达绿色状态的路径上每走一格奖励减 1，故记路程最短长度为 $d(s)$，递推可得
+$$
+V^\pi(s)=3-d(s),\quad \forall\,s\ne 3 \mathrm{\ and\ }14
+$$
+
+因此每个格子的最优价值，如图所示（左上角蓝色数字为最优价值）
+
+<Image src={gridworldT1} width={300} alt="hw1-gridworld-game1" />
+***
+### 2(b) 奖励变化的影响
+<Aside type="note" title="习题2(b)">
+让我们将 (a) 中导出的价值函数称为 $V_\mathrm{old}^{\pi_g}$，策略称为 $\pi_g$ 。假设我们现在在一个新的网格世界中，特殊状态的奖励 ( $r_r$、$r_g$ ) 都乘以 2，每步的奖励 $r_s$ 都加 2，考虑仍然遵循原始网格世界的 $\pi_g$，在这个第二个网格世界中新的值 $V_\mathrm{new}^{\pi_g}$ 将是什么?
+</Aside>
+**解答:** 
+
+由题意，$r_s=1$，递推后的状态价值函数为
+$$
+V^{\pi_g}_\mathrm{new}(s)=6+d(s),\quad \forall\,s\ne 3 \mathrm{\ and\ }14
+$$
+因此该网格世界中，每个格子的最优价值如图所示
+
+<Image src={gridworldT2} width={300} alt="hw1-gridworld-game" />
+***
+### 2(c) 奖励变化的一般表达式
+<Aside type="note" title="习题2(c)">
+考虑一个一般的 MDP，其中包含奖励和转移。考虑折扣因子 $\gamma$，并假设该马尔可夫链是无限的（即没有终止）。在这个 MDP 中，策略 $\pi$ 引发了一个价值函数 $V^\pi$（我们将其称为 $V_\mathrm{old}^\pi$）。现在假设我们有一个新的 MDP，唯一的不同是所有的奖励都乘上了一个常数 $c$ 。
+
+1. 给出一个表达式，用于表示策略 $\pi$ 在这个第二个 MDP 中引发的新价值函数 $V_\mathrm{new}^\pi$ 与 $V_\mathrm{old}^\pi$、$c$ 和 $\gamma$ 之间的关系
+2. 是否存在特定的 $c$ 使得最优策略发生变化?如果存在，请给出 $c$ 使得策略变化的取值范围，并说明变化理由，反之则给出不存在的理由。
+</Aside>
+**解答:**
+
+对任意状态 $s$：
+
+$$
+\begin{aligned}
+V^{\pi}_\mathrm{new}(s)&=\mathbb{E}_\pi[R_{\mathrm{new},\,t+1}+\gamma V^{\pi}_\mathrm{new}(S_{t+1})\mid S_t=s]\\
+&=c\cdot r_s+\gamma\,\mathbb{E}_\pi[V^{\pi}_\mathrm{new}(S_{t+1})\mid S_t=s]
+\end{aligned}
+$$
+$$
+\begin{aligned}
+V^{\pi}_\mathrm{old}(s)&=\mathbb{E}_\pi[R_{\mathrm{old},\,t+1}+\gamma V^{\pi}_\mathrm{old}(S_{t+1})\mid S_t=s]\\
+&=r_s+\gamma\,\mathbb{E}_\pi[V^\pi_\mathrm{old}(S_{t+1})\mid S_t=s]\\
+c\cdot V^{\pi}_\mathrm{old}(s)&=c\cdot r_s+\gamma\,\mathbb{E}_\pi[c\cdot V^\pi_\mathrm{old}(S_{t+1})\mid S_t=s]\\
+\end{aligned}
+$$
+于是 $V^{\pi}_\mathrm{new}(s)=c\cdot V^{\pi}_\mathrm{old}(s)$，由 Bellman equation 以及 2(a) 中关于概率合并的证明可得
+$$
+\begin{aligned}
+Q_\pi(s,a)&=R_s^a+\gamma\sum\limits_{s'}P_{ss'}^aV(s')\\
+&=r_s+\gamma V(s')
+\end{aligned}
+$$
+于是
+$$
+\begin{aligned}
+Q^\pi_\mathrm{old}(s,a)&=r_s+\gamma\,V^\pi_\mathrm{old}(s')\\
+Q^\pi_\mathrm{new}(s,a)&=c\cdot r_s+\gamma\,cV^\pi_\mathrm{old}(s')\\
+&=c\cdot Q^\pi_\mathrm{old}(s,a)
+\end{aligned}
+$$
+对 $Q$ 做最大化以得到最优策略。因此：
+1. 当 $c\geq0$ 时，最大化结果不变，策略不变
+2. 当 $c<0$ 时，由于该网格世界不具有对称性，最优策略发生改变。
+***
+### 2(d) 正奖励的影响
+
+<Aside type="note" title="习题2(d)">
+让我们回到 (a) 中的网格世界，使用默认值 $r_g$、$r_r$、$\gamma$ 和你指定的 $r_s$ 值。假设我们现在通过对所有奖励 ( $r_s$，$r_g$ 和 $r_r$ ) 增加一个常数 $c$ 来导出第二个网格世界，使得 $r_s = +2$。最优策略将如何变化（只需给出一两句话的描述）？非阴影格子的价值将变为多少？
+</Aside>
+**解答:**
+
+$c=2-(-1)=3$，于是 $r_g=+6$，$r_r=0$，$\gamma=1$ 。这导致所有格子均有非负奖励，因此价值函数始终递增且发散到 $+\infty$ 。故最优策略即“在循环路径中无限运动”，只要不进入红绿两个终止态，奖励的累积将会趋于正无穷。
+
+此时非阴影格子的价值变为 $+\infty$
