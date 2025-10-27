@@ -53,7 +53,9 @@ import q1_1 from './RL/hw2-q1-1.png'
 <Aside type="note" title="习题1(b)">
 现在考虑一种“聚合”状态表示：将状态 $S_1$ 与 $S_2$ 合并成一个宏状态 $S_{12}$，而 $S_3$ 保持不变。你会发现可以直接用“在中关村”和“不在中关村”来代表这个 MDP 链，新的 MDP 只有两个状态：$S_{12}$ 和 $S_3$。
 
-{/* <Image src="./RL/hw2-q1-2.png" width={300} alt="hw2-q1-2" /> */}
+import img2 from './RL/hw2-q1-2.png'
+
+<Image src={img2} width={300} alt="hw2-q1-2" />
 
 在此聚合状态下（仍取 $\gamma = 0.9$），我们仍然在三状态环境中运行 Q-learning，但是使用双状态的 Q 表，可以得到的 $Q^*$ 值为
 
@@ -83,7 +85,9 @@ $$
 
 在本次编程作业中，将实现强化学习中的两种算法——策略迭代（Policy Iteration）和 Q-Learning，并在 Gymnasium（前身为 OpenAI Gym）环境中的 Frozenlake 游戏环境中进行应用。通过这次作业，希望你可以理解这几种算法的工作原理及其在不同环境和奖励条件下的表现。非常鼓励探索和调整不同环境参数，分析算法在各种条件下的适应性和性能。
 
-{/* <Image src="./RL/hw2-frozenlake.png" width={400} alt="hw2-frozenlake" /> */}
+import img3 from './RL/hw2-frozenlake.png'
+
+<Image src={img3} width={400} alt="hw2-frozenlake" />
 
 ### 2.1 ~ 2.3
 <Aside type="note" title="习题 2(i) (ii) (iii)">
@@ -129,7 +133,7 @@ python run.py --multirun algorithm=policy_iteration,QLearning env.is_slippery=Fa
 ***
 ### 2.4
 <Aside type="note" title="习题 2(iv)">
-上述三小问的地图长度为4，修改地图长度为 {6, 8}，再次运行策略迭代和 Q-Learning 算法，比较两者的表现，并分析原因。
+上述三小问的地图长度为4，修改地图长度为 \{6, 8\}，再次运行策略迭代和 Q-Learning 算法，比较两者的表现，并分析原因。
 </Aside>
 **解答:**
 
@@ -170,7 +174,7 @@ source env-name/bin/activate # linux
 
 以下是依赖包与主要代码（其他的是老师给的框架
 
-```txt title="requirements.txt"
+```title="requirements.txt"
 gymnasium[toy_text]
 hydra-core
 tqdm
