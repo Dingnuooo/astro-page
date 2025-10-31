@@ -31,9 +31,14 @@ import { Aside } from 'astro-pure/user'
 <Aside type="note" title="Hammersley - Cifford 定理">
 曰：  
 联合分布 $P(X_G)=P(X_1,\cdots,X_d)$ 的概率图 $G$ 是一个 Markov 随机场，当且仅当 $P$ 正比于势函数积：
-$$P(X_G=x_G)=\dfrac 1Z\prod_{C}\varphi_C(X_C=x_C)$$
+$$
+P(X_G=x_G)=\dfrac 1Z\prod_{C}\varphi_C(X_C=x_C)
+$$
+
 其中 $C$ 为 $G$ 的所有最大团（因为可能不止一个最大团），$\varphi$ 为定义在最大团上的非负函数（称为势函数），$Z$ 为归一化系数
-$$Z=\sum\limits_{x_G}\prod_{C}\varphi_C(X_C=x_C)$$
+$$
+Z=\sum\limits_{x_G}\prod_{C}\varphi_C(X_C=x_C)
+$$
 </Aside>
 
 这个分布也叫做 Gibbs 分布。
@@ -129,7 +134,7 @@ L(w)&=\log\left[\prod\limits_i p_i^{y_i}(1-p_i)^{1-y_i}\right]\\
 &=\sum\limits_i\big(y_i\log \dfrac{p_i}{1-p_i}+\log(1-p_i)\big)\\
 \end{aligned}
 $$
-这样变形的目的，是为了凑出对数几率函数 $\mathrm{logit}(p)=\log \dfrac{p}{1-p}$，因为它是 sigmoid 的反函数，而这里 $p=\sigma(w^\mathrm{T}x)$，故 $\log \dfrac{p}{1-p}$ 就等于 $w^\mathrm{T}x$*（因此 logistic 回归也称为对数几率回归）*。于是代入后继续化简得
+这样变形的目的，是为了凑出对数几率函数 $\mathrm{logit}(p)=\log \dfrac{p}{1-p}$，因为它是 sigmoid 的反函数，而这里 $p=\sigma(w^\mathrm{T}x)$，故 $\log \dfrac{p}{1-p}$ 就等于 $w^\mathrm{T}x$<span class="text-foreground/40">（因此 logistic 回归也称为对数几率回归）</span>。于是代入后继续化简得
 $$
 \begin{aligned}
 L(w)&=\sum\limits_i\left[y_i(w^\mathrm{T}x_i)+\log\dfrac{\exp(-w^\mathrm{T}x_i)}{1+\exp(-w^\mathrm{T}x_i)}\right]\\
@@ -214,6 +219,6 @@ $$
 $$
 P(Y=k|X) = \frac{\varphi(k,X)}{\sum_{j=1}^K \varphi(j,X)} = \frac{\exp(w_k^\mathrm{T}X+b_k)}{\sum_{j=1}^K \exp(w_j^\mathrm{T}X+b_j)}
 $$
-这正是 softmax 回归的公式
+这就是 softmax 回归的公式
 
 因此，从概率图模型的角度来看，logistic/softmax 回归相当于一个 势函数为**特征的线性组合的指数形式**的 Markov 随机场。这种直接对条件概率 $P(Y|X)$ 进行建模的模型，也称作判别式模型。
