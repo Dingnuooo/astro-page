@@ -4,7 +4,7 @@ description: 《数据结构与算法设计》期末速通笔记。
 tags:
  - note
  - data-structure
-publishDate: 2025-09-14
+publishDate: 2025-01-04
 updateDate: 2025-09-14
 heroImage: { src: './illus/search/nqueen.jpg', color: '#e0aea6' }
 ---
@@ -167,7 +167,7 @@ void backtrack(int t)
 
 ### 3.3 提前更新最优解 
 （没听懂）
-```pseudo
+```plaintext
 //优化：约束条件+限界条件+提前更新
 backtrack(t)
 {
@@ -199,7 +199,7 @@ backtrack(t)
 类似装载问题这种，在给定约束条件内、选择集合内某些物品使得某个量最优的问题，都可以用**子集树回溯**来解。
 
 把上面的代码抽象成流程思路
-```pseudo
+```plaintext
 backtrack(t)
 {
 	if(t>n)//触底
