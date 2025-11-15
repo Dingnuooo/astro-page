@@ -320,7 +320,7 @@ $$
 $$
 \mathcal{O}=\left[ U_1 \quad U_2 \right] \begin{bmatrix} \Sigma_r & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} V_1^\mathrm{T} \\ V_2^\mathrm{T}\end{bmatrix}=U_1\Sigma_rV_1^\mathrm{T}\;(\,=\Gamma_iX_f)
 $$
-为了得到 $\Gamma_iX_f$，从 $\Sigma_r$ 中间劈成两个矩阵相乘，劈开处乘上相似变换阵（非奇异即可）：
+为了得到 $\Gamma_iX_f$，从 $\Sigma_r$ 中间劈成两个矩阵相乘（原因后面会解释），劈开处乘上相似变换阵：
 - $\Gamma_i = U_1 \Sigma_r^{1/2}\color{red}T$
 - $X_f = {\color{red}T^{-1} }\Sigma_r^{1/2} V_1^\mathrm{T}{}$
 ***
@@ -362,7 +362,7 @@ $$
 \end{aligned}
 $$
 ***
-==现在剩下一个没弄明白的点：为什么要在 $\Sigma_r$ 中间劈开？？==
+（至于为什么要从 $\Sigma_r$ 中间劈开：既然我们只需要求出相似意义下的解，那么理论上怎么劈开都行，但从 $\Sigma_r$ 中间劈开可以保证奇异值平均地分配给两个正交矩阵，数值尺度上比较均衡）
 ### MOESP
 **M**ultivariable **O**utput **E**rror **S**tate s**P**ace 多变量输出误差状态空间
 
@@ -392,7 +392,7 @@ $$
 $$
 L_{22}=\left[ U_1 \quad U_2 \right] \begin{bmatrix} \Sigma_r & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} V_1^\mathrm{T} \\ V_2^\mathrm{T}\end{bmatrix}=U_1\Sigma_rV_1^{\mathrm T}\ (\,=\Gamma_iX_pQ_2)
 $$
-然后从 $\Sigma_r$ 中间劈开得（==同样的，没懂，为啥这样劈开？？==）
+然后从 $\Sigma_r$ 中间劈开得
 - $\Gamma_i= U_1\Sigma_r^{1/2}{}$
 - $X_pQ_2= \Sigma_r^{1/2}V_1^\mathrm{T}{}$
 ***
