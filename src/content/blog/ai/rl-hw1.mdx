@@ -9,10 +9,6 @@ updateDate: 2025-10-11
 heroImage: { src: './illustrations/RL/hw1-cover.png', color: '#578a84' }
 ---
 import { Aside } from 'astro-pure/user'
-import { Image } from 'astro:assets';
-import gridworldGame from './illustrations/RL/hw1-gridworld-game.png';
-import gridworldT1 from './illustrations/RL/hw1-gridworld-t1.png';
-import gridworldT2 from './illustrations/RL/hw1-gridworld-t2.png';
 
 ## 1 马尔可夫决策过程
 
@@ -61,7 +57,7 @@ import gridworldT2 from './illustrations/RL/hw1-gridworld-t2.png';
 
 除了特殊规定外，以下假设折扣因子 $\gamma = 1$，$r_g = +3$，且 $r_r = -3$。
 
-<Image src={gridworldGame} width={300} alt="hw1-gridworld-game" />
+![地图|300](./illustrations/RL/hw1-gridworld-game.png)
 
 ***
 ### 2(a) 最短路径策略
@@ -122,7 +118,7 @@ $$
 
 因此每个格子的最优价值，如图所示（左上角蓝色数字为最优价值）
 
-<Image src={gridworldT1} width={300} alt="hw1-gridworld-game1" />
+![每个格子的最优价值|300](./illustrations/RL/hw1-gridworld-t1.png)
 ***
 ### 2(b) 奖励变化的影响
 <Aside type="note" title="习题2(b)">
@@ -136,7 +132,7 @@ V^{\pi_g}_\mathrm{new}(s)=6+d(s),\quad \forall\,s\ne 3 \mathrm{\ and\ }14
 $$
 因此该网格世界中，每个格子的最优价值如图所示
 
-<Image src={gridworldT2} width={300} alt="hw1-gridworld-game" />
+![奖励变化后的最优价值|300](./illustrations/RL/hw1-gridworld-t2.png)
 ***
 ### 2(c) 奖励变化的一般表达式
 <Aside type="note" title="习题2(c)">

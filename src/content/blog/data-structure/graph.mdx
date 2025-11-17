@@ -48,18 +48,18 @@ heroImage: { src: './illus/graph/graph.png', color: '#ec9873' }
 把邻接点串在一起放在数组里。适合稀疏图。
 
 无向图。求 firstneighbor $O(1)$，nextneighbor $O(e)$，打印图 $O(n+e)$
-![无向图的邻接表](./illus/graph/1.png)
+![无向图的邻接表|500](./illus/graph/1.png)
 
 有向图，分为出边表和入边表
-![有向图的出边表](./illus/graph/2.png)
-![有向图的入边表](./illus/graph/3.png)
+![有向图的出边表|500](./illus/graph/2.png)
+![有向图的入边表|500](./illus/graph/3.png)
 
 ### 邻接多重表
 有向图的邻接多重表（十字链表），不仅有点结构（vbox，粉色）还有边结构（ebox，紫色）
-![十字链表](./illus/graph/4.png)
+![十字链表|500](./illus/graph/4.png)
 
 无向图的邻接多重表。path1 即与 vertex1 关联的下一条边，path2 即与 vertex2 关联的下一条边。顶点的度，就是沿着 path1 有多少个边结点。整个图一共 e 个边结点。
-![无向图邻接多重表](./illus/graph/5.png)
+![无向图邻接多重表|500](./illus/graph/5.png)
 
 ## 图的遍历
 ### 深度优先搜索
@@ -269,7 +269,7 @@ void dijkstra(Graph &G,int v,int dist[],int path[])//v起点
 - $D_{-1}$ 是起始状态
 - $D_0$ 表示选取点 0 作为中间点后的最短路径长度矩阵，$D_1$ 表示选取点 1 作为中间点后的最短路径长度矩阵，依次类推。
 
-![Floyd图示](./illus/graph/6.jpg)
+![Floyd图示|600](./illus/graph/6.jpg)
 
 最后得到 $D_3$ 和 $P_3$，已经蕴含了网络中任意两个节点最短路径的所有信息
 
