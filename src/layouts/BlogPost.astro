@@ -11,6 +11,7 @@ import { TOC } from '../packages/astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
 import { Comment, PageInfo } from '@/components/waline'
 import { integ } from '@/site-config'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -59,6 +60,10 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
   </Hero>
 
   <slot />
+
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='15rem' />
+  </div>
 
   <Fragment slot='bottom'>
     {/* Copyright */}
