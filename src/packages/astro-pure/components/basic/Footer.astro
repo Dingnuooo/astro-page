@@ -15,7 +15,39 @@ let social = footerConf.social || {}
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
-<script async src="//api.busuanzi.cc/static/3.6.9/busuanzi.min.js" data-offset="350"></script>
+<script is:inline>
+  // 定义一个 bszTag 对象，重写其 texts 方法以添加初始值
+  var bszTag = {
+    texts: function (d) {
+      // 首先，执行不蒜子原始的更新逻辑
+      // 这会找到所有 id="busuanzi_site_pv" 等元素并填入真实数据
+      if (d.message) {
+        this.bszs.forEach(function (t) {
+          var e = document.getElementById('busuanzi_' + t);
+          e && (e.innerHTML = d.message);
+        });
+      } else {
+        this.bszs.forEach(function (t) {
+          var e = document.getElementById('busuanzi_' + t);
+          if (e) {
+            var realVal = parseInt(d[t], 10) || 0;
+            var initialVal = 0;
+            if (t === 'site_pv') {
+              initialVal = 700; // PV 初始值
+            } else if (t === 'site_uv') {
+              initialVal = 350; // UV 初始值
+            }
+            e.innerHTML = realVal + initialVal;
+          }
+        });
+      }
+    },
+    // bszs 数组必须存在，以便不蒜子脚本可以遍历
+    bszs: ['site_pv', 'page_pv', 'site_uv', 'today_pv', 'today_uv']
+  };
+</script>
+<script src="//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
   <div class='border-t pt-3'>
