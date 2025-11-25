@@ -9,7 +9,6 @@ updateDate: 2025-10-25
 heroImage: { src: './illustrations/RL/hw2-frozenlake.png', color: '#6eb8dd' }
 ---
 import { Aside } from 'astro-pure/user'
-import { Image } from 'astro:assets'
 
 ## 1 通勤北理工
 
@@ -17,9 +16,7 @@ import { Image } from 'astro:assets'
 
 考虑到这在几年内是一个重复活动，我们把它建模为一个无限时域的 MDP 过程。研小理做实验的时间非常不确定，而班车的发车时间是固定的。为了实现更加灵活的通勤，他构想出了一套校区间通勤的方案。这个过程可以使用一个三状态 MDP 链描述，其中 $S_1$ 是西山实验区，$S_2$ 是良乡校区，$S_3$ 是中关村校区。
 
-import q1_1 from './illustrations/RL/hw2-q1-1.png'
-
-<Image src={q1_1} width={300} alt="hw2-q1-1" />
+![状态转移图|300](./illustrations/RL/hw2-q1-1.png)
 
 <Aside type="note" title="习题1(a)">
 每个状态下可执行的动作：班车、地铁。所有转移与奖励都是确定性的。真实（但未知）的奖励如下表所示：
@@ -53,9 +50,7 @@ import q1_1 from './illustrations/RL/hw2-q1-1.png'
 <Aside type="note" title="习题1(b)">
 现在考虑一种“聚合”状态表示：将状态 $S_1$ 与 $S_2$ 合并成一个宏状态 $S_{12}$，而 $S_3$ 保持不变。你会发现可以直接用“在中关村”和“不在中关村”来代表这个 MDP 链，新的 MDP 只有两个状态：$S_{12}$ 和 $S_3$。
 
-import img2 from './illustrations/RL/hw2-q1-2.png'
-
-<Image src={img2} width={300} alt="hw2-q1-2" />
+![聚合状态|300](./illustrations/RL/hw2-q1-2.png)
 
 在此聚合状态下（仍取 $\gamma = 0.9$），我们仍然在三状态环境中运行 Q-learning，但是使用双状态的 Q 表，可以得到的 $Q^*$ 值为
 
@@ -85,9 +80,7 @@ $$
 
 在本次编程作业中，将实现强化学习中的两种算法——策略迭代（Policy Iteration）和 Q-Learning，并在 Gymnasium（前身为 OpenAI Gym）环境中的 Frozenlake 游戏环境中进行应用。通过这次作业，希望你可以理解这几种算法的工作原理及其在不同环境和奖励条件下的表现。非常鼓励探索和调整不同环境参数，分析算法在各种条件下的适应性和性能。
 
-import img3 from './illustrations/RL/hw2-frozenlake.png'
-
-<Image src={img3} width={400} alt="hw2-frozenlake" />
+![frozenlake|400](./illustrations/RL/hw2-frozenlake.png)
 
 ### 2.1 ~ 2.3
 <Aside type="note" title="习题 2(i) (ii) (iii)">
