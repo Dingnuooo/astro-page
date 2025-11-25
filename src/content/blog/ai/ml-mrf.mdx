@@ -104,7 +104,8 @@ $$
 
 说是回归，但其实是基于回归的分类模型。本章我们先用一般流程在二分类上做说明，再阐述多分类问题，以及它与概率无向图的关系
 
-### 一般流程
+### 二分类与sigmoid
+#### 基本推导
 传统的线性回归做分类，就是把正类样本设标签 $y=1$，负类样本设标签 $y=0$，然后得出线性拟合函数 $z=w^\mathrm{T}x$（偏置项通过 $b=[{w^{(0)}}]^\mathrm{T}x^{(0)}$ 塞进 $w^\mathrm{T}x$ 中）；对于测试样本，若拟合值大于某个值（比如 0.5），就分为正类，否则分为负类，这样就分出来了。这本质上是一个分段判别函数：
 $$
 y=\begin{cases}
@@ -134,7 +135,7 @@ L(w)&=\log\left[\prod\limits_i p_i^{y_i}(1-p_i)^{1-y_i}\right]\\
 &=\sum\limits_i\big(y_i\log \dfrac{p_i}{1-p_i}+\log(1-p_i)\big)\\
 \end{aligned}
 $$
-这样变形的目的，是为了凑出对数几率函数 $\mathrm{logit}(p)=\log \dfrac{p}{1-p}$，因为它是 sigmoid 的反函数，而这里 $p=\sigma(w^\mathrm{T}x)$，故 $\log \dfrac{p}{1-p}$ 就等于 $w^\mathrm{T}x$<span class="text-foreground/40">（因此 logistic 回归也称为对数几率回归）</span>。于是代入后继续化简得
+这样变形的目的，是为了凑出对数几率函数 $\mathrm{logit}(p)=\log \dfrac{p}{1-p}$，因为它是 sigmoid 的反函数，而这里 $p=\sigma(w^\mathrm{T}x)$，故 $\log \dfrac{p}{1-p}$ 就等于 $w^\mathrm{T}x$*（因此 logistic 回归也称为对数几率回归）*。于是代入后继续化简得
 $$
 \begin{aligned}
 L(w)&=\sum\limits_i\left[y_i(w^\mathrm{T}x_i)+\log\dfrac{\exp(-w^\mathrm{T}x_i)}{1+\exp(-w^\mathrm{T}x_i)}\right]\\
@@ -162,23 +163,36 @@ $$
 
 至于最后如何判别，就是看分类为正类的概率是否比负类大，本质上还是和 0.5 比大小，但这种比大小可以从概率角度解释，和传统的回归分类还是有区别的；由 sigmoid 单调性，也可以等价为 $w^\mathrm{T}x$ 和 0 比大小。
 
-### 交叉熵损失
-由刚才那个对数似然函数，抽象出交叉熵损失函数：
+#### 交叉熵损失
+实践中采用 mini-batch 梯度下降，即在小批量样本上（而不是在整个训练集上）做梯度下降。为了防止样本量对 loss 的数值尺度的影响，需要把损失函数除以样本量，也即定义损失函数
 $$
 J(w) = - \dfrac{1}{m} L(w) = -\dfrac 1m\sum\limits_{i=1}^m\bigg[y_i\log p_i+(1-y_i)\log(1-p_i)\bigg]
 $$
-其中 $m$ 是样本总数，$y_i$ 是第 $i$ 个样本的真实标签，取值 0 或 1，$p_i$ 是模型预测该样本为正类的概率。它衡量了真实概率分布 $(y_i, 1-y_i)$ 与模型预测的概率分布 $(p_i, 1-p_i)$ 之间的差异。
+这称为**交叉熵损失**。其中 $y_i$ 是第 $i$ 个样本的真实标签，取值 0 或 1，$p_i$ 是模型预测该样本为正类的概率。
 
-*实践中，为了防止对 0 取对数，需要在 log 里面加上一个小正数 $\varepsilon$*
+为什么跟“熵”有关系：从公式的形式来看，它是**概率的负对数**的平均值，这相当于求“在所有样本的真实标签都已知时，获得的**信息量**的期望”。这个信息量越小，说明“真实标签”这个信息越没用，也即表明模型预测的概率分布越准确，离真实标签的差异越小。
 
-### softmax 回归模型
+<span class="text-foreground/40">另外实践中，为了防止对 0 取对数，需要在 log 里面加上一个小正数 $\varepsilon$</span>
 
-同样是要把输出压成概率，但不同于二分类，多分类是把“分为每个类的打分”压成概率。对于一个 $K$ 维的向量 $\vec{z}$，softmax 函数将它转换为一个 $K$ 维的概率分布向量 $\vec{p}$：
+### 多分类与 softmax
+
+多分类的思路和 logistic 是一样的，只不过它使用权重矩阵 $W=[w_i]$ 代替刚才的权重向量 $w$（同样的，偏置项 $b_k$ 塞进 $w_k$ 的第 0 项），得到“分为每个类的打分”：
 $$
-p_k = P(y=k|\vec{z}) = \text{softmax}(\vec{z})_k = \dfrac{\exp(z_k)}{\sum_{j=1}^K\exp(z_j)}
+z_k=w_k^\mathrm{T}x
 $$
-其中 $z_k$ 是模型对于第 $k$ 个类别的打分，$w_k$ 是对应第 $k$ 类的权重向量。softmax 相当于输出了一个分类的概率分布
 
+然后再用 softmax 函数将 $\vec{z}$ 压成分类结果的概率分布向量 $\vec{p}$：
+$$
+p_k = P(y=k|\vec{z}) = \text{softmax}_k(\vec{z}) = \dfrac{\exp(z_k)}{\sum_{j=1}^K\exp(z_j)}
+$$
+
+对于多分类问题，loss 函数仍然是用“全部分类正确的概率”然后取对数平均（也即交叉熵）：
+$$
+L(W) = -\dfrac{1}{m}\sum_{i=1}^my_{i}^\mathrm{T}\log p_{i}
+$$ 
+其中第 $i$ 样本的真实标签 $y_i$ 是 onehot 编码，例如对于三分类问题，标签“1”、“2”、“3”分别表示为 $[1,0,0]^\mathrm{T}$、$[0,1,0]^\mathrm{T}$ 和 $[0,0,1]^\mathrm{T}$。
+
+<Aside type="note">
 事实上 sigmoid 是 softmax 在 $K=2$ 时的特例。对于二分类，我们关心的是分为正类（即 $k=1$）的概率 $p_1$。按照 softmax 的定义有  $p_1 = \dfrac{\exp(z_1)}{\exp(z_1)+\exp(z_2)}$，两边同除以 $\exp(z_1)$ 得
 $$
 p_1 = \dfrac{1}{1+\exp(z_2-z_1)} = \dfrac{1}{1+\exp(-(z_1-z_2))}
@@ -186,19 +200,69 @@ $$
 如果我们令 $z = z_1 - z_2 = (w_1-w_2)^\mathrm{T}x$，并且定义一个新的权重向量 $w = w_1 - w_2$，那么上式就变成了 $p_1 = \dfrac{1}{1+\exp(-w^\mathrm{T}x)}$，这正是 sigmoid 函数的形式。
 
 这说明，二分类的 logistic 回归本质上是在计算两个类别的相对“证据差”。而多分类的 softmax 则是将这种思想推广到了多个类别中。
+</Aside>
 
-对于多分类问题，真实标签使用 onehot 编码，例如对于三分类问题，标签“1”、“2”、“3”分别表示为 $[1,0,0]^\mathrm{T}$、$[0,1,0]^\mathrm{T}$ 和 $[0,0,1]^\mathrm{T}$。对应的交叉熵损失函数变为：
+#### loss 梯度计算
+仍然需要使用梯度下降进行优化。回顾 logistic 回归中，求 loss 的梯度时是通过配凑 logit 来化简的。softmax 回归中也需要做类似的化简，以便于计算 loss 的梯度。
+
+softmax 把向量映射成向量，相当于向量值函数，其关于自变量 $\vec z$ 的偏导应该是一个 Jacobi 矩阵。记 softmax 结果为 $\vec p$，也即
 $$
-J(W) = -\dfrac{1}{m}\sum_{i=1}^my_{i}^\mathrm{T}\log p_{i}
-$$ 
+p_k(\vec{z}) = \dfrac{\exp(z_k)}{\sum_{k=1}^K\exp(z_k)}
+$$
+于是在求“分为第 $k$ 类的概率”关于“第 $j$ 类的打分”$\dfrac{\partial p_k}{\partial z_j}$ 时，显然可以分类讨论：
+1. 当 $j\neq k$ 时，自变量只在分母出现。求导时，分母平方；分子“上导下不导”中，上导为 0、“下导上不导”等于 $\exp(z_j)\exp(z_k)$，于是求导结果即为
+$$
+\frac{\partial p_k}{\partial z_j}=\frac{-\exp(z_j)\exp(z_k)}{\big(\sum_{k=1}^K\exp(z_k)\big)^2}=-p_jp_k
+$$
+2. 当 $j=k$ 时，“上导下不导”等于 $\exp(z_j)(\Sigma)$、“下导上不导”等于 $\exp^2(z_j)$，于是求导结果即为
+$$
+\frac{\partial p_k}{\partial z_j}=\frac{\exp(z_j)(\Sigma)-\exp^2(z_j)}{(\Sigma)^2}=\frac{\exp(z_j)}{\Sigma}-\left(\frac{\exp(z_j)}{\Sigma}\right)^2=p_j-p_j^2=p_j(1-p_j)
+$$
+***
+有了这些之后就可以计算 loss 的梯度。为了表述清晰，我们先关注单个样本的 loss 关于打分的偏导，然后再推广到整个数据集在模型参数上的偏导。由于求导过程涉及对自变量向量的非线性运算，需要把第 $i$ 样本的 loss 中的向量点乘写开来：
+$$
+L_i = -y_i^\mathrm{T} \log p_i = - \sum_{k=1}^K y_{ik} \log p_{ik}
+$$
+其中 $y_{ik}$ 是第 $i$ 个样本的真实标签的第 $k$ 分量，$p_{ik}$ 是模型预测第 $i$ 个样本分为第 $k$ 类的概率。于是由链式法则，第 $i$ 样本的损失 $L_i$ 对第 $j$ 类的打分 $z_{ij}$ 的偏导为
+$$
+\begin{aligned}
+\frac{\partial L_i}{\partial z_{ij}}
+&= \frac{\partial L_i}{\partial p_{ik}} \frac{\partial p_{ik}}{\partial z_{ij}}=-\sum_{k=1}^K \frac{y_{ik}}{p_{ik}} \frac{\partial p_{ik}}{\partial z_{ij}}\\
+&= \underbrace{\left( -\frac{y_{ij}}{p_{ij}} \frac{\partial p_{ij}}{\partial z_{ij}} \right)}_{k=j} + \sum_{k \neq j} \underbrace{\left( -\frac{y_{ik}}{p_{ik}} \frac{\partial p_{ik}}{\partial z_{ij}} \right)}_{k \neq j} \\
+&= \left( -\frac{y_{ij}}{p_{ij}} \right) \cdot \big( p_{ij}(1-p_{ij}) \big) + \sum_{k \neq j} \left( -\frac{y_{ik}}{p_{ik}} \right) \cdot (-p_{ij}p_{ik}) \\
+&= -y_{ij}(1-p_{ij}) + \sum_{k \neq j} y_{ik}p_{ij} \\
+&= -y_{ij} + y_{ij}p_{ij} + p_{ij}\sum_{k \neq j} y_{ik} \\
+&= -y_{ij} + p_{ij} \sum_{k=1}^K y_{ik}
+\end{aligned}
+$$
+而对于 onehot 编码向量 $y_i$ 而言，$\sum\limits_{k=1}^K y_{ik}\equiv1$，于是
+$$
+\frac{\partial L_i}{\partial z_{ij}} = p_{ij} - y_{ij}
+$$
 
-但由于使用 onehot 编码，那个点乘实际上就是把**每个样本的预测结果中**真实标签对应的概率加起来。例如真实标签为第三类，预测结果 $p=[0.1,\,0.2,\,0.7]^\mathrm{T}$，那么点乘结果为 0.7
+代入 $z_{ij}=w_{j}^\mathrm{T}x_i+b_j$ 得
+$$
+\frac{\partial L_i}{\partial w_j} = \frac{\partial L_i}{\partial z_{ij}} \frac{\partial z_{ij}}{\partial w_j} = (p_{ij} - y_{ij}) x_i
+$$
+最后只需要将所有样本的梯度进行平均，于是总 loss 对参数的梯度
+$$
+\frac{\partial L}{\partial w_j} = \frac{1}{m} \sum_{i=1}^m (p_{ij} - y_{ij}) x_i
+$$
+拆出偏置项的形式：
+$$
+\begin{aligned}
+\frac{\partial L}{\partial w_j} &= \frac{1}{m} \sum_{i=1}^m (p_{ij} - y_{ij}) x_i\\
+\frac{\partial L}{\partial b_j} &= \frac{1}{m} \sum_{i=1}^m (p_{ij} - y_{ij})
+\end{aligned}
+$$
+
+对比：logistic 回归中，采用交叉熵损失时的 loss 梯度 $\dfrac{\partial L}{\partial w}=\dfrac1m\displaystyle\sum\limits_ix_i\big[\sigma(w^\mathrm{T}x_i)-y_i\big]$，其中 $\sigma$ 那一项就是概率，因此在形式上是完全一样的
 
 ### 无向图模型视角
 
 现在我们回头用概率无向图模型的观点来审视 logistic 回归。事实上，logistic 回归可以被看作一个非常简单的 Markov 随机场。
 
-考虑一个分类问题，我们有输入特征 $X=\{X_1, \dots, X_d\}$ 和输出类别 $Y$。构建一个无向图，其中 $Y$ 和所有的 $X_i$ 都相连，所有 $X_i$ 之间也相互连接。这个图本身就是一个巨大的团，也即该图的唯一最大团。于是分类问题即求条件概率 $P(Y=k\mid X=\vec x)$
+考虑一个分类问题，我们有输入特征 $X=\{X_1, \dots, X_d\}$ 和输出类别 $Y$。构建一个无向图，其中 $Y$ 和所有的 $X_i$ 都相连，所有 $X_i$ 之间也相互连接。这个图本身就是一个巨大的团，也是该图的唯一最大团。于是分类问题即求条件概率 $P(Y=k\mid X=\vec x)$
 
 根据 Hammersley-Clifford 定理，该图的联合概率分布可以表示为：
 $$

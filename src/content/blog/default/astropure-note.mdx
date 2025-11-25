@@ -10,7 +10,7 @@ updatedDate: 2025-10-09
 
 > 记录一下构建新博客站的过程、自定义功能需求和 bug 的解决，以及在这个过程中了解到的一些 js 相关的知识。参考资料：[pure 主题文档](https://astro-pure.js.org/docs)、[astro 文档](https://docs.astro.build/en/getting-started/)。我不太懂 js 及其专有名词，很多内容也是自己折腾半天、大模型生成、勉强理解之后写的，未经过专业的考证。如果您有相关的专业知识，欢迎评论详细说明。
 ***
-起因：知乎上刷到一个[关于个人博客的回答](https://www.zhihu.com/question/29755481/answer/1939008272137957420)，看到了这个博客 https://arthals.ink/ ，很喜欢这种干净整洁的画面，而且还是个开源项目。再加上使用 hexo + shoka 的旧站非常卡，很多功能都不完善，维护起来很麻烦。于是启动了这次搬家。
+起因：知乎上刷到一个[关于个人博客的回答](https://www.zhihu.com/question/29755481/answer/1939008272137957420)，看到了这个博客 https://arthals.ink/ ，很喜欢这种干净整洁的画面，而且还是个开源项目。再加上使用 hexo + shoka 的旧站非常卡，很多功能都不完善，维护起来很麻烦。于是启动了这次搬家。感谢两位开发者 [cworld1](https://cworld0.com/) 与 [Arthals](https://arthals.ink)。
 
 环境与工具：
 - node 22.15.8
@@ -20,16 +20,16 @@ updatedDate: 2025-10-09
 ## 阶段一：Installation
 
 ### Step 1：把主题 clone 下来
-```shell
+```bash
 git clone https://github.com/cworld1/astro-theme-pure.git
 ```
 
 ### Step 2：删除 .git 目录
-除非您完全掌握 git 的使用方法，否则**删除原有的 git 文件夹**，重新 git init（贸然沿用原有的 git 文件可能会影响原项目）
+除非完全掌握 git 的使用方法，否则**删除原有的 git 文件夹**。贸然沿用原有的 git 文件可能会影响原项目
 
 ### Step 3：安装依赖项
 一般 js 项目都不会上传依赖包，因为太大了。因此需要在根目录下运行：
-```shell
+```bash
 npm install
 ```
 这一步文件比较多 要等一会儿
@@ -49,7 +49,7 @@ npm install
 
 ### Step 4：测试
 启动 astro 开发服务器，默认监听 4321 端口
-```shell
+```bash
 npm run dev
 ```
 如果能够正常运行说明安装成功。开发过程中将会自动监看文件的变化
@@ -192,18 +192,18 @@ export { default as LinkPreview } from './LinkPreview.astro'
 export { default as QRCode } from './QRCode.astro'
 export { default as MediumZoom } from './MediumZoom.astro'
 ```
-因此 `{ Quote }` 则表示“导入成员 Quote”，称为解构导入
+因此 `{ Quote }` 则表示“导入成员 Quote”，称为解析导入
 
 
 ### Step 5：级联修改引用
-这就体现出保留 packages 的好处了。由于整个依赖包使用的都是相对路径，一旦某个部件里头还需要同一个依赖包里的其他文件，程序可以通过相对路径直接定位。反而，如果采用官方给出的做法，会导致“找不到这些二级依赖”而报错，因此需要级联地把二级依赖复制过来并且修改引用路径。
+这就体现出保留 packages 的好处了。由于整个依赖包使用的都是相对路径，一旦某个部件里头还需要同一个依赖包里的其他文件，程序可以通过相对路径直接定位。如果采用官方给出的做法，会导致“找不到这些二级依赖”而报错，因此需要级联地把二级依赖复制过来并且修改引用路径。
 
 所以说我们才选择使用 packages 做 customization，这样就不用级联修改了。除非它引用了其他依赖包里头的东西。这时候只需要把依赖到的包也复制进 `packages` 文件夹，与 `astro-pure` 同级即可。也就是说，`packages` 就相当于一个小型的 `node_modules`，可以正常上传到部署平台进行构建。
 
 ## 阶段三：Writing
 ### 创建文章
 #### 法 1：指令创建
-```shell
+```bash
 npm run new <title>
 ```
 用于在 Astro 项目的 `src/content/blog/` 目录下创建新的博客文章。
@@ -223,7 +223,7 @@ npm run new <title>
 - 内容模板：YAML Frontmatter（包含 `title`、`description`、`publishDate`、`draft`、`lang`、`tags` 等）。
 
 #### 法 2：直接创建
-在 blog 文件夹下直接新建文件即可。注意，如果开着 dev 可能会报错，不用管他
+在 blog 文件夹下直接新建文件即可。如果开着 dev 可能会报错，重新启动 dev 即可。
 ### Waline 配置
 
 官方文档：https://waline.js.org/guide/get-started
