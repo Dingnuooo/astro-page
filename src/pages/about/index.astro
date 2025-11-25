@@ -7,7 +7,7 @@ import ToolSection from '@/components/about/ToolSection.astro'
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
   { depth: 2, slug: 'tools', text: 'Tools' },
-  //{ depth: 2, slug: 'social-networks', text: 'Social Networks' },
+  // { depth: 2, slug: 'social-networks', text: 'Social Networks' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'about-blog', text: 'About Blog' }
 ]
@@ -16,12 +16,7 @@ const headings = [
 <PageLayout title='About' {headings} comment>
   <p>
     你好，我是 Dingnuooo，来自福建省福州市，通信工程 + 人工智能在读本科生。
-<<<<<<< HEAD
-    这里是正在装修中的博客站，您可以访问<a href="https://dingnuooo.github.io" target="_blank" rel="noopener noreferrer" class="hover:underline">旧版博客站</a>。
-    新站将陆续上传读书笔记、讲义、心得、摘录等文字内容。写得不好，但我享受将知识翻译为人话的过程，我也很乐意将个人的见解分享出来。
-=======
     <br>这里是我的心灵自留地，收容一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
->>>>>>> 83d0cb429007ccbc0815b272f36bc80021795289
   </p>
   <p>
     <Spoiler>他告诉我这里可以夹带私货。</Spoiler>
@@ -31,16 +26,10 @@ const headings = [
   {/* general-talk */}
   <h2 id='hobbies'>Hobbies</h2>
   <ul>
-    <li>我阅读侦探小说，喜欢新本格和社会派推理</li>
-    <li>我持续追踪各地高考模拟题。因为怀念高三那年 每天考完试和兄弟们 battle 的快乐</li>
-    <li>我游玩 Minecraft（生电 / 建筑）与音游（プロセカ / Phigros / Arcaea / maimai）</li>
-    <li>INTJ</li>
-<<<<<<< HEAD
-    <li>我阅读侦探小说，新本格和社会派推理</li>
-    <li>我持续追踪各地高考模拟题。因为怀念高三那年 每天考完试和兄弟们 battle 的时光</li>
-    <li>我游玩 Minecraft（生电 / 建筑）与音游（PJSK / Phigros / Arcaea / maimai）</li>
-=======
->>>>>>> 83d0cb429007ccbc0815b272f36bc80021795289
+    <li>我阅读侦探小说，喜欢新本格和社会派推理.</li>
+    <li>我持续追踪各地高考模拟题。因为怀念高三那年 每天考完试和兄弟们 battle 的快乐.</li>
+    <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏 ( プロセカ / Phigros / Arcaea / maimai ).</li>
+    <li>我的人格类型为 INTJ.</li>
   </ul>
 
   {/* tools */}
@@ -63,7 +52,7 @@ const headings = [
       },
       {
         name: 'Obsidian',
-        description: 'Note Base / Markdown Editor',
+        description: 'Note Base & Markdown Editor',
         href: 'https://obsidian.md/',
         icon: import('@/assets/tools/obsidian.svg?raw')
       },
@@ -104,16 +93,22 @@ const headings = [
         icon: import('@/assets/tools/sai.svg?raw')
       },
       {
+        name: 'Blender',
+        description: '3D Modeling & Rendering',
+        href: 'https://www.blender.org/',
+        icon: import('@/assets/tools/blender.svg?raw')
+      },
+      {
         name: 'FL Studio',
         description: 'Music Arranging & Mixing',
         href: 'https://www.image-line.com/fl-studio/',
         icon: import('@/assets/tools/fl.svg?raw')
       },
       {
-        name: 'Blender',
-        description: '3D Modeling & Rendering',
-        href: 'https://www.blender.org/',
-        icon: import('@/assets/tools/blender.svg?raw')
+        name: 'Reaper',
+        description: 'Music Arranging & Mixing',
+        href: 'https://www.reaper.fm/',
+        icon: import('@/assets/tools/reaper.svg?raw')
       },
     ]}
   />
@@ -139,42 +134,33 @@ const headings = [
   {/* social-networks */}
   <!-- <h2 id='social-networks'>Social Networks</h2>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne.
+    主要活跃平台
   </p>
   <Substats
     stats={[
       {
         platform: 'GitHub',
         icon: 'github',
-        link: 'https://github.com/cworld1',
+        link: 'https://github.com/dingnuooo',
         text: 'followers',
-        api: 'github/cworld1'
+        //api: 'github/dingnuooo'
       },
       {
-        platform: 'Telegram',
-        icon: 'telegram',
-        color: '#2ca5e0',
-        link: 'https://t.me/cworld0_cn',
-        text: 'subscribers',
-        api: 'telegram/cworld0_cn'
-      },
-      {
-        platform: 'Weibo',
-        icon: 'weibo',
-        color: '#e71f19',
-        link: 'https://weibo.com/cworld0',
+        platform: 'Bilibili',
+        icon: 'bilibili',
+        color: '#ed7b98',
+        link: 'https://space.bilibili.com/90563238',
         text: 'followers',
-        api: 'weibo/5501674056'
+        //api: 'bilibili/90563238'
       },
       {
-        platform: 'Steam',
-        icon: 'steam',
-        color: '#50769d',
-        link: 'https://steamcommunity.com/id/cworld',
-        text: 'games',
-        api: 'steamgames/76561199021278120'
-      }
+        platform: 'RedNote',
+        icon: 'instagram',
+        color: '#eb4553',
+        link: 'https://www.xiaohongshu.com/user/profile/6493f6d9000000001c0299ae',
+        text: 'followers',
+        //api: 'github/cworld1'
+      },
     ]}
   /> -->
 
@@ -203,13 +189,8 @@ const headings = [
           '使用 Hexo 框架搭建博客站，上传部分笔记'
       },
       {
-<<<<<<< HEAD
-        date: '2025-10',
-        content: '博客站使用 Astro 框架重建'
-=======
         date: '2025-11',
         content: '使用 Astro 框架重建博客站'
->>>>>>> 83d0cb429007ccbc0815b272f36bc80021795289
       }
     ]}
   />
