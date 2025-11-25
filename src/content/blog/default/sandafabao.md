@@ -6,7 +6,6 @@ tags:
 publishDate: 2024-12-05
 updatedDate: 2024-12-05
 heroImage: { src: './sandafabao.png', color: '#e2f2f6' }
-language: '中文'
 ---
 
 来自up主 余-凌宇 的视频 [大学生的三大法宝（核心素养与竞争力）](https://www.bilibili.com/video/BV1nSCRYgEKv)，醍醐灌顶，第一次从这个视角看这些学科
