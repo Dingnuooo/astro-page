@@ -49,8 +49,9 @@ export const theme: ThemeUserConfig = {
     menu: [
       { title: 'Blog', link: '/blog' },
       { title: 'Projects', link: '/projects' },
-      { title: 'Links', link: '/links' },
-      { title: 'About', link: '/about' }
+      // { title: 'Links', link: '/links' },
+      { title: 'About', link: '/about' },
+      { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
     ]
   },
 
@@ -66,11 +67,11 @@ export const theme: ThemeUserConfig = {
         link: 'https://icp.gov.moe/?keyword=20254889',
         style: 'text-sm' // Uno/TW CSS class
       },
-      // {
-      //   title: 'Travelling',
-      //   link: 'https://www.travellings.cn/go.html',
-      //   style: 'text-sm'
-      // },
+      {
+        title: 'Travelling',
+        link: 'https://www.travellings.cn/go.html',
+        style: 'text-sm'
+      },
       // Privacy Policy link
       // {
       //   title: 'Site Policy',

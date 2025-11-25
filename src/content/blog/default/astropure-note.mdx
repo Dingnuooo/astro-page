@@ -8,9 +8,9 @@ publishDate: 2025-09-26
 updatedDate: 2025-10-09
 ---
 
-记录一下构建新博客站的过程、自定义功能需求和 bug 的解决，以及在这个过程中了解到的一些 js 相关的知识。参考资料：pure 主题文档、astro 文档。我不太懂 js 及其专有名词，很多内容也是自己折腾半天、大模型生成、勉强理解之后写的，未经过专业的考证。如果您有相关的专业知识，欢迎评论详细说明，感谢。
+记录一下构建新博客站的过程、自定义功能需求和 bug 的解决，以及在这个过程中了解到的一些 js 相关的知识。参考资料：[pure 主题文档](https://astro-pure.js.org/docs)、[astro 文档](https://docs.astro.build/en/getting-started/)。我不太懂 js 及其专有名词，很多内容也是自己折腾半天、大模型生成、勉强理解之后写的，未经过专业的考证。如果您有相关的专业知识，欢迎评论详细说明。
 ***
-起因：知乎上刷到一个关于个人博客的问答，看到这个博客站 https://arthals.ink/ ，太喜欢这个干干净净的界面了。再加上使用 hexo + shoka 的旧站非常卡，很多功能都不完善，维护起来很麻烦。于是启动了这次搬家。
+起因：知乎上刷到一个关于个人博客的问答，看到这个博客站 https://arthals.ink/ ，ui 干干净净，还开源了。再加上使用 hexo + shoka 的旧站非常卡，很多功能都不完善，维护起来很麻烦。于是启动了这次搬家。
 
 环境与工具：
 - node 22.15.8
@@ -55,7 +55,7 @@ npm run dev
 如果能够正常运行说明安装成功。开发过程中将会自动监看文件的变化
 
 ### Step 5：删除 docs 目录
-这里是存放 pure 主题官方文档的地方。删掉 `src/pages/docs` 文件夹，然后在配置文件中删除 docs 相关的内容：
+这里是存放 pure 主题官方文档的地方。在配置文件中删除 docs 相关的内容：
 ```ts title="src/site.config.ts"
 export const theme: ThemeUserConfig = {
    // ...
@@ -77,11 +77,13 @@ export const collections = { blog, docs } // [!code --]
 export const collections = { blog } // [!code ++]
 ```
 
-注：官方文档中建议删除 packages 目录。`packages/pure` 里头是 astro-pure 的依赖包，而在安装依赖项的时候已经装到 `node_modules` 里面了。但是我的习惯是留着 `packages`，并做以下处理：
+注：官方文档中建议删除 packages 目录，`packages/pure` 里头是 astro-pure 的依赖包，在安装依赖项的时候已经装到 `node_modules` 里面了。  
+
+但是我的习惯是保留 `packages` 目录，并做以下处理：
 1. 打开 `packages` 目录，将 `pure` 重命名为 `astro-pure`。这是为了与 `node_modules` 里头的名字一致。
 2. 将 `packages` 目录移动到 `src` 里头
 
-基于这个方式进行后续操作，将会使得 customization 的流程变得简单。
+基于这个方式进行后续操作，将会使得 [customization](#阶段二customization) 的流程变得简单。
 
 ### Step 6：测试部署
 不急着对网页做修改，先看看能不能部署成功。连接 Github 并部署到托管平台。例如 vercel 能够识别 astro 项目，自动填好 buildcommand 等配置。
@@ -90,7 +92,9 @@ export const collections = { blog } // [!code ++]
 
 如果不涉及依赖包、或者作者提供了接口的东西，直接改就行了，例如 author、title、avatar、icon 等。
 
-如果要修改依赖包里面的东西，不能直接在 `node_modules` 里面改。因为 `node_modules` 这个目录被 ignore 掉了，即使把它从 ignore 里头移走，部署平台在构建时一般也不会访问它。本来尝试的方法是直接在本地构建后再部署到云端，但没有成功。因此只能通过改变引用路径的方式，在外部进行修改，称为 Swizzling，官方给出的步骤是：
+如果要修改依赖包里面的东西，不能直接在 `node_modules` 里面改。因为 `node_modules` 这个目录被 ignore 掉了，即使把它从 ignore 里头移走，部署平台在构建时一般也不会访问它。
+
+本来尝试的方法是直接在本地构建后再部署到云端，但没有成功<span class="text-foreground/40">（理论上应该可以才对呐,,,用 vercel 整了好久还是用云端构建）</span>。因此使用改变引用路径的方式，在外部进行修改，称为 Swizzling。官方给出的步骤是：
 1. 先找到需要修改的文件
 2. 复制出来并对文件做出修改
 3. 修改引用路径
@@ -111,9 +115,9 @@ import { Quote } from 'astro-pure/advanced'
 `ctrl+左键` 点击下面这个 Quote，定位到实现 Quote 的文件 `node_modules\astro-pure\components\advanced\Quote.astro`
 
 ### Step 2：复制文件
-官方给出的做法是，把 `node_modules\astro-pure\components\advanced\Quote.astro` 复制到自定义的路径下。
+官方给出的做法是，把 `node_modules\astro-pure\components\advanced\Quote.astro` 复制到自定义的路径下，再做出修改。
 
-但是我们在阶段一中没有删除 packages 目录，因此我们可以直接去 packages 里头对应的文件里做修改，也即修改 `src\packages\astro-pure\components\advanced\Quote.astro`
+但是我们在阶段一中没有删除 packages 目录，因此我们可以直接去 packages 中对应的文件里做修改，也即修改 `src\packages\astro-pure\components\advanced\Quote.astro`
 
 ### Step 3：修改文件
 ```ts
@@ -145,6 +149,7 @@ const { class: className } = Astro.props
   customElements.define('quote-component', Quote)
 </script>
 ```
+（还有一些其他小改动，只是这一部分文字很早就写了所以没加进去）
 
 ### Step 4：修改引用
 回到引用 Quote 的 import 语句处（即 `src/pages/index.astro`），修改引用方式。
@@ -246,7 +251,7 @@ sitemap 里头的元素说明：
 https://www.bing.com/indexnow?url=https://www.example.com&key=<yourkey>
 ```
 刷新几次确认连上了就可以关了。回到 webmaster，看看 indexnow 那一栏里头有没有刚刚提交过的 url 列表。
-## bug
+## bug 与其他小修改
 ### 名言条动画
 名言左侧的绿色原点，有一个动画（tailwind 实现的，`animate-ping`），没有动起来。一般不会有问题，可能是 tailwindcss 的问题，于是在 `app.css` 中重写了这个动画
 ```css
@@ -315,4 +320,10 @@ const typographyConfig = {
 	//...
 	}
 }
+```
+
+### 文字颜色变浅
+（需要 mdx）
+```mdx
+<span class="text-foreground/40">文字</span>
 ```
