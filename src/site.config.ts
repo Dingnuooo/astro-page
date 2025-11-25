@@ -84,7 +84,7 @@ export const theme: ThemeUserConfig = {
     social: { github: 'https://github.com/Dingnuooo/astro-site',
       bilibili: 'https://space.bilibili.com/90563238',
       netease: 'https://music.163.com/#/user/home?id=384322136',
-      instagram: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
+      instagram: 'https://www.xiaohongshu.com/user/profile/6493f6d9000000001c0299ae',
       email: 'mailto:dingnuooo@163.com'
       // rss: false
     }
