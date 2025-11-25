@@ -253,82 +253,8 @@ sitemap 里头的元素说明：
 https://www.bing.com/indexnow?url=https://www.example.com&key=<yourkey>
 ```
 刷新几次确认连上了就可以关了。回到 webmaster，看看 indexnow 那一栏里头有没有刚刚提交过的 url 列表。
-## bug 与其他小修改
-### 名言条动画
-名言左侧的绿色原点，有一个动画（tailwind 实现的，`animate-ping`），没有动起来。一般不会有问题，可能是 tailwindcss 的问题，于是在 `app.css` 中重写了这个动画
-```css
-/* src/assets/styles/app.css */
 
-/* Animations */
-@keyframes ping {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.animate-ping {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-```
-
-### rehype-tabs 报错的解决
-```ts title="src\packages\astro-pure\plugins\rehype-tabs.ts"
-// ...
-interface Panel { // [!code --]
-export interface Panel { // [!code ++]
-  panelId: string
-  tabId: string
-  label: string
-}
-// ...
-export const processPanels = (html: string) => { // [!code --]
-export const processPanels = (html: string): { panels: Panel[]; html: string } => { // [!code ++]
-  const file = tabsProcessor.processSync({ value: html })
-  return {
-    panels: file.data.panels, // [!code --]
-    panels: file.data.panels as Panel[], // [!code ++]
-    html: file.toString()
-  }
-}
-```
-
-### 数学公式
-latex 正常写。行间公式必须单独成行，并且双美元也要单独成行
-
-### 暗色模式颜色
-标题：从二级标题开始写。
-
-行内代码和引用文字的颜色：做如下修改
-```json title="./uno.config.ts"
-const typographyConfig = {
-	cssExtend: {
-    //...
-    pre: { // [!code ++]
-      color: fg // [!code ++]
-    }, // [!code ++]
-   	'.dark blockquote': { // [!code ++]
-   	  color: 'hsl(var(--muted-foreground))' // [!code ++]
-   	}, // [!code ++]
-   	'.dark :not(pre) > code': { // [!code ++]
-   	  color: 'hsl(var(--foreground))' // [!code ++]
-   	}, // [!code ++]
-		// Blockquote
-    blockquote: {
-    	//...
-    },
-    //...
-	//...
-	}
-}
-```
-
-### 文字颜色变浅
-（需要 mdx）
-```mdx
-<span class="text-foreground/40">文字</span>
-```
+<<<<<<< HEAD
+=======
+test
+>>>>>>> 42f71d1dd6b85adc9512b26f2c8492360887ef4c
