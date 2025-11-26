@@ -62,7 +62,7 @@ export default defineConfig({
     // }),
     sitemap({
       priority: 1.0,
-      lastmod: new Date('2025-10-09'),
+      lastmod: new Date('2025-11-01'),
     }),
     // Temporary fix vercel adapter
     // static build method is not needed
