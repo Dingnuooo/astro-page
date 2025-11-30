@@ -27,7 +27,7 @@ $$
 $$
 k(x,y)=\frac{1}{Z}\exp\left(-\frac{x^2+y^2}{2\sigma^2}\right)
 $$
-其中，$Z$ 为归一化系数，保证所有像素明度值之和为 1。$\sigma$ 的取值需要适中，若 $\sigma$ 过小，会使 kernel 边缘处的值产生截断；若 $\sigma$ 过大，又会使得边缘处的值接近 0 导致计算时间的浪费。在 OpenCV 中，$\sigma$ 的取值为
+其中，$Z$ 为归一化系数，保证所有卷积后图像能量不变。$\sigma$ 的取值需要适中，若 $\sigma$ 过小，会使 kernel 边缘处的值产生截断；若 $\sigma$ 过大，又会使得边缘处的值接近 0 导致计算时间的浪费。在 OpenCV 中，$\sigma$ 的取值为
 $$
 \sigma=0.3\left(\dfrac{n-1}{2}-1\right)+0.8
 $$
@@ -107,7 +107,7 @@ kernel 直径 = 27：
 
 除了苹果橘子的经典例图，本次实验还尝试了对两张实拍照片的融合，将一张图片的天空部分换成另一张图片。其中 mask 是通过手动绘制遮罩实现的。除了由于精度不足导致对树枝等细节处的抠图不够精细，其他部分能够较好的融合，特别是交界处并没有产生纹理扩散，如图所示。
 
-实拍原图：（左图摄于上海方浜中路附近；图二摄于北京理工大学珠海校区）
+实拍原图：（图一摄于上海方浜中路附近；图二摄于北京理工大学珠海校区）
 ![original_and_mask](./assets/laplacian-pyramid/real.png)  
 ![real_blend_result](./assets/laplacian-pyramid/real_fuse_uplevel.png)
 
