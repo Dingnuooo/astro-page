@@ -1,0 +1,218 @@
+---
+title: 基于相关滤波的单目标跟踪
+description: '动机、方法、实验结果与代码。计算机视觉作业。'
+tags:
+ - homework
+ - computer-vision
+publishDate: 2025-12-01
+updateDate: 2025-12-01
+---
+
+import { Aside } from 'astro-pure/user'
+
+<Aside type="caution" title="Warning">
+更新中
+</Aside>
+
+## 问题描述
+
+单目标跟踪是计算机视觉中的一个基础任务。其目标是在视频序列第一帧中框选目标，随后实时跟踪目标在后续每一帧中的位置。算法需要能够应对目标在运动过程中可能的发生旋转、形变、缩放等外观变化，以及环境光照变化、目标被遮挡、相似物体等干扰。
+
+## 动机
+
+面对目标跟踪问题，最直观的思路是做窗口匹配，也即在第一帧中截取目标的图像块作为模板，而在后续帧中使用滑动窗口的方式，将模板在搜索区域内逐像素移动，计算模板与当前窗口内图像的相似度，相似度最高的位置即为预测目标在当前帧的位置。
+
+但该方法计算量较大，在空间域进行密集的滑动窗口匹配等价于卷积操作，其计算复杂度随着图像尺寸的增加呈平方级增长，难以满足实时性要求；且仅依赖首帧图像生成的模板是固定的，无法适应目标的外观变化，也无法区分物体本身和背景内容，容易跟丢也容易在背景杂乱时跟错。
+
+为了解决上述问题，我们引入相关滤波（Correlation Filter）算法，其目标是学出一个滤波器，使其作用在原始图像后，在跟踪物体位置的响应最大。“相关”是一种运算，类似卷积，只不过卷积需要把 kernel 旋转 180°，相关不需要。利用卷积定理，可以将时域（或空域）中密集的滑动窗口匹配操作转化为频域中的逐元素乘法运算。通过 FFT 能够在一次计算中获得目标模板与搜索区域在所有可能偏移位置上的响应值，从而将复杂度从 $O(N^2)$ 降低到 $O(N \log N)$。
+
+## 算法与实验
+
+### 评估策略
+
+采用 [OTB2015 数据集](https://huggingface.co/datasets/xche32/OTB2015/tree/main) 作为测试基准。该数据集包含光照变化、尺度变化、遮挡、形变、运动模糊等多种场景，测试时在第一帧利用真值初始化跟踪器，随后在整个序列运行且不再进行重置。该方法可以有效测试算法的性能。
+
+评估指标主要包含两项：距离精度（Precision @20px），即预测框中心点与 Ground Truth 框的中心点的欧氏距离在 20 像素之内的帧数占总帧数的比例；平均交并比（Average IoU），即预测框与真值框区域的交集与并集面积之比在整个序列的平均。
+
+### MOSSE
+
+MOSSE (Minimum Output Sum of Squared Error filter) 算法的思路即找到一个滤波器，使得输入图像经过该滤波器作用后，输出的响应图与预设的响应图之间的误差最小。
+
+用 $f$ 表示原始图像，$h$ 表示滤波器，于是输出图像 $g=f*h$，记 $F=\mathcal{F}[f]$、$H=\mathcal{F}[h]$，运用卷积定理得
+$$
+G=F\odot H^*
+$$
+其中 $\odot$ 表示 Hadamard 积（逐元素相乘），$H^*$ 表示 $H$ 的复共轭，因为卷积需要把滤波器 $h$ 翻转 180°，而相关不用，这在 Fourier 变换中等价于在频域取共轭复数。
+
+优化目标即为最小化误差矩阵：
+$$
+H=\arg\min\limits_{H}  \sum_i \|F_i \odot H^* - G_i\|^2
+$$
+其中 $i$ 表示第 $i$ 帧，$G_i$ 表示期望响应图，通常是以跟踪目标为中心的 Gauss 函数；期望响应图的 $\sigma$ 参数决定了峰值的尖锐程度，$\sigma$ 越大容错越高但精度越低，越小峰值越高有助于在背景杂乱时更精确地定位目标中心。逐元素考虑：
+$$
+H_{uv}=\arg\min\limits_{H_{uv}}  \sum_i |F_{iuv}H^*_{uv} - G_{iuv}|^2
+$$
+自变量为复数，故令共轭梯度为 0：
+$$
+\begin{aligned}
+\frac{\partial L}{\partial H^*_{uv}}&=\frac{\partial }{\partial H^*_{uv}}\sum_i\big((F_{iuv}H^*_{uv} - G_{iuv})(F_{iuv}H^*_{uv} - G_{iuv})^*\big)\\
+&=\frac{\partial }{\partial H^*_{uv}}\sum_i\big((F_{iuv}H^*_{uv} - G_{iuv})(F^*_{iuv}H_{uv} - G_{iuv}^*)\big)\\
+&=\frac{\partial }{\partial H^*_{uv}}\sum_i\big(F_{iuv}H_{uv}^*F_{iuv}^*H_{uv}-F_{iuv}H_{uv}^*G^*_{iuv}- G_{iuv}F^*_{iuv}H_{uv}-G_{iuv}G_{iuv}^*\big)\\
+&=\sum_i\big(F_{iuv}F_{iuv}^*H_{uv}-F_{iuv}G^*_{iuv}\big)=0\\
+\end{aligned}
+$$
+解得
+$$
+H_{uv}=\dfrac{\sum_iF_{iuv}G_{iuv}^*}{\sum_iF_{iuv}F_{iuv}^*}
+\quad\Rightarrow\quad
+H = \frac{\sum_i F_i \odot G_i^*}{\sum_i F_i \odot F_i^*}
+$$
+其中的除法为逐元素除法。
+
+为了让模型适应目标的外观变化（例如旋转、光照、形变），应当对最近的帧赋予更大的权重，因此将上式的求和式改写为迭代形式，并引入指数移动平均：
+$$
+\begin{aligned}
+H_i&=\frac{A_i}{B_i}\\
+A_i&=\eta F_i\odot G^*_i+(1-\eta)A_{i-1}\\
+B_i&=\eta F_i\odot F^*_i+(1-\eta)B_{i-1}
+\end{aligned}
+$$
+对于 $A$ 和 $B$ 初值的计算，算法会在选定跟踪对象后对目标图像进行随机的仿射变换，利用初始帧生成 $n$ 个样本，使用刚才非迭代的形式，算出稳定的初值 $A_0$ 和 $B_0$；$\eta$ 为学习率，$\eta$ 越小越看重最近的帧。
+
+***
+
+经过测试，当 $\eta=0.125$、$\sigma=2.0$、初始随机变换样本数 $n=128$ 时，跟踪效果较好，部分实验结果如下表所示（完整对比将在 [[#总结对比]] 中给出）
+
+```shell
+Coupon:        Precision @20px: 100.00% | Average IoU: 0.9125
+Fish:          Precision @20px: 100.00% | Average IoU: 0.8309
+Man:           Precision @20px: 100.00% | Average IoU: 0.8286
+...
+Dog:           Precision @20px:  99.21% | Average IoU: 0.3486
+...
+Freeman1:      Precision @20px:  48.47% | Average IoU: 0.2234
+...
+Gym:           Precision @20px:  32.59% | Average IoU: 0.2291
+...
+Human3:        Precision @20px:   0.53% | Average IoU: 0.0081
+```
+
+
+可以看出，MOSSE 在 Coupon、Fish、Man 等目标运动平稳、背景干扰较小的序列上取得了极高的精度，Precision 达到 100%，且 IoU 保持在 0.8 以上。这是因为设置了较低的 $\eta$，使得算法能够快速适应目标的轻微外观变化。
+
+但当目标发生剧烈形变（如 Gym）、完全遮挡或背景极其杂乱（如 Freeman1）时跟踪丢失。其次，由于 MOSSE 没有对尺度进行估计，滤波器的大小是固定的，对于 Dog、Walking2 这类目标大小发生显著变化的序列，虽然中心位置预测准确，但预测框无法贴合目标大小，导致 IoU 值较低（如 Dog 序列 Precision 为 99.21% 但 IoU 仅为 0.3486）。事实上本次实验提到的三个算法都无法对尺度进行预测，因此 MOSSE 可以作为一个较好的 baseline。
+
+【放图】
+
+
+### CSK
+
+CSK (Circulant Structure Kernels) 引入了正则化和核方法，并引入了循环移位假设。
+
+MOSSE 虽然能通过卷积提取到了目标位置的特征，但其本质是对“所有可能的候选框中的像素”做线性拟合得到一个响应值，决定这个位置“成为目标位置”的打分。但实际情况下，框选像素和打分之间往往是非线性的。
+
+为了解决这个问题，我们引入核函数。但在这之前需要先将输入图像 $f$ 和目标响应 $g$ 拉直成向量后，然后才能通过一个映射函数 $\phi(\cdot)$ 投影到一个高维特征空间 $\cal{H}$，并在该空间中引入 $L_2$ 正则项训练一个权重向量 $w$：
+$$
+w=\arg\min\limits_{w} \left(\sum_i \| w^\mathrm{T}\phi(f_i) - g_i\|^2 + \lambda \|w\|^2\right)
+$$
+（这里没法像 mosse 一样直接写出频域表达式，因为引入了核函数，没法直观地写成卷积）
+
+记 $\Phi=[\phi^\mathrm{T}(f_i)]$、$\mathcal{g}=[g_i]$，即 $\Phi$ 的第 $i$ 行是第 $i$ 个样本映射、$g$ 的第 $i$ 行是第 $i$ 个样本的目标响应，则上式写为
+$$
+w=\arg\min\limits_{w} \left(\|\Phi w-g\|^2 + \lambda \|w\|^2\right)
+$$
+令偏导等于 0 解得
+$$
+w = ({\Phi}^\mathrm{T} {\Phi} + \lambda {I})^{-1} {\Phi}^\mathrm{T} {g}
+$$
+但直接用这个式子计算不可行的，因为方阵 ${\Phi}^\mathrm{T} {\Phi}$ 边长为特征空间的维数 $\dim\cal{H}$，这个数可能非常大甚至是无穷大（例如 Gauss 核）。因此我们进行变形处理：
+
+$$
+\begin{aligned}
+w &= ({\Phi}^\mathrm{T} {\Phi} + \lambda {I})^{-1} {\Phi}^\mathrm{T} {g}\\
+&= {\Phi}^\mathrm{T} \underbrace{({\Phi} {\Phi}^\mathrm{T} + \lambda {I})^{-1} {g}}_{\text{定义为列向量 } {\alpha}}\\
+&=\Phi^\mathrm{T}\alpha\\
+&=\sum\limits_{i=1}^N\alpha_i\cdot\phi(f_i)
+\end{aligned}
+$$
+
+> 其中第一步到第二步是 push-through 等式，它是 Woodbury 矩阵恒等式的推论：
+> $$
+> (I+UV)^{-1}U=U(I+VU)^{-1}
+> $$
+这样变形后，把方阵 ${\Phi}^\mathrm{T} {\Phi}$ 变成了 ${\Phi} {\Phi}^\mathrm{T}$，它的边长只是框选部分的像素数，相比升维后的特征空间维数就小了一些；另外，${\Phi} {\Phi}^\mathrm{T}$ 就是核矩阵 $\kappa=[k_{ij}]=[\langle \phi(k_i),\,\phi(k_j)\rangle]$（也即特征空间中的 Gram 矩阵）。
+
+而且，注意到 $\phi(f_i)$ 即特征向量，因此优化问题的解 $w$ 可以由特征向量 $\phi(f_i)$ 的线性组合表示（*事实上，这个证明过程说明，任意一个 $L_2$ 正则化优化问题，其解都可以表示为特征向量的线性组合。这称为“表示定理 Representer Theorem”*）。因此原始优化问题转化为求 $\alpha$，也就相当于 mosse 中的滤波器 $h$：
+
+$$
+\begin{aligned}
+J&=\|\Phi w-g\|^2 + \lambda \|w\|^2\\
+&=\|\Phi\Phi^\mathrm{T}\alpha-g\|+\lambda\alpha^\mathrm{T}\Phi\Phi^\mathrm{T}\alpha^\mathrm{T}\\
+&=\|\kappa\alpha-g\|^2+\lambda\alpha^\mathrm{T}\kappa\alpha
+\end{aligned}
+$$
+
+令偏导等于 0 解得
+$$
+{\alpha} = ({\kappa} + \lambda {I})^{-1} {g}
+$$
+但这仍然涉及到对一个很大的核矩阵求逆，难以实现实时跟踪。于是下面就是利用 FFT 将这个过程变为频域上的逐元素相乘。
+
+注意到，对于连续视频的图像序列而言，训练样本 $f_i$ 可以看做是上一帧图像 $f_{i-1}$ 经过循环移位生成的，对于还原为矩阵形式的图像而言，就是移出画面的像素从另一侧回到画面。这个假设的优点在于，当图像具有循环移位性质时，特征空间的内积只依赖于两个样本 index 之差；这反映在核矩阵 $\kappa$ 上，就是主对角线方向上的值都相同，这称为循环矩阵。循环矩阵有一个很好的性质，它可以被 DFT 矩阵对角化，也即
+$$
+\kappa = F^{-1} \text{diag}(\hat{k}) F
+$$
+其中 $F$ 是 DFT 矩阵，$\hat{k}$ 是核矩阵第一行向量 $k$（即基准图像 $f$ 与其自身所有移位样本的核相关向量）的 Fourier 变换。利用这一性质，代入 $\alpha$ 的解，即可将矩阵求逆运算转化为频域中的逐元素运算：
+$$
+\begin{aligned}
+\alpha &= (F^{-1} \text{diag}(\hat{k}) F + \lambda I)^{-1} g \\
+&= (F^{-1} \text{diag}(\hat{k}) F + F^{-1} (\lambda I) F)^{-1} g \\
+&= (F^{-1} (\text{diag}(\hat{k}) + \lambda I) F)^{-1} g \\
+&= F^{-1} (\text{diag}(\hat{k}) + \lambda I)^{-1} F g
+\end{aligned}
+$$
+
+两边同时做 Fourier 变换（即左乘 $F$），记 $A=\mathcal{F}[\alpha]$、$G=\mathcal{F}[g]$，于是
+
+$$
+\begin{aligned}
+Fa&=(\text{diag}(\hat{k}) + \lambda I)^{-1} F g\\
+A&=\text{diag}\left(\frac{1}{\hat k_i+\lambda}\right)G\\
+&=\dfrac{G}{\hat k+\lambda}
+\end{aligned}
+$$
+
+其中最后一行的除法是逐元素除法。这样就实现了从空间域到频域的转换，与 mosse 的复杂度同阶。
+
+***
+部分实验结果
+```shell
+Man:           Precision @20px: 100.00% | Average IoU: 0.9022
+BlurFace:      Precision @20px: 100.00% | Average IoU: 0.8295
+...
+BlurCar4:      Precision @20px:  99.47% | Average IoU: 0.8339
+...
+Surfer:        Precision @20px:  92.02% | Average IoU: 0.4434
+...
+Dog1:          Precision @20px:  98.22% | Average IoU: 0.5533
+...
+Freeman1:      Precision @20px:  36.81% | Average IoU: 0.2073
+...
+Jogging:       Precision @20px:  23.13% | Average IoU: 0.1850
+...
+Human3:        Precision @20px:   1.12% | Average IoU: 0.0094
+```
+
+分析实验结果可以发现，CSK 相比 MOSSE 在整体鲁棒性上有了显著提升，特别是在处理非线性可分场景和模糊图像时表现突出。
+
+1.  对复杂背景的区分能力增强。在 Surfer 序列中，MOSSE 仅有 3.99% 的精度，几乎完全失效，而 CSK 跃升至 92.02%。这是因为冲浪场景中背景（浪花）与目标（冲浪者）的灰度特征极度相似且杂乱，MOSSE 的线性分类器无法找到分割超平面，而 CSK 通过高斯核将特征映射到高维空间，成功实现了非线性分离。
+2.  对运动模糊的鲁棒性提升。在 BlurFace（20.69% $\to$ 100%） 和 BlurCar4（51.84% $\to$ 99.47%） 等包含剧烈画面摇晃模糊的序列中，CSK 表现很好。这主要是因为目标函数中引入的 $L_2$ 正则化项，有效抑制了图像噪声和模糊带来的高频干扰。
+3.  局限性依然存在：尽管引入了核方法，CSK 依然依赖单通道灰度特征。因此在 Freeman1（人脸旋转，36.81%）和 Jogging（形变与遮挡，23.13%）序列中，由于目标外观结构发生变化导致像素灰度分布改变，CSK 依然无法有效跟踪。此外，与 MOSSE 一样，CSK 缺乏尺度估计机制，导致在 Dog1 等尺度变化序列上，虽然 Precision 高达 98.22%，但 Average IoU 仅为 0.5533，预测框无法贴合目标大小。
+
+
+【更新中】
+
+## 代码
+
+代码已上传至 GitHub：  
+https://github.com/Dingnuooo/course-ComputerVision/tree/main/track
