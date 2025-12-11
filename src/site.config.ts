@@ -82,7 +82,7 @@ export const theme: ThemeUserConfig = {
     /** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
     credits: true,
     /** Optional details about the social media accounts for this site. */
-    social: { github: 'https://github.com/Dingnuooo/astro-site',
+    social: { github: 'https://github.com/Dingnuooo',
       bilibili: 'https://space.bilibili.com/90563238',
       netease: 'https://music.163.com/#/user/home?id=384322136',
       // change ins. icon to xiaohongshu

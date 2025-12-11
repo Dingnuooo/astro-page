@@ -102,7 +102,7 @@ export default defineConfig({
         updateStyle(),
         addTitle(),
         addLanguage(),
-        addCopyButton(2000)
+        addCopyButton(2000), // timeout in ms
       ]
     }
   },
