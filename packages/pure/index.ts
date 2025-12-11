@@ -10,7 +10,7 @@ import UnoCSS from 'unocss/astro'
 
 import rehypeExternalLinks from './plugins/rehype-external-links'
 import rehypeTable from './plugins/rehype-table'
-// add remarkImageSize
+// Dingnuooo changes//remarkImageSize
 import { remarkAddZoomable, remarkImageSize, remarkReadingTime } from './plugins/remark-plugins'
 import { vitePluginUserConfig } from './plugins/virtual-user-config'
 import { UserConfigSchema, type UserInputConfig } from './types/user-config'
