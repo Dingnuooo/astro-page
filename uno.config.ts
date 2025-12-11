@@ -1,3 +1,4 @@
+import type { TypographyOptions } from '@unocss/preset-typography'
 import { defineConfig, presetMini, presetTypography, type Rule } from 'unocss'
 
 import { integ } from './src/site.config.ts'
@@ -7,41 +8,41 @@ const typographyCustom = integ.typography || {}
 const fg = 'hsl(var(--foreground) / var(--un-text-opacity, 1))'
 const fgMuted = 'hsl(var(--muted-foreground) / var(--un-text-opacity, 1))'
 const bgMuted = 'hsl(var(--muted) / var(--un-bg-opacity, 1))'
+const border = 'var(--un-default-border-color)'
+const radius = 'var(--radius)'
 
-const typographyConfig = {
+const typographyConfig: TypographyOptions = {
+  colorScheme: {
+    body: fgMuted,
+    headings: fg,
+    // "lead": [600, 400],
+    links: fg,
+    bold: fg,
+    counters: 'hsl(var(--muted-foreground) / 0.6)',
+    bullets: 'hsl(var(--muted-foreground) / 0.4)',
+    hr: 'hsl(var(--muted-foreground) / 0.4)',
+    quotes: fgMuted,
+    // 'quote-borders': [200, 700],
+    // captions: [500, 400],
+    kbd: fg,
+    // 'kbd-shadows': [900, "white"],
+    code: fg,
+    'pre-code': fgMuted,
+    // 'pre-bg': [800, 'rgb(0 0 0 / 50%)'],
+    'th-borders': border,
+    'td-borders': border
+  },
   cssExtend: {
     // Title
     'h2,h3,h4,h5,h6': {
-      'scroll-margin-top': '4rem',
-      'font-weight': '500',
-      color: fg
-    },
-    // 设置各级标题的字号
-    h2: {
-      'font-size': '1.8rem', // 30px - 二级标题
-      'line-height': '2.25rem'
-    },
-    h3: {
-      'font-size': '1.5rem', // 24px - 三级标题
-      'line-height': '2rem'
-    },
-    h4: {
-      'font-size': '1.25rem', // 20px - 四级标题
-      'line-height': '1.75rem'
-    },
-    h5: {
-      'font-size': '1.125rem', // 18px - 五级标题
-      'line-height': '1.75rem'
-    },
-    h6: {
-      'font-size': '1rem', // 16px - 六级标题
-      'line-height': '1.5rem'
+      'scroll-margin-top': '4rem'
     },
     'h1>a,h2>a,h3>a,h4>a,h5>a,h6>a': {
       'margin-inline-start': '0.75rem',
       color: fgMuted,
       transition: 'opacity 0.2s ease',
-      opacity: '0'
+      opacity: '0',
+      'user-select': 'none'
     },
     'h1>a:focus,h2>a:focus,h3>a:focus,h4>a:focus,h5>a:focus,h6>a:focus': {
       opacity: 1
@@ -52,24 +53,38 @@ const typographyConfig = {
     'h1:target>a,h2:target>a,h3:target>a,h4:target>a,h5:target>a,h6:target>a': {
       opacity: 1
     },
-
-    pre: {
-      color: fg
+    // Links
+    a: {
+      'word-wrap': 'break-word',
+      'word-break': 'break-word',
+      'overflow-wrap': 'anywhere'
     },
-    '.dark blockquote': {
-      color: 'hsl(var(--muted-foreground))'
+    // Inline code
+    ':not(pre) > code': {
+      'white-space': 'pre-wrap',
+      'word-break': 'break-all'
     },
-    '.dark :not(pre) > code': {
-      color: 'hsl(var(--foreground))'
-    },
-    
+    ...(typographyCustom.inlineCodeBlockStyle === 'modern' && {
+      ':not(pre) > code': {
+        padding: '0.3em 0.5em',
+        border: `1px solid ${border}`,
+        'border-radius': radius,
+        'background-color': bgMuted
+      },
+      ':not(pre)>code::before': {
+        content: 'none'
+      },
+      ':not(pre)>code::after': {
+        content: 'none'
+      }
+    }),
     // Blockquote
     blockquote: {
       position: 'relative',
       overflow: 'hidden',
       'border-width': '1px',
-      'border-left': 'inherit',
-      'border-radius': 'var(--radius)',
+      'border-inline-start-color': 'inherit',
+      'border-radius': `calc(1.5 * ${radius})`,
       'padding-inline': '1.6rem',
       'box-shadow': '0 5px 0 ' + bgMuted,
       ...(typographyCustom.blockquoteStyle === 'normal' && { 'font-style': 'normal' })
@@ -87,124 +102,44 @@ const typographyConfig = {
       opacity: '0.1'
     },
     // Table
-    table: {
-      display: 'block',
-      'font-size': '.875em'
-    },
-    'table tr': {
-      'border-bottom-width': '1px'
-    },
-    'tbody tr:last-child': {
-      'border-bottom-width': '0'
-    },
-    'thead th': {
-      'font-weight': '500',
-      color: fg
-    },
-    'td, th': {
-      border: 'inherit',
-      'text-align': 'start',
-      padding: '0.57em'
-    },
+    table: { display: 'block', 'font-size': '.875em' },
+    'table tr': { 'border-bottom-width': '1px' },
+    'tbody tr:last-child': { 'border-bottom-width': '0' },
+    'thead th': { 'font-weight': '500', color: fg },
+    'td, th': { border: 'inherit', 'text-align': 'start', padding: '0.57em' },
     'thead th:first-child,thead th:first-child,tbody td:first-child,tfoot td:first-child': {
       'padding-inline-start': '0'
     },
     // List
-    'ol, ul': {
-      'padding-left': '1.625em'
-    },
-    'ol>li, ul>li': {
-      'padding-inline-start': '.375em'
-    },
-    'ul>li::marker': {
-      color: fgMuted,
-      '--un-text-opacity': '0.35'
-    },
-    li: {
-      'margin-top': '.5em',
-      'margin-bottom': '.5em'
-    },
-    // Inline code
-    ...(typographyCustom.inlineCodeBlockStyle === 'modern' && {
-      ':not(pre) > code': {
-        padding: '0.3em 0.5em',
-        border: '1px solid hsl(var(--border) / 1)',
-        'border-radius': 'var(--radius)',
-        'background-color': 'hsl(var(--muted) / var(--un-bg-opacity, 1))'
-      },
-      ':not(pre)>code::before,:not(pre)>code::after': {
-        content: 'none'
-      }
-    }),
+    'ol, ul': { 'padding-inline-start': '1.625em' },
+    'ol>li, ul>li': { 'padding-inline-start': '.375em' },
+    li: { 'margin-top': '.5em', 'margin-bottom': '.5em' },
     // Others
-    img: {
-      'border-radius': 'var(--radius)',
-      margin: '0 auto'
-    },
-    hr: {
-      '--un-prose-hr': 'hsl(var(--border) / 1)'
-    },
+    img: { 'border-radius': radius, margin: '0 auto' },
     kbd: {
-      color: fg,
-      'border-color': 'hsl(var(--border) / 1)',
-      'box-shadow':
-        '0 0 0 1px hsl(var(--primary-foreground) / 1), 0 3px hsl(var(--primary-foreground) / 1)'
+      'border-color': border,
+      'box-shadow': '0 0 0 1px hsl(var(--card) / 1), 0 3px hsl(var(--card) / 1)'
     },
-    strong: {
-      'font-weight': '600',
-      color: fg
-    },
-    a: {
-      'word-wrap': 'break-word',
-      'word-break': 'break-word',
-      'overflow-wrap': 'anywhere',
-      'font-weight': '500',
-      color: fg
-    },
-    'code:not(pre code)': {
-      'white-space': 'pre-wrap!important',
-      'word-break': 'break-all!important'
-    },
-    'sup>a': {
-      'scroll-margin-top': '4rem'
-    }
+    'sup>a': { 'scroll-margin-top': '4rem' }
   }
 }
 
 const themeColors = {
-  border: 'hsl(var(--border) / <alpha-value>)',
-  input: 'hsl(var(--input) / <alpha-value>)',
-  ring: 'hsl(var(--ring) / <alpha-value>)',
-  background: 'hsl(var(--background) / <alpha-value>)',
+  // Primary
+  primary: 'hsl(var(--primary) / <alpha-value>)',
+  // Foreground & background
   foreground: 'hsl(var(--foreground) / <alpha-value>)',
-  primary: {
-    DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
-    foreground: 'hsl(var(--primary-foreground) / <alpha-value>)'
-  },
-  secondary: {
-    DEFAULT: 'hsl(var(--secondary) / <alpha-value>)',
-    foreground: 'hsl(var(--secondary-foreground) / <alpha-value>)'
-  },
-  destructive: {
-    DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
-    foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)'
-  },
+  background: 'hsl(var(--background) / <alpha-value>)',
   muted: {
     DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
     foreground: 'hsl(var(--muted-foreground) / <alpha-value>)'
   },
-  accent: {
-    DEFAULT: 'hsl(var(--accent) / <alpha-value>)',
-    foreground: 'hsl(var(--accent-foreground) / <alpha-value>)'
-  },
-  popover: {
-    DEFAULT: 'hsl(var(--popover) / <alpha-value>)',
-    foreground: 'hsl(var(--popover-foreground) / <alpha-value>)'
-  },
-  card: {
-    DEFAULT: 'hsl(var(--card) / <alpha-value>)',
-    foreground: 'hsl(var(--card-foreground) / <alpha-value>)'
-  }
+  card: 'hsl(var(--card) / <alpha-value>)',
+
+  // Basic
+  border: 'hsl(var(--border) / <alpha-value>)',
+  input: 'hsl(var(--input) / <alpha-value>)',
+  ring: 'hsl(var(--ring) / <alpha-value>)'
 }
 
 const rules: Rule<object>[] = [
@@ -223,17 +158,16 @@ const rules: Rule<object>[] = [
       'border-width': '0'
     }
   ],
+  ['object-cover', { 'object-fit': 'cover' }],
+  ['bg-cover', { 'background-size': 'cover' }],
   [
-    'object-cover',
-    {
-      'object-fit': 'cover'
-    }
-  ],
-  [
-    'bg-cover',
-    {
-      'background-size': 'cover'
-    }
+    /^line-clamp-(\d+)$/,
+    ([, d]) => ({
+      overflow: 'hidden',
+      display: '-webkit-box',
+      '-webkit-box-orient': 'vertical',
+      '-webkit-line-clamp': d
+    })
   ]
 ]
 

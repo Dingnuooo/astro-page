@@ -10,6 +10,8 @@ export const theme: ThemeUserConfig = {
   description: 'Never put down your hammer.',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
   favicon: '/favicon/favicon.ico',
+  /** The default social card image for your site which should be a path to an image in the `public/` directory. */
+  socialCard: '/images/social-card.png',
   /** Specify the default language for this site. */
   locale: {
     lang: 'en-US',
@@ -24,13 +26,12 @@ export const theme: ThemeUserConfig = {
   },
   /** Set a logo image to show in the homepage. */
   logo: {
-    src: 'src/assets/avatar.png',
+    src: '/src/assets/avatar.png',
     alt: 'Avatar'
   },
 
-  // === Global configuration ===
   titleDelimiter: '•',
-  prerender: true,
+  prerender: true, // pagefind search is not supported with prerendering disabled
   npmCDN: 'https://cdn.jsdelivr.net/npm',
 
   // Still in test
@@ -109,8 +110,8 @@ export const theme: ThemeUserConfig = {
 }
 
 export const integ: IntegrationUserConfig = {
-  // Links management
-  // See: https://astro-pure.js.org/docs/integrations/links
+  // [Links]
+  // https://astro-pure.js.org/docs/integrations/links
   links: {
     // Friend logbook
     logbook: [
@@ -126,31 +127,40 @@ export const integ: IntegrationUserConfig = {
       { name: 'Desc', val: theme.description || 'Null' },
       { name: 'Link', val: 'https://dingnuooo.top/' },
       { name: 'Avatar', val: 'https://dingnuooo.top/favicon/favicon.ico' }
-    ]
+    ],
+    // Cache avatars in `public/avatars/` to improve user experience.
+    cacheAvatar: false
   },
-  // Enable page search function
+  // [Search]
   pagefind: true,
   // Add a random quote to the footer (default on homepage footer)
   // See: https://astro-pure.js.org/docs/integrations/advanced#web-content-render
+  // [Quote]
   quote: {
+    // - Hitokoto
     // https://developer.hitokoto.cn/sentence/#%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80
     // server: 'https://v1.hitokoto.cn/?c=i',
-    // target: (data) => (data as { hitokoto: string }).hitokoto || 'Error'
+    // target: `(data) => (data.hitokoto || 'Error')`
+    // - Quoteable
     // https://github.com/lukePeavey/quotable
-    server: 'https://api.quotable.io/quotes/random?maxLength=60',
-    target: `(data) => data[0].content || 'Error'`
+    // server: 'http://api.quotable.io/quotes/random?maxLength=60',
+    // target: `(data) => data[0].content || 'Error'`
+    // - DummyJSON
+    server: 'https://dummyjson.com/quotes/random',
+    target: `(data) => (data.quote.length > 80 ? \`\${data.quote.slice(0, 80)}...\` : data.quote || 'Error')`
   },
-  // UnoCSS typography
-  // See: https://unocss.dev/presets/typography
+  // [Typography]
+  // https://unocss.dev/presets/typography
   typography: {
-    class: 'prose text-base text-muted-foreground',
-    // The style of blockquote font, normal or italic (default to italic in typography)
+    class: 'prose text-base',
+    // The style of blockquote font `normal` / `italic` (default to italic in typography)
     blockquoteStyle: 'italic',
-    // The style of inline code block, code or modern (default to code in typography)
+    // The style of inline code block `code` / `modern` (default to code in typography)
     inlineCodeBlockStyle: 'modern'
   },
+  // [Lightbox]
   // A lightbox library that can add zoom effect
-  // See: https://astro-pure.js.org/docs/integrations/others#medium-zoom
+  // https://astro-pure.js.org/docs/integrations/others#medium-zoom
   mediumZoom: {
     enable: true, // disable it will not load the whole library
     selector: '.prose .zoomable',

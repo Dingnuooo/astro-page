@@ -11,7 +11,7 @@ import { Aside } from 'astro-pure/user'
 This theme has integrated with:
 
 - `sharp`: image optimization
-- [`@playform/compress`](/docs/integrations/others#playformcompress): HTML, CSS, JS, images minify
+- [`@playform/compress`](/docs/integrations/others#playformcompress): HTML, CSS, JS, images minify (has problems for a while; see [GitHub Issue #55](https://github.com/cworld1/astro-theme-pure/issues/55))
 
 ## CDN
 
@@ -94,7 +94,7 @@ Using this, it will transform your images to a WebP format. `.md` and `.mdx` fil
 
 ### Change Image Size
 
-Althought this theme has integrated with some known image optimization plugins, you way still need to optimize your images for some key pages like homepage.
+Although this theme has integrated with some known image optimization plugins, you way still need to optimize your images for some key pages like homepage.
 
 A easy way is using online tools like [TinyPNG](https://tinypng.com/) to manually compress your images.
 
@@ -102,7 +102,7 @@ A easy way is using online tools like [TinyPNG](https://tinypng.com/) to manuall
 
 If you are using external images, excepting the lazy-load tag, you can also add [Astro pre-optimize service](https://docs.astro.build/en/guides/images/#authorizing-remote-images) for it. This will change external images to local optimized ones.
 
-```js title="astro.config.mjs"
+```js title="astro.config.ts"
 export default defineConfig({
   // ...
   image: {
@@ -113,3 +113,23 @@ export default defineConfig({
 ```
 
 <Aside type='caution'>This may have a bad work for svg files.</Aside>
+
+## File Size Analysis
+
+Install npm package `rollup-plugin-visualizer`. Then append the following code to your `astro.config.ts`:
+
+```ts title="astro.config.ts"
+export default defineConfig({
+  // ...
+  vite: {
+    plugins: [
+      visualizer({
+        emitFile: true,
+        filename: 'stats.html'
+      })
+    ]
+  }
+})
+```
+
+Build your project and open the generated `stats.html` file to analyze your bundle size. After that finish, you can remove the above code and package to keep your project clean.
