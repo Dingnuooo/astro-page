@@ -51,30 +51,30 @@ export default defineConfig({
 
   //-----------------------
   // 这一段是旧版的，新版当中删除掉了
-  integrations: [
-    // astro-pure will automatically add sitemap, mdx & unocss
-    // sitemap(),
-    // mdx(),
-    AstroPureIntegration(config),
-    // (await import('@playform/compress')).default({
-    //   SVG: false,
-    //   Exclude: ['index.*.js']
-    // }),
-    sitemap({
-      priority: 1.0,
-      lastmod: new Date('2025-11-01'),
-    }),
-    // Temporary fix vercel adapter
-    // static build method is not needed
-  ],
-  // root: './my-project-directory',
+  // integrations: [
+  //   // astro-pure will automatically add sitemap, mdx & unocss
+  //   // sitemap(),
+  //   // mdx(),
+  //   AstroPureIntegration(config),
+  //   // (await import('@playform/compress')).default({
+  //   //   SVG: false,
+  //   //   Exclude: ['index.*.js']
+  //   // }),
+  //   sitemap({
+  //     priority: 1.0,
+  //     lastmod: new Date('2025-11-01'),
+  //   }),
+  //   // Temporary fix vercel adapter
+  //   // static build method is not needed
+  // ],
+  // // root: './my-project-directory',
 
-  // Prefetch Options
-  prefetch: true,
-  // Server Options
-  server: {
-    host: true
-  },
+  // // Prefetch Options
+  // prefetch: true,
+  // // Server Options
+  // server: {
+  //   host: true
+  // },
   //-----------------------
 
   // [Markdown]

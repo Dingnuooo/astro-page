@@ -3,7 +3,7 @@ import type { GetStaticPaths, Page } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
 import { Paginator } from 'astro-pure/components/pages'
-import { PostPreview } from '../../packages/astro-pure/components/pages/index.ts'
+import { PostPreview } from 'packages/pure/components/pages/index.ts'
 import { getBlogCollection, getUniqueTagsWithCount, sortMDByDate } from 'astro-pure/server'
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'

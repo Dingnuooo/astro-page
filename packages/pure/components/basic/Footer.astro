@@ -6,44 +6,29 @@ import { Icon } from '../user'
 const footerConf = config.footer
 let social = footerConf.social || {}
 
-// If the list does not contain rss, add it
-social.rss = {
-  label: 'RSS',
-  url: '/rss.xml'
-}
+// If the list does not contain rss, add it.
+// Comment out this section of code to hide the RSS button
+// social.rss = {
+//   label: 'RSS',
+//   url: '/rss.xml'
+// }
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
 
 <footer class='mx-auto mb-5 mt-16 w-full'>
-  <div class='border-t pt-5'>
+  <div class='border-t pt-3'>
     <div class='flex items-center gap-y-3 max-sm:flex-col sm:justify-between sm:gap-y-0'>
       <div
-        class='flex items-center gap-x-4 gap-y-2 text-muted-foreground max-sm:flex-col [&_a]:text-foreground'
+        class='flex items-center gap-x-4 gap-y-2 text-muted-foreground max-sm:flex-col [&_a]:text-foreground text-sm'
       >
-        {/* Position 1 */}
-        {
-          footerLink1.length > 0 && (
-            <div>
-              {footerLink1.map(({ title, link, style }, index) => (
-                <span>
-                  <a href={link} target='_blank' class={style}>
-                    {title}
-                  </a>
-                  {index < footerLink1.length - 1 && ' • '}
-                </span>
-              ))}
-            </div>
-          )
-        }
-        {/* Position 2 */}
+        {/* year & author */}
         <div>
           {config.footer.year}
           {config.author}
           {
             footerConf.links && footerConf.links.length > 0 && (
               <>
-                &
                 <span>
                   {footerConf.links
                     .filter(({ pos }) => pos === 2)
@@ -59,20 +44,36 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             )
           }
         </div>
+        {/* Powered by */}
         {
           footerConf.credits && (
             <span>
+              Powered by
               <a href='https://github.com/withastro/astro' target='_blank'>
                 Astro
               </a>
               &
-              <a href='https://github.com/cworld1/astro-theme-pure' target='_blank'>
-                Pure
-              </a>
-              theme powered
+              Theme.<a href='https://github.com/cworld1/astro-theme-pure' target='_blank' rel="noopener noreferrer">Pure</a>
             </span>
           )
         }
+        {/* ICP */}
+        {
+          footerLink1.length > 0 && (
+            <div>
+              {footerLink1.map(({ title, link, style }, index) => (
+                <span>
+                  <a href={link} target='_blank' class={style}>
+                    {title}
+                  </a>
+                  {index < footerLink1.length - 1 && ' • '}
+                </span>
+              ))}
+            </div>
+          )
+        }
+        
+        
       </div>
 
       {/* Social Brands */}
@@ -84,6 +85,8 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
                 class='inline-block text-muted-foreground transition-all hover:text-muted-foreground/75'
                 href={url}
                 aria-label={label}
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 <Icon name={platform as keyof typeof footerConf.social} />
               </a>
