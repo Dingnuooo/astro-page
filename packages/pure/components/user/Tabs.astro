@@ -81,6 +81,7 @@ if (isSynced) {
             <li role='presentation' class='tab'>
               <a
                 role='tab'
+                draggable="false"
                 href={'#' + panelId}
                 id={tabId}
                 aria-selected={idx === 0 ? 'true' : 'false'}
@@ -127,6 +128,7 @@ if (isSynced) {
     color: hsl(var(--foreground) / var(--un-text-opacity, 1));
     outline-offset: -0.1875rem;
     overflow-wrap: initial;
+    white-space: nowrap;
   }
   .tab [role='tab'][aria-selected='true'] {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
