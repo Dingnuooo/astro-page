@@ -157,7 +157,7 @@ $$
 
 其中 $(x,y)=(x_0+\theta\Delta x,y_0+\theta\Delta y)$
 
-注意，用 Taylor 算高阶导数，==除了要乘以 $k!$，还要除以 $C_k^m$（二项式系数）!!!==
+注意，用 Taylor 算高阶导数，**除了要乘以 $k!$，还要除以 $C_k^m$（二项式系数）!!!**
 
 ### 9.9 隐函数存在定理
 - 若
@@ -212,7 +212,7 @@ $\vec f=\left\{\begin{matrix}u=u(x,y)\\v=v(x,y)\end{matrix}\right.$，把 $\vec 
 ### 9.14 条件极值
 条件极值点必要条件：Lagrange 乘数法，即将条件塞进同一个函数（Lagrange 函数 $L(x_1,\cdots,x_n,\lambda_1,\cdots,\lambda_m)$）求这个函数的无条件极值
 
-条件极值判定定理：对某一点，把 Lagrange 函数泰展到二次，考虑==只含 $x$ 的==二次项系数构成的二次型矩阵的定性（因为作为限制条件，$\lambda$ 取值是固定的，在泰展中取值只能是本身，不存在变数），正定则为该点极小值点，负定则该点为极大值点，不定则==情况不定==（限制条件内可能恒正或恒负）.
+条件极值判定定理：对某一点，把 Lagrange 函数泰展到二次，考虑**只含 $x$ 的**二次项系数构成的二次型矩阵的定性（因为作为限制条件，$\lambda$ 取值是固定的，在泰展中取值只能是本身，不存在变数），正定则为该点极小值点，负定则该点为极大值点，不定则**情况不定**（限制条件内可能恒正或恒负）.
 
 ## Chapter 10 重积分
 
@@ -256,7 +256,8 @@ $\left\{\begin{aligned}x&=r\sin\varphi\cos\theta\\y&=r\sin\varphi\sin\theta\\z&=
 其中 $\varphi$ 是向径与 $+z$ 的夹角，$0\leqslant\varphi\leqslant\pi$，$0\leqslant\theta<2\pi$. $(\frac12\pi-\varphi)$ 才是仰角
 
 （$n$ 重）球坐标变换  
-$\left\{\begin{aligned}x_1&=r\cos\varphi_1\\x_2&=r\ {\color{red}\sin\varphi_1}\cos\varphi_2\\x_3&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\cos\varphi_3\\x_4&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cos\varphi_4\\\vdots\\x_{n-1}&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cdots\ {\color{red}\sin\varphi_{n-2} }\cos\varphi_{n-1}\\x_n&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cdots\ {\color{red}\sin\varphi_{n-2} }\ {\color{red}\sin\varphi_{n-1} }\end{aligned}\right.$，Jacobi $=r^{n-1}\sin^{n-2}\varphi_1\sin^{n-3}\varphi_2\cdots\sin\varphi_{n-2}{}$.  
+$\left\{\begin{aligned}x_1&=r\cos\varphi_1\\x_2&=r\ {\color{red}\sin\varphi_1}\cos\varphi_2\\x_3&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\cos\varphi_3\\x_4&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cos\varphi_4\\\vdots\\x_{n-1}&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cdots\ {\color{red}\sin\varphi_{n-2} }\cos\varphi_{n-1}\\x_n&=r\ {\color{red}\sin\varphi_1}\ {\color{red}\sin\varphi_2}\ {\color{red}\sin\varphi_3}\cdots\ {\color{red}\sin\varphi_{n-2} }\ {\color{red}\sin\varphi_{n-1} }\end{aligned}\right.$  
+Jacobi $=r^{n-1}\sin^{n-2}\varphi_1\sin^{n-3}\varphi_2\cdots\sin\varphi_{n-2}{}$.  
 把三元球坐标变换的 $z$ 提前，就和这个形式一样了. 各个角度的理解：要把 $n$ 维空间想象成一个平面+ $(n-2)$ 个竖直轴. $\varphi_{n-1}{}$ 是平面指向角，相当于以前的 $\theta\in[0,2\pi)$，这个角是不出现在 Jacobi 里头的. 其他就是相对于各个竖直轴正向的夹角 $\in [0,\pi]$
 
 ## Chapter 11 曲线积分与曲面积分
@@ -275,7 +276,7 @@ $\left\{\begin{aligned}x_1&=r\cos\varphi_1\\x_2&=r\ {\color{red}\sin\varphi_1}\c
 	- ${\rm d}S=\sqrt{EG-F^2}{\rm d}u {\rm d}v$，其中 $E=\vec{r_u}\cdot\vec{r_u}{}$，$G=\vec{r_v}\cdot\vec{r_v}{}$，$F=\vec{r_u}\cdot\vec{r_v}{}$
 	- ${\rm d}S=\sqrt{J_1^2+J_2^2+J_3^2}{\rm d}u {\rm d}v$，其中 $(J_1,J_2,J_3)=\left(\dfrac{\partial(y,z)}{\partial(u,v)},\dfrac{\partial(z,x)}{\partial(u,v)},\dfrac{\partial(x,y)}{\partial(u,v)}\right)$，与 $\vec n$ 的方向一致.  
 - 第二类曲面积分
-	- ==${\rm d}\vec{S}=({\rm d}y{\rm d}z,{\rm d}z {\rm d}x,{\rm d}x{\rm d}y)$==
+	- ${\rm d}\vec{S}=({\rm d}y{\rm d}z,{\rm d}z {\rm d}x,{\rm d}x{\rm d}y)$
 	- ${\rm d}\vec{S}=\dfrac{\vec n}{|\vec n|}{\rm d}S=(\cos\alpha,\cos\beta,\cos\gamma){\rm d}S$，代入上面合适的 ${\rm d}S$ 计算公式即可. 特别地，选择第三个公式时 ${\rm d}\vec S=\left(\dfrac{\partial(y,z)}{\partial(u,v)},\dfrac{\partial(z,x)}{\partial(u,v)},\dfrac{\partial(x,y)}{\partial(u,v)}\right){\rm d}u{\rm d}v$   
 	- 计算时，先用第一条把 ${\rm d}\vec S$ 分出来，写成一个向量点乘形式（$(P,Q,R)\cdot{\rm d}\vec S$），再用第二条把 ${\rm d}\vec S$ 变成向量数乘以 ${\rm d}S$，化成第一类曲面积分.
   
@@ -429,7 +430,7 @@ Weierstrass 判别法/ M 判别法：若 $\forall x\in D$，成立 $|u_n(x)|\leq
 A-D 判别法
 - Abel 判别法：单调一致有界 $\times$ 部分和函数一致收敛
 - Dirichlet 判别法：单调一致趋零 $\times$ 部分和函数一致有界
-- 注：其中“单调”指的是对任意==固定的 $x_0$==，数列 $\{a_n(x_0)\}{}$ ==随 $n$ 单调==；“一致有界”指的是对一切 $n$，函数值域有一个一致的界；“一致趋零”指的是随着 $n\to 0$，函数通项趋于 $f(x)\equiv 0$.
+- 注：其中“单调”指的是对任意**固定的 $x_0$**，数列 $\{a_n(x_0)\}{}$ **随 $n$ 单调**；“一致有界”指的是对一切 $n$，函数值域有一个一致的界；“一致趋零”指的是随着 $n\to 0$，函数通项趋于 $f(x)\equiv 0$.
 - 注：$\sum\limits\cos kx$、$\sum\limits\sin kx$ 在 $(0,2\pi)$ 内闭一致有界.
 
 ### 13.4 一致收敛的性质
@@ -439,12 +440,12 @@ A-D 判别法
 
 可逐项推不出一致收敛. 
 
-Dini 定理：若①闭区间上 $u_n(x)$ 连续、② $\sum\limits u_n(x)$ 点态收敛、③部分和函数对任意==固定的 $x_0$ 随 $n$ 单调==（对任意固定的 $x_0$，$\sum\limits u_n(x_0)$ 是定号级数，要么正项要么负项），则 $\sum\limits u_n(x)$ 一致收敛.
+Dini 定理：若①闭区间上 $u_n(x)$ 连续、② $\sum\limits u_n(x)$ 点态收敛、③部分和函数对任意**固定的 $x_0$ 随 $n$ 单调**（对任意固定的 $x_0$，$\sum\limits u_n(x_0)$ 是定号级数，要么正项要么负项），则 $\sum\limits u_n(x)$ 一致收敛.
 
 ### 13.5 幂级数及其性质
 形式：$\sum\limits a_n(x-x_0)^n$
 
-收敛域：是以 $x_0$ 为中心的区间（Abel 第一定理），==端点收敛情况不一定，需要单独判断==. 区间长度的一半称为收敛半径，收敛半径 $R=+\infty$ 表示对一切 $x$ 幂级数都收敛，收敛半径 $R=0$ 表示只有 $x_0$ 点处幂级数收敛.
+收敛域：是以 $x_0$ 为中心的区间（Abel 第一定理），**端点收敛情况不一定，需要单独判断**. 区间长度的一半称为收敛半径，收敛半径 $R=+\infty$ 表示对一切 $x$ 幂级数都收敛，收敛半径 $R=0$ 表示只有 $x_0$ 点处幂级数收敛.
 
 收敛半径计算公式：$R=\dfrac1A$，$A=0$ 时 $R=+\infty$，$A=+\infty$ 时 $R=0$
 - Cauchy-Hadamard 公式：$A=\limsup\limits_{n\to\infty}\sqrt[n]{|a_n|}{}$
@@ -452,8 +453,8 @@ Dini 定理：若①闭区间上 $u_n(x)$ 连续、② $\sum\limits u_n(x)$ 点�
 
 幂级数在收敛域的内闭区间上一致收敛（Abel 第二定理）. 据此推出：
 - 幂级数的和函数在收敛域上连续，端点开则开连，闭则闭连. 
-- 幂级数在收敛域的内闭区间上可逐项积分，积分后收敛半径不变. ==注意积完之后求和从哪里开始==. 一般可以由连续性将这一性质推广到开区间上. 
-- 幂级数在收敛域内可逐项求导，求导后收敛半径不变. ==注意导完之后求和从哪里开始==. ==注意闭端点不是收敛域的内部==.
+- 幂级数在收敛域的内闭区间上可逐项积分，积分后收敛半径不变. **注意积完之后求和从哪里开始**. 一般可以由连续性将这一性质推广到开区间上. 
+- 幂级数在收敛域内可逐项求导，求导后收敛半径不变. **注意导完之后求和从哪里开始**. **注意闭端点不是收敛域的内部**.
 
 ### 13.6 函数的幂级数展开
 说一个函数可以展开成级数，就是说级数一致收敛于这个函数，函数和级数之间可以画等号.
@@ -499,7 +500,7 @@ Taylor 级数的余项：Peano、Lagrange，补充一个积分形式余项，$r_
 瑕点：无穷远点/函数值为无穷大的点. 把被积区间划分成若干只含一个或不含瑕点的部分，每段单独看. 
 - 对于不含瑕点的，直接积分即可
 - 对于无穷远瑕点，若  $\lim\limits_{A\to\infty}{\displaystyle\int}_a^Af(x){\rm d}x$ 存在则收敛. p-积分 ${\displaystyle\int}_1^{+\infty}\dfrac{1}{x^p}{\rm d}x$，$p>1$ 收敛，$p\leqslant1$ 发散.
-- 对于无穷大瑕点，若  $\lim\limits_{\eta\to0^+}{\displaystyle\int}_{a+\eta}^bf(x){\rm d}x$ 存在则收敛. p-瑕积分 ${\displaystyle\int}_a^b\dfrac{1}{(x-a)^p}{\rm d}x$，$0<p<1$ 收敛，$p\geqslant1$ 发散. ==这与 p-积分结论相反==
+- 对于无穷大瑕点，若  $\lim\limits_{\eta\to0^+}{\displaystyle\int}_{a+\eta}^bf(x){\rm d}x$ 存在则收敛. p-瑕积分 ${\displaystyle\int}_a^b\dfrac{1}{(x-a)^p}{\rm d}x$，$0<p<1$ 收敛，$p\geqslant1$ 发散. **这与 p-积分结论相反**
 - 如果两个端点都是瑕点，则两个极限过程都收敛整体才收敛，且极限过程都是独立的
 
 ### 14.2 无穷积分敛散性判断
@@ -513,7 +514,7 @@ Cauchy 判别法，本质是与 p-积分比较，不如直接用比较判别法
 
 A-D 判别法
 - 积分第二中值定理：单调的提前，代入端点，代哪端积分靠哪侧. $f$、$g$ 在 $[a,b]$ 可积，$f$ 在 $[a,b]$ 单调，则 $\exists\xi\in[a,b] \ \text{s.t.}\ {\displaystyle\int}_a^bf(x)g(x){\rm d}x=f(a){\displaystyle\int}_a^\xi g(x){\rm d}x+f(b){\displaystyle\int}_\xi^bg(x){\rm d}x$
-- Abel 判别法：单调有界（==这回是关于 $x$ 单调，注意与函数项级数区分==）$\times$ 无穷积分收敛
+- Abel 判别法：单调有界（**这回是关于 $x$ 单调，注意与函数项级数区分**）$\times$ 无穷积分收敛
 - Dirichlet 判别法：单调趋零 $\times$ 无穷积分有界（指任给积分上界，积分值有界）
 
 绝对收敛必收敛，积分绝对值 $\leqslant$ 绝对值积分. 同样有绝对可积和条件可积

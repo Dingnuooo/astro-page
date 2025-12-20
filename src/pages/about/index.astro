@@ -3,6 +3,7 @@ import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
+import zotero from '@/assets/tools/zotero.png'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
@@ -10,7 +11,7 @@ const headings = [
   // { depth: 2, slug: 'social-networks', text: 'Social Networks' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'about-blog', text: 'About Blog' },
-  { depth: 2, slug: 'sub-site', text: 'Sub Site' }
+  { depth: 2, slug: 'sub-sites', text: 'Sub Sites' }
 ]
 ---
 
@@ -28,8 +29,7 @@ const headings = [
   <h2 id='hobbies'>Hobbies</h2>
   <ul>
     <li>我阅读侦探小说，喜欢新本格和社会派推理.</li>
-    <li>我持续追踪各地高考模拟题。因为怀念高三那年 每天考完试和兄弟们 battle 的快乐.</li>
-    <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏 ( プロセカ / Phigros / Arcaea / maimai ).</li>
+    <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏 ( プロセカ / Phigros / Arcaea / maimai).</li>
     <li>我的人格类型为 INTJ.</li>
   </ul>
 
@@ -58,10 +58,10 @@ const headings = [
         icon: import('@/assets/tools/obsidian.svg?raw')
       },
       {
-        name: 'Typora',
+        name: 'Zotero',
         description: 'Markdown Editor',
-        href: 'https://typora.io/',
-        icon: import('@/assets/tools/typora.svg?raw')
+        href: 'https://www.zotero.org/',
+        icon: zotero
       }
     ]}
   />
@@ -211,18 +211,18 @@ const headings = [
     </li>
     <!-- <li>Resources speedup: <a href='https://cdn.cbd.int/' target='_blank'>CBD CDN</a></li> -->
     <li>评论与浏览量统计: <a href='https://waline.js.org' target='_blank'>Waline</a>.</li>
-    <li>
+    <!-- <li>
       粉丝数统计: <a href='https://github.com/spencerwooo/substats' target='_blank'
         >Substats</a
       >（未启用）
-    </li>
+    </li> -->
   </ul>
 
-  {/* sub-site */}
-  <h2 id='sub-site'>Sub Site</h2>
+  {/* sub-sites */}
+  <h2 id='sub-sites'>Sub Sites</h2>
   <p>子网站（建设中）</p>
   <ul>
-    <li>Slidev：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
-    <li>Academic-CV：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
+    <li>Presentation Slides：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
+    <li>Academic CV：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
   </ul>
 </PageLayout>

@@ -1,2 +1,2 @@
-cd d:\dingnuooo-astro
+cd /d d:\dingnuooo-astro
 code .
