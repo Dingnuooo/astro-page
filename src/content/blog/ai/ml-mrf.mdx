@@ -240,7 +240,7 @@ $$
 \frac{\partial L_i}{\partial z_{ij}} = p_{ij} - y_{ij}
 $$
 
-代入 $z_{ij}=w_{j}^\mathrm{T}x_i+b_j$ 得
+代入 $z_{ij}=w_{j}^\mathrm{T}x_i$ 得
 $$
 \frac{\partial L_i}{\partial w_j} = \frac{\partial L_i}{\partial z_{ij}} \frac{\partial z_{ij}}{\partial w_j} = (p_{ij} - y_{ij}) x_i
 $$
@@ -256,7 +256,7 @@ $$
 \end{aligned}
 $$
 
-对比：logistic 回归中，采用交叉熵损失时的 loss 梯度 $\dfrac{\partial L}{\partial w}=\dfrac1m\displaystyle\sum\limits_ix_i\big[\sigma(w^\mathrm{T}x_i)-y_i\big]$，其中 $\sigma$ 那一项就是概率，因此在形式上是完全一样的
+作为对比：在 logistic 回归中，loss 梯度 $\dfrac{\partial L}{\partial w}=\dfrac1m\displaystyle\sum\limits_ix_i\big[\sigma(w^\mathrm{T}x_i)-y_i\big]$，其中 $\sigma$ 那一项就是概率，因此在表达式上二者是完全一致的
 
 ### 无向图模型视角
 
