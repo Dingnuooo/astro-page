@@ -61,6 +61,7 @@ export const remarkAddZoomable: Plugin<[{ className?: string }], Root> = functio
       }
     })
   }
+}
 
 export const remarkReadingTime: Plugin<[], Root> =
   () =>
