@@ -68,11 +68,6 @@ export const theme: ThemeUserConfig = {
         link: 'https://icp.gov.moe/?keyword=20254889',
         style: 'text-sm' // Uno/TW CSS class
       },
-      {
-        title: 'Travelling',
-        link: 'https://www.travellings.cn/go.html',
-        style: 'text-sm'
-      },
       // Privacy Policy link
       // {
       //   title: 'Site Policy',
@@ -172,8 +167,9 @@ export const integ: IntegrationUserConfig = {
   waline: {
     enable: true,
     // Server service link
-    // server: 'https://astro-theme-pure-waline.arthals.ink/',
     server: 'https://comment.dingnuooo.top/',
+    // Show meta info for comments
+    showMeta: false,
     // Refer https://waline.js.org/en/guide/features/emoji.html
     emoji: ['bmoji', 'weibo'],
     // Refer https://waline.js.org/en/reference/client/props.html

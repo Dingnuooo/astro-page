@@ -19,7 +19,7 @@ import {
   transformerNotationDiff,
   transformerNotationHighlight,
   transformerRemoveNotationEscape
-} from './src/plugins/shiki-offical/transformers.ts'
+} from './src/plugins/shiki-official/transformers.ts'
 import config from './src/site.config.ts'
 
 // https://astro.build/config
@@ -99,15 +99,25 @@ export default defineConfig({
         dark: 'github-dark'
       },
       transformers: [
+        // Two copies of @shikijs/types (one under node_modules
+        // and another nested under @astrojs/markdown-remark → shiki).
         // Official transformers
+        // @ts-ignore this happens due to multiple versions of shiki types
         transformerNotationDiff(),
+        // @ts-ignore this happens due to multiple versions of shiki types
         transformerNotationHighlight(),
+        // @ts-ignore this happens due to multiple versions of shiki types
         transformerRemoveNotationEscape(),
         // Custom transformers
+        // @ts-ignore this happens due to multiple versions of shiki types
         updateStyle(),
+        // @ts-ignore this happens due to multiple versions of shiki types
         addTitle(),
+        // @ts-ignore this happens due to multiple versions of shiki types
         addLanguage(),
+        // @ts-ignore this happens due to multiple versions of shiki types
         addCopyButton(2000), // timeout in ms
+        // @ts-ignore this happens due to multiple versions of shiki types
         addCollapse(15) // max lines that needs to collapse
       ]
     }
@@ -119,8 +129,6 @@ export default defineConfig({
     // sitemap(),
     // mdx(),
     AstroPureIntegration(config)
-    // Compress recommend
-    // https://docs.astro.build/en/guides/integrations-guide/partytown/
   ],
 
   // [Experimental]
