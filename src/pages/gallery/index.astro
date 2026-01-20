@@ -153,12 +153,13 @@ const highResImages = await Promise.all(
         const hdSrc = img.getAttribute('data-zoom-src')
         if (!hdSrc) return
 
-        // Position loader
+        // Position loader (use absolute positioning with scroll offset)
         if (galleryItem) {
            const rect = galleryItem.getBoundingClientRect()
            const loaderSize = 48
-           loader.style.top = `${rect.top + rect.height / 2 - loaderSize / 2}px`
-           loader.style.left = `${rect.left + rect.width / 2 - loaderSize / 2}px`
+           loader.style.position = 'absolute'
+           loader.style.top = `${rect.top + window.scrollY + rect.height / 2 - loaderSize / 2}px`
+           loader.style.left = `${rect.left + window.scrollX + rect.width / 2 - loaderSize / 2}px`
         }
 
         loader.classList.remove('hidden')
