@@ -1,13 +1,33 @@
 ---
-import { Image } from 'astro:assets'
+import { Image, getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
-import { MediumZoom } from 'astro-pure/advanced'
+import json from './_info.json'
 
 const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
 
 const images = Object.entries(galleryFiles)
   .sort((a, b) => a[0].localeCompare(b[0]))
-  .map(([_, mod]) => (mod as any).default)
+  .map(([path, mod]) => {
+    const defaultMod = (mod as any).default;
+    const filename = path.split('/').pop();
+    const metadata = filename ? (json as any)[filename] : undefined;
+    if (metadata) {
+      defaultMod.metadata = metadata;
+    }
+    return defaultMod;
+  })
+
+// 为每张图片生成高清版本的 URL
+const highResImages = await Promise.all(
+  images.map(img => 
+    getImage({ 
+      src: img, 
+      format: 'webp', 
+      quality: 90,
+      width: img.width > 2000 ? 2000 : img.width
+    })
+  )
+)
 ---
 
 <PageLayout title='Gallery' comment wide>
@@ -15,7 +35,7 @@ const images = Object.entries(galleryFiles)
     {
       images.map((img, index) => (
         <div
-          class='gallery-item'
+          class='gallery-item group'
           style={{
             '--ratio': img.width / img.height
           }}
@@ -25,19 +45,165 @@ const images = Object.entries(galleryFiles)
             alt=''
             height={480}
             class='gallery-img'
-            data-zoom-src={img.src}
-            loading={index < 4 ? 'eager' : 'lazy'}
-            fetchpriority={index < 4 ? 'high' : 'auto'}
+            data-zoom-src={highResImages[index].src}
+            loading={index < 8 ? 'eager' : 'lazy'}
+            fetchpriority={index < 8 ? 'high' : 'auto'}
             format='webp'
+            quality={50}
+            widths={[480, 960]}
           />
+          
+          <button class='info-btn absolute top-2 right-2 z-20 opacity-60 hover:opacity-100 transition-opacity duration-300 ease-in-out p-1.5 rounded-full bg-black/20 text-white backdrop-blur-md border border-white/20 hover:bg-black/40'>
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </button>
+
+          <div class='gallery-overlay hidden absolute inset-0 z-30 flex-col items-center justify-center text-center p-4 bg-black/40 backdrop-blur-md opacity-0 transition-opacity duration-300'>
+             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{img.metadata?.desc || 'No description'}</p>
+             <p class='text-white/80 text-sm font-mono whitespace-pre-line'>{img.metadata?.date || ''}</p>{/*Unknown date*/}
+          </div>
         </div>
       ))
     }
   </div>
-  <MediumZoom selector='.gallery-img' background='rgba(0,0,0,0.8)' />
+  
+  <div id='zoom-loader' class='fixed z-[20000] hidden pointer-events-none rounded-full bg-black/50 p-2'>
+    <div class='loader-spinner'></div>
+  </div>
+
+  <script is:inline type='module'>
+    import mediumZoom from 'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/+esm'
+    
+    // Move loader to body
+    const loader = document.getElementById('zoom-loader')
+    if (loader && loader.parentElement !== document.body) {
+      document.body.appendChild(loader)
+    }
+
+    // Init with empty set
+    const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
+
+    // Logic for Info Button
+    document.querySelectorAll('.info-btn').forEach(btn => {
+       btn.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          const galleryItem = btn.closest('.gallery-item')
+          const overlay = galleryItem.querySelector('.gallery-overlay')
+          if (overlay) {
+             if (overlay.classList.contains('hidden')) {
+               overlay.classList.remove('hidden')
+               overlay.classList.add('flex')
+               // Trigger reflow to enable transition
+               overlay.offsetHeight
+               overlay.classList.remove('opacity-0')
+               overlay.classList.add('opacity-100')
+             } else {
+               overlay.classList.remove('opacity-100')
+               overlay.classList.add('opacity-0')
+               setTimeout(() => {
+                 overlay.classList.add('hidden')
+                 overlay.classList.remove('flex')
+               }, 300)
+             }
+          }
+       })
+    })
+
+    // Logic for Overlay Click (Close)
+    document.querySelectorAll('.gallery-overlay').forEach(overlay => {
+       overlay.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          overlay.classList.remove('opacity-100')
+          overlay.classList.add('opacity-0')
+          setTimeout(() => {
+            overlay.classList.add('hidden')
+            overlay.classList.remove('flex')
+          }, 300)
+       })
+    })
+
+    // Logic for mouse leave - auto hide info
+    document.querySelectorAll('.gallery-item').forEach(item => {
+       item.addEventListener('mouseleave', () => {
+          const overlay = item.querySelector('.gallery-overlay')
+          if (overlay && !overlay.classList.contains('hidden')) {
+             overlay.classList.remove('opacity-100')
+             overlay.classList.add('opacity-0')
+             setTimeout(() => {
+               overlay.classList.add('hidden')
+               overlay.classList.remove('flex')
+             }, 300)
+          }
+       })
+    })
+
+    // Handle clicks manually for images
+    document.querySelectorAll('.gallery-img').forEach(img => {
+      img.addEventListener('click', async (e) => {
+        const galleryItem = img.closest('.gallery-item')
+        const overlay = galleryItem.querySelector('.gallery-overlay')
+        if (overlay && !overlay.classList.contains('hidden')) {
+           return; 
+        }
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        const hdSrc = img.getAttribute('data-zoom-src')
+        if (!hdSrc) return
+
+        // Position loader
+        if (galleryItem) {
+           const rect = galleryItem.getBoundingClientRect()
+           const loaderSize = 48
+           loader.style.top = `${rect.top + rect.height / 2 - loaderSize / 2}px`
+           loader.style.left = `${rect.left + rect.width / 2 - loaderSize / 2}px`
+        }
+
+        loader.classList.remove('hidden')
+        loader.classList.add('block')
+
+        // Load image
+        const temp = new Image()
+        
+        const startZoom = () => {
+           loader.classList.add('hidden')
+           loader.classList.remove('block')
+           
+           zoom.attach(img)
+           zoom.open({ target: img })
+        }
+
+        temp.onload = startZoom
+        temp.onerror = startZoom
+
+        temp.src = hdSrc
+      })
+    })
+
+    // Detach on close to reset state for next click
+    zoom.on('closed', ({ target }) => {
+      zoom.detach(target)
+    })
+  </script>
 </PageLayout>
 
 <style>
+  .loader-spinner {
+    width: 32px;
+    height: 32px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
   .gallery-container {
     --row-height: 240px;
     display: flex;

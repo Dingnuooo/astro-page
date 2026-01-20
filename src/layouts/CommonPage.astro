@@ -13,9 +13,11 @@ interface Props {
   wide?: boolean
 }
 
-const { title, headings, view, comment: enableComment, wide = false, ...props } = Astro.props
+// Dingnuooo changes (wide=false): Gallery wide layout support
+const { title, headings, view, comment: enableComment, wide=false, ...props } = Astro.props
 ---
 
+<!-- Dingnuooo changes ({wide}): Gallery wide layout support -->
 <PageLayout meta={{ title }} {wide} {...props}>
   {headings?.length && <TOC headings={headings} slot='sidebar' />}
 
