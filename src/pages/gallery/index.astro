@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets'
+import PageLayout from '@/layouts/CommonPage.astro'
+import { MediumZoom } from 'astro-pure/advanced'
+
+const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
+
+const images = Object.entries(galleryFiles)
+  .sort((a, b) => a[0].localeCompare(b[0]))
+  .map(([_, mod]) => (mod as any).default)
+---
+
+<PageLayout title='Gallery' comment wide>
+  <div class='gallery-container'>
+    {
+      images.map((img, index) => (
+        <div
+          class='gallery-item'
+          style={{
+            '--ratio': img.width / img.height
+          }}
+        >
+          <Image
+            src={img}
+            alt=''
+            height={480}
+            class='gallery-img'
+            data-zoom-src={img.src}
+            loading={index < 4 ? 'eager' : 'lazy'}
+            fetchpriority={index < 4 ? 'high' : 'auto'}
+            format='webp'
+          />
+        </div>
+      ))
+    }
+  </div>
+  <MediumZoom selector='.gallery-img' background='rgba(0,0,0,0.8)' />
+</PageLayout>
+
+<style>
+  .gallery-container {
+    --row-height: 240px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .gallery-item {
+    height: var(--row-height);
+    flex-basis: calc(var(--row-height) * var(--ratio));
+    flex-grow: var(--ratio);
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .gallery-container {
+      --row-height: 150px;
+    }
+  }
+
+  .gallery-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    vertical-align: bottom;
+    cursor: zoom-in;
+  }
+  
+  :global(.gallery-img.medium-zoom-image--opened) {
+    object-fit: contain;
+    z-index: 9999;
+  }
+
+  /* Last row alignment */
+  .gallery-container::after {
+    content: '';
+    flex-grow: 999999999;
+  }
+</style>

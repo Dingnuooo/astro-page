@@ -50,9 +50,9 @@ export const theme: ThemeUserConfig = {
     menu: [
       { title: 'Blog', link: '/blog' },
       { title: 'Projects', link: '/projects' },
-      // { title: 'Links', link: '/links' },
       { title: 'About', link: '/about' },
-      { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
+      { title: 'Gallery', link: '/gallery' },
+      // { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
     ]
   },
 
@@ -67,6 +67,10 @@ export const theme: ThemeUserConfig = {
         title: '萌ICP备20254889号',
         link: 'https://icp.gov.moe/?keyword=20254889',
         style: 'text-sm' // Uno/TW CSS class
+      },
+      {
+        title: 'Travelling',
+        link: 'https://www.travellings.cn/go.html'
       },
       // Privacy Policy link
       // {

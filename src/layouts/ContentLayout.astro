@@ -10,9 +10,10 @@ interface Props {
   meta: SiteMeta
   highlightColor?: string
   back?: string
+  wide?: boolean
 }
 
-const { meta, highlightColor, back = '/', ...props } = Astro.props
+const { meta, highlightColor, back = '/', wide = false, ...props } = Astro.props
 ---
 
 <PageLayout {meta} {highlightColor} {...props}>
@@ -20,7 +21,10 @@ const { meta, highlightColor, back = '/', ...props } = Astro.props
   <main class='mt-6 items-start gap-x-10 md:flex'>
     {/* Sidebar */}
     <aside
-      class='animate top-20 min-w-48 basis-60 overflow-y-scroll max-md:hidden z-40 fixed md:sticky md:order-2 lg:shrink-0 max-md:border max-md:px-4 max-md:py-3 max-md:bg-muted max-md:rounded-xl'
+      class={cn(
+        'animate top-20 min-w-48 basis-60 overflow-y-scroll max-md:hidden z-40 fixed md:sticky md:order-2 lg:shrink-0 max-md:border max-md:px-4 max-md:py-3 max-md:bg-muted max-md:rounded-xl',
+        wide && 'hidden'
+      )}
       style='height:calc(100vh - 7rem);'
       id='sidebar'
     >
@@ -44,7 +48,7 @@ const { meta, highlightColor, back = '/', ...props } = Astro.props
         id='content'
         class={cn(
           'max-w-none animate mt-8 md:min-w-[45ch] overflow-x-hidden',
-          integ.typography.class
+          wide ? '' : integ.typography.class
         )}
       >
         <slot />
