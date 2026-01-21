@@ -2,55 +2,57 @@
 import { Image, getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
 import json from './_info.json'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 
 const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
 
-const images = Object.entries(galleryFiles)
-  .sort((a, b) => a[0].localeCompare(b[0]))
-  .map(([path, mod]) => {
-    const defaultMod = (mod as any).default;
-    const filename = path.split('/').pop();
-    const metadata = filename ? (json as any)[filename] : undefined;
-    if (metadata) {
-      defaultMod.metadata = metadata;
-    }
-    return defaultMod;
-  })
+const images = await Promise.all(
+  Object.entries(galleryFiles)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(async ([path, mod]) => {
+      const src = (mod as any).default;
+      const filename = path.split('/').pop();
+      const metadata = filename ? (json as any)[filename] : undefined;
+      
+      const highRes = await getImage({ 
+        src, 
+        format: 'webp', 
+        quality: 100
+        // width: src.width > 2000 ? 2000 : src.width
+      });
 
-// 为每张图片生成高清版本的 URL
-const highResImages = await Promise.all(
-  images.map(img => 
-    getImage({ 
-      src: img, 
-      format: 'webp', 
-      quality: 90,
-      width: img.width > 2000 ? 2000 : img.width
+      return {
+        src,
+        metadata,
+        highResSrc: highRes.src
+      }
     })
-  )
 )
 ---
 
 <PageLayout title='Gallery' comment wide>
-  <p class='text-muted-foreground mb-8'>
+  <p class='text-muted-foreground'>
     一些日常影像的合集。（摄影学习中，任何喜欢和建议欢迎评论交流）
     <!-- <span class="text-foreground/55">点击图片右上角查看图片描述，单击图片查看大图。</span> -->
   </p>
-
+  <div class='flex justify-end mt-8 md:mt--5 mb-8'>
+    <DynamicSignature width='15rem' />
+  </div>
   <div class='gallery-container'>
     {
-      images.map((img, index) => (
+      images.map((item, index) => (
         <div
           class='gallery-item group'
           style={{
-            '--ratio': img.width / img.height
+            '--ratio': item.src.width / item.src.height
           }}
         >
           <Image
-            src={img}
+            src={item.src}
             alt=''
             height={480}
             class='gallery-img'
-            data-zoom-src={highResImages[index].src}
+            data-zoom-src={item.highResSrc}
             loading={index < 8 ? 'eager' : 'lazy'}
             fetchpriority={index < 8 ? 'high' : 'auto'}
             format='webp'
@@ -63,8 +65,8 @@ const highResImages = await Promise.all(
           </button>
 
           <div class='gallery-overlay hidden absolute inset-0 z-30 flex-col items-center justify-center text-center p-4 bg-black/40 backdrop-blur-md opacity-0 transition-opacity duration-300'>
-             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{img.metadata?.title || 'No description'}</p>
-             <p class='text-white/80 text-xs font-mono whitespace-pre-line'>{img.metadata?.subtitle || ''}</p>
+             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{item.metadata?.title || 'No title'}</p>
+             <p class='text-white/80 text-xs font-mono whitespace-pre-line'>{item.metadata?.subtitle || ''}</p>
           </div>
         </div>
       ))
@@ -87,70 +89,67 @@ const highResImages = await Promise.all(
     // Init with empty set
     const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
 
+    // Helper function for overlay control
+    const toggleOverlay = (overlay, show) => {
+      if (show) {
+        overlay.classList.remove('hidden')
+        overlay.classList.add('flex')
+        overlay.offsetHeight
+        overlay.classList.remove('opacity-0')
+        overlay.classList.add('opacity-100')
+      } else {
+        overlay.classList.remove('opacity-100')
+        overlay.classList.add('opacity-0')
+        setTimeout(() => {
+          overlay.classList.add('hidden')
+          overlay.classList.remove('flex')
+        }, 300)
+      }
+    }
+
+    const hideOverlay = (overlay) => toggleOverlay(overlay, false)
+    const isOverlayVisible = (overlay) => !overlay.classList.contains('hidden')
+
     // Logic for Info Button
     document.querySelectorAll('.info-btn').forEach(btn => {
        btn.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
           const galleryItem = btn.closest('.gallery-item')
-          const overlay = galleryItem.querySelector('.gallery-overlay')
+          const overlay = galleryItem?.querySelector('.gallery-overlay')
           if (overlay) {
-             if (overlay.classList.contains('hidden')) {
-               overlay.classList.remove('hidden')
-               overlay.classList.add('flex')
-               // Trigger reflow to enable transition
-               overlay.offsetHeight
-               overlay.classList.remove('opacity-0')
-               overlay.classList.add('opacity-100')
-             } else {
-               overlay.classList.remove('opacity-100')
-               overlay.classList.add('opacity-0')
-               setTimeout(() => {
-                 overlay.classList.add('hidden')
-                 overlay.classList.remove('flex')
-               }, 300)
-             }
+            toggleOverlay(overlay, !isOverlayVisible(overlay))
           }
        })
     })
 
-    // Logic for Overlay Click (Close)
+    // Logic for Overlay Click
     document.querySelectorAll('.gallery-overlay').forEach(overlay => {
        overlay.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
-          overlay.classList.remove('opacity-100')
-          overlay.classList.add('opacity-0')
-          setTimeout(() => {
-            overlay.classList.add('hidden')
-            overlay.classList.remove('flex')
-          }, 300)
+          hideOverlay(overlay)
        })
     })
 
-    // Logic for mouse leave - auto hide info
+    // Logic for auto hide info on mouse leave
     document.querySelectorAll('.gallery-item').forEach(item => {
        item.addEventListener('mouseleave', () => {
           const overlay = item.querySelector('.gallery-overlay')
-          if (overlay && !overlay.classList.contains('hidden')) {
-             overlay.classList.remove('opacity-100')
-             overlay.classList.add('opacity-0')
-             setTimeout(() => {
-               overlay.classList.add('hidden')
-               overlay.classList.remove('flex')
-             }, 300)
+          if (overlay && isOverlayVisible(overlay)) {
+            hideOverlay(overlay)
           }
        })
     })
 
-    // Handle clicks manually for images
+    // Logic for Image zoom
     document.querySelectorAll('.gallery-img').forEach(img => {
       img.addEventListener('click', async (e) => {
         const galleryItem = img.closest('.gallery-item')
-        const overlay = galleryItem.querySelector('.gallery-overlay')
-        if (overlay && !overlay.classList.contains('hidden')) {
-           return; 
-        }
+        const overlay = galleryItem?.querySelector('.gallery-overlay')
+        
+        // Don't zoom if overlay is visible
+        if (overlay && isOverlayVisible(overlay)) return
 
         e.preventDefault()
         e.stopPropagation()
@@ -158,31 +157,30 @@ const highResImages = await Promise.all(
         const hdSrc = img.getAttribute('data-zoom-src')
         if (!hdSrc) return
 
-        // Position loader (use absolute positioning with scroll offset)
-        if (galleryItem) {
-           const rect = galleryItem.getBoundingClientRect()
-           const loaderSize = 48
-           loader.style.position = 'absolute'
-           loader.style.top = `${rect.top + window.scrollY + rect.height / 2 - loaderSize / 2}px`
-           loader.style.left = `${rect.left + window.scrollX + rect.width / 2 - loaderSize / 2}px`
-        }
-
+        // loader ring positioning
+        const rect = img.getBoundingClientRect()
+        const loaderSize = 48
+        loader.style.position = 'absolute'
+        loader.style.top = `${rect.top + window.scrollY + rect.height / 2 - loaderSize / 2}px`
+        loader.style.left = `${rect.left + window.scrollX + rect.width / 2 - loaderSize / 2}px`
         loader.classList.remove('hidden')
-        loader.classList.add('block')
 
-        // Load image
+        // Load high-res image
         const temp = new Image()
         
-        const startZoom = () => {
-           loader.classList.add('hidden')
-           loader.classList.remove('block')
-           
-           zoom.attach(img)
-           zoom.open({ target: img })
+        const openZoom = () => {
+          loader.classList.add('hidden')
+          zoom.attach(img)
+          zoom.open({ target: img })
         }
 
-        temp.onload = startZoom
-        temp.onerror = startZoom
+        temp.onload = openZoom;
+        
+        temp.onerror = () => {
+          console.error('unable to load high-res image:', hdSrc)
+          // Fallback: still open zoom with current image
+          openZoom()
+        }
 
         temp.src = hdSrc
       })

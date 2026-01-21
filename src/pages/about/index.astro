@@ -4,6 +4,7 @@ import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
 import zotero from '@/assets/tools/zotero.png'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
@@ -226,4 +227,7 @@ const headings = [
     <li>Presentation Slides：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
     <li>Academic CV：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
   </ul>
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='15rem' />
+  </div>
 </PageLayout>

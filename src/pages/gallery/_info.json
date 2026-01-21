@@ -24,7 +24,7 @@
     "subtitle": "2024.08.25"
   },
   "aa-xiangshan-cpc-icon.jpg": {
-    "title": "走上新的赶考之路.",
+    "title": "你们获得的将是整个世界.",
     "subtitle": "2025.10.18 at 香山革命纪念馆"
   },
   "airshow1.jpg": {
@@ -41,7 +41,7 @@
   },
   "bb-selfie1.jpg": {
     "title": "思い知らされた差.",
-    "subtitle": ""
+    "subtitle": "2024.12.05 意识到的差距"
   },
   "beihai-white-pagoda.jpg": {
     "title": "Beihai White Pagoda",
@@ -68,7 +68,7 @@
     "subtitle": "2024.11.16"
   },
   "changsha-wenheyou.jpg": {
-    "title": "Changsha Wenheyou",
+    "title": "",
     "subtitle": "2025.07.26 at 长沙文和友"
   },
   "cyberpunk-edgerunner.png": {
@@ -76,28 +76,28 @@
     "subtitle": "Ultimate Immunosuppressant"
   },
   "dalian-xinghai-bay.jpg": {
-    "title": "大连的海，\n天然的饱和度",
+    "title": "大连的海 天然的饱和度",
     "subtitle": "2024.10.06 at 大连星海湾"
   },
   "dalian-yifangchengbao.jpg": {
-    "title": "Dalian Yifang Castle",
-    "subtitle": "2024.10.07"
+    "title": "",
+    "subtitle": "2024.10.07 at 大连星海广场"
   },
   "destruction-moon.jpg": {
-    "title": "Destruction Moon.",
+    "title": "幽蓝边界",
     "subtitle": "2023.07.01"
   },
   "dongting-lake.jpg": {
-    "title": "洞庭余晖.",
+    "title": "洞庭余晖",
     "subtitle": "2025.07.29 at 岳阳洞庭湖"
   },
   "earth-temple.jpg": {
-    "title": "苍幽的柏树刻录了时间的痕迹.",
+    "title": "",
     "subtitle": "2023.10.05 at 地坛公园"
   },
   "fangshan-hills.jpg": {
-    "title": "Fangshan Hills",
-    "subtitle": "2025.02.25"
+    "title": "",
+    "subtitle": "2025.02.25 at 良乡东路"
   },
   "fuzhou-firework.jpg": {
     "title": "FIREWORK DATA PATCHER",
@@ -132,7 +132,7 @@
     "subtitle": "2025.02.03 at 瑞金"
   },
   "juzi-isle.jpg": {
-    "title": "风华正茂",
+    "title": "水中有个少年在渡江",
     "subtitle": "2025.07.28 at 橘子洲"
   },
   "liuyanghe.jpg": {
@@ -160,7 +160,7 @@
     "subtitle": "2025.01.21"
   },
   "qinzheng-hall.jpg": {
-    "title": "Qinzheng Hall",
+    "title": "",
     "subtitle": "2024.05.01 at 圆明园"
   },
   "qiusuo-sdfz.jpg": {
@@ -168,8 +168,8 @@
     "subtitle": "2024.01.22 at 福建师大附中"
   },
   "shanghai-fangbang-road.jpg": {
-    "title": "Shanghai Fangbang Road",
-    "subtitle": ""
+    "title": "",
+    "subtitle": "2025.01.10 at 上海方浜中路"
   },
   "sjtu2.jpg": {
     "title": "江南回忆",
@@ -184,8 +184,8 @@
     "subtitle": "2023.12.11"
   },
   "summer-palace.jpg": {
-    "title": "Summer Palace",
-    "subtitle": ""
+    "title": "",
+    "subtitle": "2023.10.14 at 颐和园"
   },
   "sunset-bit-lijiao.jpg": {
     "title": "抬眼匆匆 - 落霞",
@@ -204,24 +204,24 @@
     "subtitle": "2024.10.07 at 天津建国道"
   },
   "tianjin-port.png": {
-    "title": "Tianjin Port",
-    "subtitle": "2024.10.07"
+    "title": "",
+    "subtitle": "2024.10.07 at 天津港" 
   },
   "tsinghua-university.jpg": {
-    "title": "草色清华",
+    "title": "",
     "subtitle": "2024.07.04 at 清华大学"
   },
   "world-robot-conference1.jpg": {
     "title": "赛博生命会向人造卫星许愿吗",
-    "subtitle": "2024.08.25 at 世界机器人大会"
+    "subtitle": "2024.08.25"
   },
   "xiamen-university-luxun.jpg": {
     "title": "战士的铠甲上\n铭刻着诚爱与刚强.",
     "subtitle": "2025.01.25 at 厦门大学"
   },
   "xiamen-university.jpg": {
-    "title": "Xiamen University",
-    "subtitle": ""
+    "title": "",
+    "subtitle": "2025.01.25 at 厦门大学"
   },
   "xiamen-zengcuoan.jpg": {
     "title": "虚岸止锚.",
@@ -250,5 +250,9 @@
   "zizhuyuan.jpg": {
     "title": "禅房花木深",
     "subtitle": "2024.03.15 at 紫竹院公园"
+  },
+  "zhongshuge.jpg": {
+    "title": "",
+    "subtitle": "2023.10.01 at 西单钟书阁"
   }
 }
