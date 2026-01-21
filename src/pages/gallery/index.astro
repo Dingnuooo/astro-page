@@ -31,6 +31,11 @@ const highResImages = await Promise.all(
 ---
 
 <PageLayout title='Gallery' comment wide>
+  <p class='text-muted-foreground mb-8'>
+    一些日常影像的合集。（摄影学习中，任何喜欢和建议欢迎评论交流）
+    <!-- <span class="text-foreground/55">点击图片右上角查看图片描述，单击图片查看大图。</span> -->
+  </p>
+
   <div class='gallery-container'>
     {
       images.map((img, index) => (
@@ -58,8 +63,8 @@ const highResImages = await Promise.all(
           </button>
 
           <div class='gallery-overlay hidden absolute inset-0 z-30 flex-col items-center justify-center text-center p-4 bg-black/40 backdrop-blur-md opacity-0 transition-opacity duration-300'>
-             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{img.metadata?.desc || 'No description'}</p>
-             <p class='text-white/80 text-sm font-mono whitespace-pre-line'>{img.metadata?.date || ''}</p>{/*Unknown date*/}
+             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{img.metadata?.title || 'No description'}</p>
+             <p class='text-white/80 text-xs font-mono whitespace-pre-line'>{img.metadata?.subtitle || ''}</p>
           </div>
         </div>
       ))
@@ -219,11 +224,15 @@ const highResImages = await Promise.all(
     position: relative;
     overflow: hidden;
     border-radius: 4px;
+    min-width: 190px;
   }
 
   @media (max-width: 768px) {
     .gallery-container {
       --row-height: 150px;
+    }
+    .gallery-item {
+      min-width: 0px;
     }
   }
 

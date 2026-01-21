@@ -183,7 +183,7 @@ export const integ: IntegrationUserConfig = {
       comment: true,
       locale: {
         reaction0: 'Like',
-        placeholder: 'Welcome to comment. (Email to receive replies. Login is unnecessary)'
+        placeholder: '欢迎评论，无需登录，请留下您的邮箱（或主要社交媒体联系方式）以接收回复。\nWelcome to comment. (Email to receive replies. Login is unnecessary)'
       },
       imageUploader: false
     }
