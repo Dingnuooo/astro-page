@@ -87,8 +87,8 @@ export const theme: ThemeUserConfig = {
       // netease: 'https://music.163.com/#/user/home?id=384322136',
       // instagram: 'https://www.xiaohongshu.com/user/profile/6493f6d9000000001c0299ae',
       // x: 'https://x.com/chinosannn_dn',
-      email: 'mailto:dingnuooo@163.com'
-      // rss: false
+      email: 'mailto:dingnuooo@163.com',
+      rss: 'https://dingnuooo.top/rss.xml'
     }
   },
 
@@ -128,7 +128,7 @@ export const integ: IntegrationUserConfig = {
       { name: 'Avatar', val: 'https://dingnuooo.top/favicon/favicon.ico' }
     ],
     // Cache avatars in `public/avatars/` to improve user experience.
-    cacheAvatar: false
+    cacheAvatar: true
   },
   // [Search]
   pagefind: true,
