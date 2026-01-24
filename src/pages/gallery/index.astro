@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
 import json from './_info.json'
 import DynamicSignature from '@/components/DynamicSignature.astro'
+import { highlightColor } from '@/site-config'
 
 const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
 
@@ -30,7 +31,7 @@ const images = await Promise.all(
 )
 ---
 
-<PageLayout title='Gallery' comment wide>
+<PageLayout title='Gallery' comment wide highlightColor={highlightColor}>
   <p class='text-muted-foreground'>
     一些日常影像的合集。（摄影学习中，任何喜欢和建议欢迎评论交流）
     <!-- <span class="text-foreground/55">点击图片右上角查看图片描述，单击图片查看大图。</span> -->

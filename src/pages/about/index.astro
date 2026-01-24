@@ -5,6 +5,7 @@ import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
 import zotero from '@/assets/tools/zotero.png'
 import DynamicSignature from '@/components/DynamicSignature.astro'
+import { highlightColor } from '@/site-config'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
@@ -16,7 +17,7 @@ const headings = [
 ]
 ---
 
-<PageLayout title='About' {headings} comment>
+<PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
     你好，我是 Dingnuooo，来自福建省福州市，现居北京市海淀区，AI for Communication 在读。这里收容了一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
   </p>

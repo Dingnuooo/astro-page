@@ -34,6 +34,7 @@ export const theme: ThemeUserConfig = {
   prerender: true, // pagefind search is not supported with prerendering disabled
   npmCDN: 'https://cdn.jsdelivr.net/npm',
 
+
   // Still in test
   head: [
     /* Telegram channel */
@@ -211,6 +212,9 @@ export const terms: CardListData = {
     }
   ]
 }
+
+/** Dingnuooo change: Highlight color for gradient background on pages */
+export const highlightColor = '#7f9be7' //default 659EB9
 
 const config = { ...theme, integ } as Config
 export default config
