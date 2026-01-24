@@ -28,7 +28,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       <Image
         src={avatar}
         alt='profile'
-        class='h-28 w-auto rounded-full border p-1'
+        class='avatar-hover h-28 w-auto rounded-full border p-1'
         loading='eager'
       />
       <div class='flex flex-col items-center gap-y-4'>
@@ -199,3 +199,14 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     </div>
   </main>
 </PageLayout>
+
+<style>
+  .avatar-hover {
+    transition: all 0.3s ease;
+  }
+
+  .avatar-hover:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px 2px rgba(var(--highlight-color-rgb, 214, 231, 255), 0.4);
+  }
+</style>
