@@ -84,10 +84,6 @@ export const theme: ThemeUserConfig = {
     credits: true,
     /** Optional details about the social media accounts for this site. */
     social: { github: 'https://github.com/Dingnuooo',
-      bilibili: 'https://space.bilibili.com/90563238',
-      // netease: 'https://music.163.com/#/user/home?id=384322136',
-      // instagram: 'https://www.xiaohongshu.com/user/profile/6493f6d9000000001c0299ae',
-      // x: 'https://x.com/chinosannn_dn',
       email: 'mailto:dingnuooo@163.com',
       rss: 'https://dingnuooo.top/rss.xml'
     }

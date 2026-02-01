@@ -10,7 +10,7 @@ import { highlightColor } from '@/site-config'
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
   { depth: 2, slug: 'tools', text: 'Tools' },
-  // { depth: 2, slug: 'social-networks', text: 'Social Networks' },
+  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'about-blog', text: 'About Blog' },
   { depth: 2, slug: 'sub-sites', text: 'Sub Sites' }
@@ -29,7 +29,7 @@ const headings = [
     <li>我阅读侦探小说，喜欢本格和社会派.</li>
     <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏 ( プロセカ / Phigros / Arcaea / maimai ).</li>
     <li>我的人格类型为 INTJ-T. <span class="text-foreground/50"><Spoiler>赛博人格 chinosannn 是 ISFJ-T.</Spoiler></span></li>
-    <li>摄影 / 科研底层人.</li>
+    <li>超普通底层人 寻找搭子中.</li>
   </ul>
 
   {/* tools */}
@@ -45,10 +45,10 @@ const headings = [
         icon: import('@/assets/tools/chrome.svg?raw')
       },
       {
-        name: 'Firefox',
-        description: 'Browser (Mobile)',
-        href: 'https://www.mozilla.org/en-US/firefox',
-        icon: import('@/assets/tools/firefox.svg?raw')
+        name: 'Tailscale',
+        description: 'VPN',
+        href: 'https://tailscale.com/',
+        icon: import('@/assets/tools/tailscale.svg?raw')
       },
       {
         name: 'Obsidian',
@@ -79,6 +79,12 @@ const headings = [
         description: 'Terminal',
         href: 'https://www.warp.dev/',
         icon: import('@/assets/tools/warp.svg?raw')
+      },
+      {
+        name: 'LobeChat',
+        description: 'AI Chat',
+        href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
+        icon: import('@/assets/tools/lobechat.svg?raw')
       }
     ]}
   />
@@ -99,10 +105,10 @@ const headings = [
         icon: import('@/assets/tools/blender.svg?raw')
       },
       {
-        name: 'FL Studio',
-        description: 'Music Arranging & Mixing',
-        href: 'https://www.image-line.com/fl-studio/',
-        icon: import('@/assets/tools/fl.svg?raw')
+        name: 'Photoshop',
+        description: 'Picture Editing',
+        href: 'https://www.adobe.com/products/photoshop',
+        icon: import('@/assets/tools/photoshop.svg?raw')
       },
       {
         name: 'Reaper',
@@ -132,9 +138,9 @@ const headings = [
   />
 
   {/* social-networks */}
-  <!-- <h2 id='social-networks'>Social Networks</h2>
+  <h2 id='social-networks'>Social Networks</h2>
   <p>
-    主要活跃平台
+    您可以在以下平台找到我：
   </p>
   <Substats
     stats={[
@@ -142,34 +148,52 @@ const headings = [
         platform: 'GitHub',
         icon: 'github',
         link: 'https://github.com/dingnuooo',
-        text: 'followers',
-        api: 'github/dingnuooo'
+        desc: 'Code / Academic',
+        text: 'followers'
       },
       {
         platform: 'bilibili',
         icon: 'bilibili',
         color: '#ed7b98',
         link: 'https://space.bilibili.com/90563238',
+        desc: 'Videos',
         text: 'followers',
-        api: 'bilibili/90563238'
+        // api: 'bilibili/90563238'
       },
       {
-        platform: 'RedNote',
+        platform: 'Rednote',
         icon: 'instagram',
-        color: '#eb4553',
-        link: 'https://www.xiaohongshu.com/user/profile/6493f6d9000000001c0299ae',
-        text: 'followers',
+        color: '#D94551',
+        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
+        desc: 'Photography',
+        text: 'followers'
       },
       {
-        platform: 'X/twitter',
+        platform: 'Twitter',
         icon: 'x',
         color: '#7fbeff',
         link: 'https://x.com/chinosannn_dn',
-        text: 'followers',
-        api: 'twitter/chinosannn_dn'
+        desc: 'Photography / Posts',
+        text: 'followers'
+      },
+      {
+        platform: 'Steam',
+        icon: 'steam',
+        color: '#3570a0',
+        link: 'https://steamcommunity.com/id/chinosannn/',
+        desc: 'Games',
+        text: 'friends'
+      },
+      {
+        platform: 'Netease Music',
+        icon: 'netease',
+        color: '#D63C3C',
+        link: 'https://music.163.com/#/user/home?id=384322136',
+        desc: 'Song Collections',
+        text: 'followers'
       },
     ]}
-  /> -->
+  />
 
   {/* gossips */}
   <!-- <h2 id='gossips'>Gossips</h2>
@@ -181,28 +205,20 @@ const headings = [
 
   {/* about-blog */}
   <h2 id='about-blog'>About Blog</h2>
-  <!-- <p>笔记系统与站点历史</p>
+  <!-- <p></p>
   <Timeline
     events={[
       {
-        date: '2023-11',
-        content:
-          '学习 Markdown 与 LaTeX，使用 Obsidian 开始笔记电子化'
-          // 'Website refactored using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
-      },
-      {
-        date: '2025-05',
-        content:
-          '使用 Hexo 框架搭建博客站，上传部分笔记'
-      },
-      {
-        date: '2025-11',
-        content: '使用 Astro 框架重建博客站'
+        date: '',
+        content: ''
       }
     ]}
   /> -->
   <p>
-    本站基于以下项目/服务商的技术支持
+    本站笔记库源自 2022 年高中时期的笔记系统、思维模式和语言风格，2023 年 11 月开始电子化，2024 年 12 月使用 Hexo 框架搭建公开平台，2025 年 11 月迁移至现有框架与主题。
+  </p>
+  <p>
+    本站基于以下项目/服务商的技术支持：
   </p>
   <ul>
     <li>域名：<a href='https://www.alibabacloud.com/' target='_blank'>Alibaba Cloud</a>.</li>
@@ -226,7 +242,7 @@ const headings = [
 
   {/* sub-sites */}
   <h2 id='sub-sites'>Sub Sites</h2>
-  <p>子网站（建设中）</p>
+  <p>子网站（暂无内容，仅作为索引）:</p>
   <ul>
     <li>Presentation Slides：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
     <li>Academic CV：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
