@@ -14,6 +14,7 @@ interface Props {
     href: string
     icon: Promise<typeof import('*.svg?raw')> | ImageMetadata
     darkIcon?: Promise<typeof import('*.svg?raw')> | ImageMetadata
+    onClick?: string
   }[]
 }
 
@@ -37,6 +38,7 @@ function isImageMetadata(obj: unknown): obj is ImageMetadata {
           href={tool.href}
           id={tool.name}
           target='_blank'
+          onclick={tool.onClick}
         >
           <div class='flex items-center gap-x-3 rounded-lg border border-transparent px-1.5 py-1 transition-colors hover:border-border hover:bg-muted'>
             {tool.darkIcon ? (
@@ -80,7 +82,7 @@ function isImageMetadata(obj: unknown): obj is ImageMetadata {
             )}
             <div class='z-20 flex flex-col'>
               <div class='font-medium text-foreground'>{tool.name}</div>
-              <div class='font-normal'>{tool.description}</div>
+              <div class='font-normal' set:html={tool.description} />
             </div>
           </div>
         </a>

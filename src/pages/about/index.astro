@@ -82,9 +82,19 @@ const headings = [
       },
       {
         name: 'LobeChat',
-        description: 'AI Chat',
+        description: 'AI Chat | 点击可复制邀请码 注册得免费额度',
         href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
-        icon: import('@/assets/tools/lobechat.svg?raw')
+        icon: import('@/assets/tools/lobechat.svg?raw'),
+        onClick: `event.preventDefault(); 
+          const descEl = event.currentTarget.querySelector('.font-normal');
+          const originalText = descEl.innerHTML;
+          navigator.clipboard.writeText('2kZ0K06l').then(() => {
+            descEl.innerHTML = 'AI Chat | 邀请码已复制';
+            setTimeout(() => {
+              descEl.innerHTML = originalText;
+            }, 2000);
+            setTimeout(() => window.open('https://app.lobehub.com/signin?referral=2kZ0K06l', '_blank'), 800);
+          });`
       }
     ]}
   />
@@ -251,3 +261,27 @@ const headings = [
     <DynamicSignature width='15rem' />
   </div>
 </PageLayout>
+
+<style is:global>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+</style>
