@@ -12,8 +12,7 @@ const headings = [
   { depth: 2, slug: 'tools', text: 'Tools' },
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' },
-  { depth: 2, slug: 'sub-sites', text: 'Sub Sites' }
+  { depth: 2, slug: 'about-blog', text: 'About Blog' }
 ]
 ---
 
@@ -88,14 +87,14 @@ const headings = [
       },
       {
         name: 'LobeChat',
-        description: 'AI Chat | 点击可复制邀请码 注册得免费额度',
+        description: 'AI Chat | 点击复制邀请码 获取更多额度',
         href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
         icon: import('@/assets/tools/lobechat.svg?raw'),
         onClick: `event.preventDefault(); 
           const descEl = event.currentTarget.querySelector('.font-normal');
           const originalText = descEl.innerHTML;
           navigator.clipboard.writeText('2kZ0K06l').then(() => {
-            descEl.innerHTML = 'AI Chat | 邀请码已复制';
+            descEl.innerHTML = 'AI Chat | 邀请码已复制 ✔';
             setTimeout(() => {
               descEl.innerHTML = originalText;
             }, 2000);
@@ -188,7 +187,7 @@ const headings = [
         platform: 'Twitter',
         icon: 'x',
         color: '#7fbeff',
-        link: 'https://x.com/chinosannn_dn',
+        link: 'https://x.com/chinosan_dn',
         desc: 'Photography / Posts',
         text: 'followers'
       },
@@ -196,7 +195,7 @@ const headings = [
         platform: 'Steam',
         icon: 'steam',
         color: '#3570a0',
-        link: 'https://steamcommunity.com/id/chinosannn/',
+        link: 'https://steamcommunity.com/id/dingnuooo',
         desc: 'Games',
         text: 'friends'
       },
@@ -205,7 +204,7 @@ const headings = [
         icon: 'netease',
         color: '#D63C3C',
         link: 'https://music.163.com/#/user/home?id=384322136',
-        desc: 'Song Collections',
+        desc: 'Music Collections',
         text: 'followers'
       },
     ]}
@@ -256,13 +255,11 @@ const headings = [
     </li> -->
   </ul>
 
-  {/* sub-sites */}
-  <h2 id='sub-sites'>Sub Sites</h2>
-  <p>子网站（暂无内容，仅作为索引）:</p>
+  <!-- <p>子站导航（暂无内容，仅作为索引）:</p>
   <ul>
-    <li>Presentation Slides：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
-    <li>Academic CV：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
-  </ul>
+    <li>基于slidev的幻灯片合集：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
+    <li>基于HugoBlox的学术简历：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
+  </ul> -->
   <div class='flex justify-end mt-12'>
     <DynamicSignature width='15rem' />
   </div>
