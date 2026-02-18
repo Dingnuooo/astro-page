@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets'
+import avatar from '@/assets/avatar.png'
 import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
@@ -22,8 +24,14 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 <PageLayout meta={{ title: 'Home' }} highlightColor={highlightColor}>
   <main class='flex w-full flex-col items-center'>
     <section class='animate mb-10 flex flex-col items-center gap-y-3' id='content-header'>
-      <img
+      <!-- <img
         src='/avatar.png'
+        alt='profile'
+        class='avatar-hover h-28 w-28 rounded-full border p-1 object-cover'
+        loading='eager'
+      /> -->
+      <Image
+        src={avatar}
         alt='profile'
         class='avatar-hover h-28 w-28 rounded-full border p-1 object-cover'
         loading='eager'
