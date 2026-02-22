@@ -9,8 +9,8 @@ import { highlightColor } from '@/site-config'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
-  { depth: 2, slug: 'tools', text: 'Tools' },
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
+  { depth: 2, slug: 'tools', text: 'Tools' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'about-blog', text: 'About Blog' }
 ]
@@ -37,121 +37,6 @@ const headings = [
     </li>
     <li>喜欢<a href='/gallery' target='_blank'>随拍</a>但是摄影低手，学习中.</li>
   </ul>
-
-  {/* tools */}
-  <h2 id='tools'>Tools</h2>
-  <ToolSection
-    class='mb-5'
-    title='Productivity'
-    tools={[
-      {
-        name: 'Chrome',
-        description: 'Browser',
-        href: 'https://www.google.com/chrome/',
-        icon: import('@/assets/tools/chrome.svg?raw')
-      },
-      {
-        name: 'Tailscale',
-        description: 'VPN',
-        href: 'https://tailscale.com/',
-        icon: import('@/assets/tools/tailscale.svg?raw')
-      },
-      {
-        name: 'Obsidian',
-        description: 'Note Base & Markdown Editor',
-        href: 'https://obsidian.md/',
-        icon: import('@/assets/tools/obsidian.svg?raw')
-      },
-      {
-        name: 'Zotero',
-        description: 'Reference Manager',
-        href: 'https://www.zotero.org/',
-        icon: zotero
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Development'
-    tools={[
-      {
-        name: 'Visual Studio Code',
-        description: 'IDE',
-        href: 'https://code.visualstudio.com/',
-        icon: import('@/assets/tools/vscode.svg?raw')
-      },
-      {
-        name: 'Warp',
-        description: 'Terminal',
-        href: 'https://www.warp.dev/',
-        icon: import('@/assets/tools/warp.svg?raw')
-      },
-      {
-        name: 'LobeChat',
-        description: 'AI Chat | 点击复制邀请码 获更多额度',
-        href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
-        icon: import('@/assets/tools/lobechat.svg?raw'),
-        onClick: `event.preventDefault(); 
-          const descEl = event.currentTarget.querySelector('.font-normal');
-          const originalText = descEl.innerHTML;
-          navigator.clipboard.writeText('2kZ0K06l').then(() => {
-            descEl.innerHTML = 'AI Chat | 邀请码已复制 ✔';
-            setTimeout(() => {
-              descEl.innerHTML = originalText;
-            }, 2000);
-            setTimeout(() => window.open('https://app.lobehub.com/signin?referral=2kZ0K06l', '_blank'), 800);
-          });`
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Design'
-    tools={[
-      {
-        name: 'Easy Paint Tool SAI',
-        description: 'Digital Drawing',
-        href: 'https://www.systemax.jp/ja/sai/',
-        icon: import('@/assets/tools/sai.svg?raw')
-      },
-      {
-        name: 'Blender',
-        description: '3D Modeling & Rendering',
-        href: 'https://www.blender.org/',
-        icon: import('@/assets/tools/blender.svg?raw')
-      },
-      {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
-      },
-      {
-        name: 'Reaper',
-        description: 'Music Arranging & Mixing',
-        href: 'https://www.reaper.fm/',
-        icon: import('@/assets/tools/reaper.svg?raw')
-      },
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Environment'
-    tools={[
-      {
-        name: 'Windows 11',
-        description: 'Framework Laptop 16',
-        href: 'https://news.microsoft.com/windows11-general-availability/',
-        icon: import('@/assets/tools/windows11.svg?raw')
-      },
-      {
-        name: 'Ubuntu 24.04 LTS',
-        description: 'Linux Distribution',
-        href: 'https://ubuntu.com/',
-        icon: import('@/assets/tools/ubuntu.svg?raw')
-      }
-    ]}
-  />
 
   {/* social-networks */}
   <h2 id='social-networks'>Social Networks</h2>
@@ -210,6 +95,111 @@ const headings = [
       },
     ]}
   />
+  
+  {/* tools */}
+  <h2 id='tools'>Tools</h2>
+  <ToolSection
+    class='mb-5'
+    title='Productivity'
+    tools={[
+      {
+        name: 'Chrome',
+        description: 'Browser',
+        href: 'https://www.google.com/chrome/',
+        icon: import('@/assets/tools/chrome.svg?raw')
+      },
+      {
+        name: 'Tailscale',
+        description: 'VPN',
+        href: 'https://tailscale.com/',
+        icon: import('@/assets/tools/tailscale.svg?raw')
+      },
+      {
+        name: 'Obsidian',
+        description: 'Note Base & Markdown Editor',
+        href: 'https://obsidian.md/',
+        icon: import('@/assets/tools/obsidian.svg?raw')
+      },
+      {
+        name: 'Zotero',
+        description: 'Reference Manager',
+        href: 'https://www.zotero.org/',
+        icon: zotero
+      }
+    ]}
+  />
+  <ToolSection
+    class='mb-5'
+    title='Development'
+    tools={[
+      {
+        name: 'Visual Studio Code',
+        description: 'IDE',
+        href: 'https://code.visualstudio.com/',
+        icon: import('@/assets/tools/vscode.svg?raw')
+      },
+      {
+        name: 'Warp',
+        description: 'Terminal',
+        href: 'https://www.warp.dev/',
+        icon: import('@/assets/tools/warp.svg?raw')
+      },
+      {
+        name: 'LobeChat',
+        description: 'AI Chat | 点击复制邀请码 获更多额度',
+        href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
+        icon: import('@/assets/tools/lobechat.svg?raw')
+      }
+    ]}
+  />
+  <ToolSection
+    class='mb-5'
+    title='Design'
+    tools={[
+      {
+        name: 'Easy Paint Tool SAI',
+        description: 'Digital Drawing',
+        href: 'https://www.systemax.jp/ja/sai/',
+        icon: import('@/assets/tools/sai.svg?raw')
+      },
+      {
+        name: 'Blender',
+        description: '3D Modeling & Rendering',
+        href: 'https://www.blender.org/',
+        icon: import('@/assets/tools/blender.svg?raw')
+      },
+      {
+        name: 'Photoshop',
+        description: 'Picture Editing',
+        href: 'https://www.adobe.com/products/photoshop',
+        icon: import('@/assets/tools/photoshop.svg?raw')
+      },
+      {
+        name: 'Reaper',
+        description: 'Music Arranging & Mixing',
+        href: 'https://www.reaper.fm/',
+        icon: import('@/assets/tools/reaper.svg?raw')
+      },
+    ]}
+  />
+  <ToolSection
+    class='mb-5'
+    title='Environment'
+    tools={[
+      {
+        name: 'Windows 11',
+        description: 'Framework Laptop 16',
+        href: 'https://news.microsoft.com/windows11-general-availability/',
+        icon: import('@/assets/tools/windows11.svg?raw')
+      },
+      {
+        name: 'Ubuntu 24.04 LTS',
+        description: 'Linux Distribution',
+        href: 'https://ubuntu.com/',
+        icon: import('@/assets/tools/ubuntu.svg?raw')
+      }
+    ]}
+  />
 
   {/* gossips */}
   <!-- <h2 id='gossips'>Gossips</h2>
@@ -247,7 +237,7 @@ const headings = [
     <li>
       网页托管: <a href='https://vercel.com/' target='_blank'>Vercel</a>.
     </li>
-    <li>访问加速: <a href='https://cloud.tencent.com/product/teo' target='_blank'>Tencent EdgeOne</a>.</li>
+    <!-- <li>访问加速: <a href='https://cloud.tencent.com/product/teo' target='_blank'>Tencent EdgeOne</a>.</li> -->
     <li>评论与浏览量统计: <a href='https://waline.js.org' target='_blank'>Waline</a>.</li>
     <!-- <li>
       粉丝数统计: <a href='https://github.com/spencerwooo/substats' target='_blank'
