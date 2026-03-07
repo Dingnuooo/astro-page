@@ -127,8 +127,8 @@ export const integ: IntegrationUserConfig = {
     // Cache avatars in `public/avatars/` to improve user experience.
     cacheAvatar: true
   },
-  // [Search]
-  pagefind: true,
+  // [Search] - Disabled Pagefind, using FlexSearch instead
+  pagefind: false,
   // Add a random quote to the footer (default on homepage footer)
   // See: https://astro-pure.js.org/docs/integrations/advanced#web-content-render
   // [Quote]

@@ -104,7 +104,7 @@ export default function AstroPureIntegration(opts: UserInputConfig): AstroIntegr
         const cwd = dirname(fileURLToPath(import.meta.url))
         const relativeDir = relative(cwd, targetDir)
         return new Promise<void>((resolve) => {
-          spawn('npx', ['-y', 'pagefind', '--site', relativeDir, '--force-language', 'zh'], {
+          spawn('npx', ['-y', 'pagefind', '--site', relativeDir], {
             stdio: 'inherit',
             shell: true,
             cwd

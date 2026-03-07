@@ -1,8 +1,7 @@
 ---
-import { PFSearch } from 'astro-pure/components/pages'
 import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import { integ } from '@/site-config'
+import Search from '@/components/Search.astro'
 
 const meta = {
   description: 'Search relative posts of the whole blog',
@@ -18,16 +17,8 @@ const meta = {
     </div>
 
     <div id='content' class='animate'>
-      {
-        integ.pagefind ? (
-          <>
-            <p>Enter a search term or phrase to search the blog.</p>
-            <PFSearch />
-          </>
-        ) : (
-          <p>Pagefind is disabled.</p>
-        )
-      }
+      <p>Search articles with advanced CJK (Chinese/Japanese/Korean) support.</p>
+      <Search />
     </div>
   </main>
 </PageLayout>
