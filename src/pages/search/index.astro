@@ -2,14 +2,15 @@
 import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import Search from '@/components/Search.astro'
+import { highlightColor } from '@/site-config'
 
 const meta = {
-  description: 'Search relative posts of the whole blog',
   title: 'Search'
 }
+
 ---
 
-<PageLayout {meta}>
+<PageLayout {meta} highlightColor={highlightColor}>
   <Button title='Back' href='/blog' variant='back' />
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
