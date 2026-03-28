@@ -67,6 +67,23 @@
     "title": "校园掠影 - 岭南",
     "subtitle": "2024.11.16"
   },
+  "haze1.jpg": {
+    "title": "校园掠影 - 尘",
+    "subtitle": ""
+  },
+  "haze2.jpg": {
+    "title": "校园掠影 - 雾",
+    "subtitle": ""
+  },
+  "snow-lantern.jpg": {
+    "title": "校园掠影 - 雪",
+    "subtitle": ""
+  },
+  "gradually-awaking.jpg": {
+    "note": "校园掠影 - 醒",
+    "title": "看着她慢慢苏醒的样子.",
+    "subtitle": "2026.03.27 at 北京理工大学"
+  },
   "changsha-wenheyou.jpg": {
     "title": "",
     "subtitle": "2025.07.26 at 长沙文和友"
@@ -99,14 +116,6 @@
     "title": "FIREWORK DATA PATCHER",
     "subtitle": "2025.01.29"
   },
-  "haze1.jpg": {
-    "title": "校园掠影 - 尘",
-    "subtitle": ""
-  },
-  "haze2.jpg": {
-    "title": "校园掠影 - 雾",
-    "subtitle": ""
-  },
   "hongkong-zhuhai-macau-bridge.jpg": {
     "title": "零丁洋里叹零丁",
     "subtitle": "2024.11.16 at 港珠澳大桥"
@@ -127,11 +136,11 @@
     "title": "宛似流觞曲曲来",
     "subtitle": "2025.11.30 at 趵突泉公园"
   },
-  "jindezhen.jpg": {
+  "jindezhen2.jpg": {
     "title": "炊烟袅袅升起",
     "subtitle": "2024.07.25 at 景德镇"
   },
-  "jindezhen2.jpg": {
+  "jindezhen1.jpg": {
     "title": "天青色等烟雨",
     "subtitle": "2024.07.25 at 景德镇"
   },
@@ -143,7 +152,7 @@
     "title": "人民共和国从这里走来",
     "subtitle": "2025.02.03 at 瑞金"
   },
-  "juzi-isle.jpg": {
+  "maozedong-juzizhou.jpg": {
     "title": "水中有个少年在渡江",
     "subtitle": "2025.07.28 at 橘子洲"
   },
@@ -166,7 +175,7 @@
     "title": "ai太好用了你知道吗"
   },
   "kig-newdress.png": {
-    "title": "偷偷试穿新衣服~"
+    "title": "或许你喜欢黑色"
   },
   "otto-toilet.jpg": {
     "title": "冲刺！冲！",
@@ -177,7 +186,7 @@
     "subtitle": "2024.05.01 at 圆明园"
   },
   "qiusuo-sdfz.jpg": {
-    "title": "吾将上下而求索",
+    "title": "吾将上下而求索.",
     "subtitle": "2024.01.22 at 福建师大附中"
   },
   "shanghai-fangbang-road.jpg": {
@@ -187,10 +196,6 @@
   "sjtu2.jpg": {
     "title": "江南回忆",
     "subtitle": "2025.01.11 at 上海交通大学"
-  },
-  "snow-lantern.jpg": {
-    "title": "校园掠影 - 雪",
-    "subtitle": ""
   },
   "snowlight.jpg": {
     "title": "意义是雪落的声音.",
@@ -211,6 +216,11 @@
   "sunset-liangxiang-station.jpg": {
     "title": "抬眼匆匆 - 落霞",
     "subtitle": "at 良乡火车站"
+  },
+  "moon-tree.png": {
+    "note": "抬眼匆匆 - 月",
+    "title": "月光流过的夜晚",
+    "subtitle": "2025.04.15"
   },
   "tianjin-dante-statue.jpg": {
     "title": "光影是沉默女神的祈祷",
