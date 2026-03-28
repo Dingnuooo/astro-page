@@ -100,6 +100,8 @@ export const theme: ThemeUserConfig = {
     },
     /** Blog page size for pagination (optional) */
     blogPageSize: 8,
+    /** Gallery sort order (optional) */
+    gallerySortOrder: 'random', // 'random' | 'fileName'
     // Currently support weibo, x, bluesky
     share: ['weibo', 'x', 'bluesky']
   }

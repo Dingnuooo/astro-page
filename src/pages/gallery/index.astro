@@ -3,13 +3,19 @@ import { Image, getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
 import json from './_info.json'
 import DynamicSignature from '@/components/DynamicSignature.astro'
-import { highlightColor } from '@/site-config'
+import { highlightColor, theme } from '@/site-config'
 
 const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
 
 const images = await Promise.all(
   Object.entries(galleryFiles)
-    .sort((a, b) => a[0].localeCompare(b[0]))
+    .sort((a, b) => {
+      const sortOrder = theme.content.gallerySortOrder || 'fileName'
+      if (sortOrder === 'random') {
+        return Math.random() - 0.5
+      }
+      return a[0].localeCompare(b[0]) // Default: fileName
+    })
     .map(async ([path, mod]) => {
       const src = (mod as any).default;
       const filename = path.split('/').pop();
