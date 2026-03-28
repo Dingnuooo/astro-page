@@ -180,6 +180,7 @@ export const integ: IntegrationUserConfig = {
       // search: false,
       pageview: true,
       comment: true,
+      noRss: true,
       locale: {
         reaction0: 'Like',
         placeholder: '欢迎评论，无需登录，请留下您的邮箱（或主要社交媒体联系方式）以接收回复。\nWelcome to comment. (Email to receive replies. Login is unnecessary)'
