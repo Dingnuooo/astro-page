@@ -187,8 +187,7 @@ export const ThemeConfigSchema = () =>
       gallerySortOrder: z
         .enum(['random', 'fileName'])
         .optional()
-        .default('fileName')
-        .describe('Sort order for gallery images'),
+        .default('fileName'),
 
       /** Share buttons to show */
       share: ShareSchema()

@@ -298,7 +298,7 @@ $\forall\,v \in \text{span}(W_p) \cap \text{span}(W_f)$，$\exists\,a,\,b\,\ \te
 $$
 v = W_p\cdot a = W_f\cdot b
 $$
-而 $W_p$ 和 $W_f$ 都是由 $X_f$ 以及他们自身线性组合得到的，所以交集中的向量 $v$ 必定可表示为 $X_f\cdot c$，所以 $v \in \text{span}(X_f)$，也即 、
+而 $W_p$ 和 $W_f$ 都是由 $X_f$ 以及他们自身线性组合得到的，所以交集中的向量 $v$ 必定可表示为 $X_f\cdot c$，所以 $v \in \text{span}(X_f)$，也即
 $$
 \text{span}(W_p) \cap \text{span}(W_f) \subseteq \text{span}(X_f)
 $$
@@ -321,8 +321,8 @@ $$
 \mathcal{O}=\left[ U_1 \quad U_2 \right] \begin{bmatrix} \Sigma_r & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} V_1^\mathrm{T} \\ V_2^\mathrm{T}\end{bmatrix}=U_1\Sigma_rV_1^\mathrm{T}\;(\,=\Gamma_iX_f)
 $$
 为了得到 $\Gamma_iX_f$，从 $\Sigma_r$ 中间劈成两个矩阵相乘（原因后面会解释），劈开处乘上相似变换阵：
-- $\Gamma_i = U_1 \Sigma_r^{1/2}\color{red}T$
-- $X_f = {\color{red}T^{-1} }\Sigma_r^{1/2} V_1^\mathrm{T}{}$
+- $\Gamma_i = U_1 \Sigma_r^{1/2}\color{orange}T$
+- $X_f = {\color{orange}T^{-1} }\Sigma_r^{1/2} V_1^\mathrm{T}{}$
 ***
 下面就可以进行辨识了。由于 $T$、$V_1$ 都满秩，得 $n=\mathrm{r}(X_f)=\mathrm{r}(\Sigma_r)$，也即系统维数为 $\mathcal O$ 矩阵非零奇异值的个数。
 

@@ -202,7 +202,7 @@ A/\!_CB&= \left(A\big/\begin{bmatrix}B\\C\end{bmatrix}\right)\begin{bmatrix}I&{\
 \end{aligned}
 $$
 
-对于 $A/\!_BC$，不是提取后几行。因为 $C$ 在联合空间的下面，正交化的时候 ${\rm row}(C)$ 的基向量中平行于 ${\rm row}(B)$ 的部分都被抹掉了，因此后几行根本不是 ${\rm row}(C)$ 原来的基。正确的做法是，在构造联合空间时把 $C$ 放在上面：
+对于 $A/\!_BC$，不能简单地提取后几行。因为 $C$ 在联合空间的下面，做正交化的时候 ${\rm row}(C)$ 的基向量中平行于 ${\rm row}(B)$ 的部分都被抹掉了，因此后几行根本不是 ${\rm row}(C)$ 原来的基。正确的做法是，在构造联合空间时把 $C$ 放在上面：
 $$
 \begin{aligned}
 	A/\!_BC&= \left(A\big/\begin{bmatrix}C\\B\end{bmatrix}\right)\begin{bmatrix}I&{\boldsymbol0}\\{\boldsymbol0}&{\boldsymbol0}\end{bmatrix}\\

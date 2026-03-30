@@ -251,7 +251,9 @@ $$
 ## 1.20
 <Aside type="note" title="习题 1.20">
 在区间 $\left(0,x\right)$ 上进行填装. 称如下操作为一次生成：生成一个开区间，其长度为 $1$、左端点服从 $\left(0,x-1\right)$ 上的均匀分布. 填装规则如下：首先生成一个开区间，记作 $I_1$，填入区间 $\left(0,x\right)$；重复生成开区间，直到这个开区间不与 $I_1\sim I_{k}$ 中任意一个相交，记为 $I_{k+1}$，填入区间. 反复执行上述操作，直到 $\left(0,x\right)$ 上无法再容下一个单位区间. 记最终填入的开区间数量为 $N(x)$、再令 $M(x)=E\left[N(x)\right]$. 证明：
-$$M(x)=\begin{cases}0,x<1\\\dfrac{2}{x-1}\displaystyle\int_0^{x-1}M(y){\mathrm d}y+1,x>1\end{cases}$$
+$$
+M(x)=\begin{cases}0,x<1\\\dfrac{2}{x-1}\displaystyle\int_0^{x-1}M(y){\mathrm d}y+1,x>1\end{cases}
+$$
 </Aside>
 **解：**
 
@@ -276,7 +278,9 @@ $$
 ## 1.22
 <Aside type="note" title="习题 1.22">
 定义 $X$ 对给定 $Y$ 的条件方差 $\mathrm{Var}\left(X\mid Y\right)=E\big[\left(X-E(X\mid Y)\right)^2\mid Y\big]$. 证明：
-$$\mathrm{Var}(X)=E\big[\mathrm{Var}(X\mid Y)\big]+\mathrm{Var}(E[X\mid Y])$$
+$$
+\mathrm{Var}(X)=E\big[\mathrm{Var}(X\mid Y)\big]+\mathrm{Var}(E[X\mid Y])
+$$
 </Aside>
 **解：**
 
@@ -322,7 +326,9 @@ $$
 ## 1.29
 <Aside type="note" title="习题 1.29">
 $X_1\sim X_n$ 独立同分布、服从 $E(\lambda)$. 证明 $\sum\limits_1^n X_i$ 的密度函数为
-$$f(x)=\lambda {\mathrm e}^{-\lambda x}(\lambda x)^{n-1}/(n-1)!$$
+$$
+f(x)=\lambda {\mathrm e}^{-\lambda x}(\lambda x)^{n-1}/(n-1)!
+$$
 这样的分布称为参数为 $(n,\lambda)$ 的 gamma 分布.
 </Aside>
 **解：**

@@ -14,7 +14,7 @@ const images = await Promise.all(
       if (sortOrder === 'random') {
         return Math.random() - 0.5
       }
-      return a[0].localeCompare(b[0]) // Default: fileName
+      return a[0].localeCompare(b[0])
     })
     .map(async ([path, mod]) => {
       const src = (mod as any).default;
@@ -72,8 +72,8 @@ const images = await Promise.all(
           </button>
 
           <div class='gallery-overlay hidden absolute inset-0 z-30 flex-col items-center justify-center text-center p-4 bg-black/40 backdrop-blur-md opacity-0 transition-opacity duration-300'>
-             <p class='text-white text-lg font-bold mb-2 whitespace-pre-line'>{item.metadata?.title || 'No title'}</p>
-             <p class='text-white/80 text-xs font-mono whitespace-pre-line'>{item.metadata?.subtitle || ''}</p>
+             <p class='text-white text-sm sm:text-lg font-bold mb-2 whitespace-pre-line'>{item.metadata?.title || 'No title'}</p>
+             <p class='text-white/80 text-[11px] sm:text-xs font-mono whitespace-pre-line'>{item.metadata?.subtitle || ''}</p>
           </div>
         </div>
       ))
@@ -117,12 +117,107 @@ const images = await Promise.all(
     const hideOverlay = (overlay) => toggleOverlay(overlay, false)
     const isOverlayVisible = (overlay) => !overlay.classList.contains('hidden')
 
+    // Cache preload promises so the same HD image is fetched only once.
+    const hdPreloadCache = new Map()
+    const preloadHighResImage = (hdSrc) => {
+      if (!hdSrc) {
+        return Promise.resolve()
+      }
+
+      const cached = hdPreloadCache.get(hdSrc)
+      if (cached) {
+        return cached
+      }
+
+      const preloadPromise = new Promise((resolve, reject) => {
+        const temp = new Image()
+        temp.decoding = 'async'
+        temp.onload = () => resolve()
+        temp.onerror = () => reject(new Error(`unable to preload high-res image: ${hdSrc}`))
+        temp.src = hdSrc
+      }).catch((error) => {
+        hdPreloadCache.delete(hdSrc)
+        throw error
+      })
+
+      hdPreloadCache.set(hdSrc, preloadPromise)
+      return preloadPromise
+    }
+
+    const isGoodNetworkForWarmup = () => {
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+      const isDataSaving = Boolean(connection?.saveData)
+      const isVerySlowNetwork = ['slow-2g', '2g'].includes(connection?.effectiveType || '')
+
+      return !isDataSaving && !isVerySlowNetwork
+    }
+
+    // Warm up nearby images when hover is unavailable.
+    const warmupVisibleHighResImages = () => {
+      if (!isGoodNetworkForWarmup() || !('IntersectionObserver' in window)) {
+        return
+      }
+
+      let warmedCount = 0
+      const maxWarmups = 8
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue
+
+            observer.unobserve(entry.target)
+
+            if (warmedCount >= maxWarmups) {
+              observer.disconnect()
+              break
+            }
+
+            const hdSrc = entry.target.getAttribute('data-zoom-src')
+            if (!hdSrc) continue
+
+            warmedCount += 1
+            preloadHighResImage(hdSrc).catch(() => {
+              // Ignore warmup failure, click handler keeps fallback behavior.
+            })
+          }
+        },
+        {
+          rootMargin: '220px 0px',
+          threshold: 0.01
+        }
+      )
+
+      document.querySelectorAll('.gallery-img').forEach((img) => observer.observe(img))
+    }
+
+    const runWarmups = () => {
+      warmupVisibleHighResImages()
+    }
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(runWarmups, { timeout: 1500 })
+    } else {
+      setTimeout(runWarmups, 400)
+    }
+
     // Logic for Info Button
     document.querySelectorAll('.info-btn').forEach(btn => {
        btn.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
           const galleryItem = btn.closest('.gallery-item')
+
+          if (galleryItem && isGoodNetworkForWarmup()) {
+            const previewImg = galleryItem.querySelector('.gallery-img')
+            const hdSrc = previewImg?.getAttribute('data-zoom-src')
+            if (hdSrc) {
+              preloadHighResImage(hdSrc).catch(() => {
+                // Keep silent here, click handler has visible fallback behavior.
+              })
+            }
+          }
+
           const overlay = galleryItem?.querySelector('.gallery-overlay')
           if (overlay) {
             toggleOverlay(overlay, !isOverlayVisible(overlay))
@@ -151,6 +246,18 @@ const images = await Promise.all(
 
     // Logic for Image zoom
     document.querySelectorAll('.gallery-img').forEach(img => {
+      const preloadByIntent = () => {
+        const hdSrc = img.getAttribute('data-zoom-src')
+        if (!hdSrc) return
+
+        preloadHighResImage(hdSrc).catch(() => {
+          // Keep silent here, click handler has visible fallback behavior.
+        })
+      }
+
+      // Preload on hover intent to reduce desktop first click wait.
+      img.addEventListener('pointerenter', preloadByIntent, { once: true })
+
       img.addEventListener('click', async (e) => {
         const galleryItem = img.closest('.gallery-item')
         const overlay = galleryItem?.querySelector('.gallery-overlay')
@@ -172,24 +279,20 @@ const images = await Promise.all(
         loader.style.left = `${rect.left + window.scrollX + rect.width / 2 - loaderSize / 2}px`
         loader.classList.remove('hidden')
 
-        // Load high-res image
-        const temp = new Image()
-        
         const openZoom = () => {
           loader.classList.add('hidden')
           zoom.attach(img)
           zoom.open({ target: img })
         }
 
-        temp.onload = openZoom;
-        
-        temp.onerror = () => {
+        try {
+          await preloadHighResImage(hdSrc)
+        } catch {
           console.error('unable to load high-res image:', hdSrc)
-          // Fallback: still open zoom with current image
-          openZoom()
         }
 
-        temp.src = hdSrc
+        // Fallback: still open zoom with current image
+        openZoom()
       })
     })
 
