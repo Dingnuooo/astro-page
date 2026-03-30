@@ -2,6 +2,7 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
+import { highlightColor } from '@/site-config'
 // Plugin styles
 import 'katex/dist/katex.min.css'
 import { MediumZoom } from 'astro-pure/advanced'
@@ -41,7 +42,7 @@ const socialImage = heroImage
     : heroImage.src.src
   : config.socialCard
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
-const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+const primaryColor = data.heroImage?.color ?? highlightColor
 ---
 
 <PageLayout
