@@ -37,6 +37,27 @@ const typographyConfig: TypographyOptions = {
     'h2,h3,h4,h5,h6': {
       'scroll-margin-top': '4rem'
     },
+    // 设置各级标题的字号
+    h2: {
+      'font-size': '1.8rem', // 30px - 二级标题
+      'line-height': '2.25rem'
+    },
+    h3: {
+      'font-size': '1.5rem', // 24px - 三级标题
+      'line-height': '2rem'
+    },
+    h4: {
+      'font-size': '1.25rem', // 20px - 四级标题
+      'line-height': '1.75rem'
+    },
+    h5: {
+      'font-size': '1.125rem', // 18px - 五级标题
+      'line-height': '1.75rem'
+    },
+    h6: {
+      'font-size': '1rem', // 16px - 六级标题
+      'line-height': '1.5rem'
+    },
     'h1>a,h2>a,h3>a,h4>a,h5>a,h6>a': {
       'margin-inline-start': '0.75rem',
       color: fgMuted,

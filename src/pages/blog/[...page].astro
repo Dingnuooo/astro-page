@@ -6,7 +6,7 @@ import { Paginator, PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTagsWithCount, sortMDByDate } from 'astro-pure/server'
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import config from '@/site-config'
+import config, { highlightColor } from '@/site-config'
 
 export const prerender = true
 
@@ -36,20 +36,20 @@ const meta = {
 const paginationProps = {
   ...(page.url.prev && {
     prevUrl: {
-      text: `← Previous Posts`,
+      text: `← Previous Page`,
       url: page.url.prev
     }
   }),
   ...(page.url.next && {
     nextUrl: {
-      text: `Next Posts →`,
+      text: `Next Page →`,
       url: page.url.next
     }
   })
 }
 ---
 
-<PageLayout {meta}>
+<PageLayout {meta} highlightColor={highlightColor}>
   <Button title='Back' href='/' variant='back' />
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>

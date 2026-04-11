@@ -19,6 +19,8 @@ interface Props {
 
 const { class: className, title, tools, ...props } = Astro.props
 
+const lobeChatInviteCode = '2kZ0K06l'
+
 function isImageMetadata(obj: unknown): obj is ImageMetadata {
   return typeof obj === 'object' && obj !== null && 'src' in obj
 }
@@ -80,7 +82,7 @@ function isImageMetadata(obj: unknown): obj is ImageMetadata {
             )}
             <div class='z-20 flex flex-col'>
               <div class='font-medium text-foreground'>{tool.name}</div>
-              <div class='font-normal'>{tool.description}</div>
+              <div class='font-normal' set:html={tool.description} />
             </div>
           </div>
         </a>
@@ -88,3 +90,34 @@ function isImageMetadata(obj: unknown): obj is ImageMetadata {
     }
   </div>
 </div>
+
+<!-- Dingnuooo changes -->
+<script define:vars={{ lobeChatInviteCode }}>
+  const lobeChatLinks = document.querySelectorAll('[id="LobeChat"]')
+
+  lobeChatLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      const descEl = link.querySelector('.font-normal')
+      const originalText = descEl?.innerHTML ?? ''
+      const openTarget = () => window.open(link.href, '_blank')
+
+      if (!descEl || !navigator.clipboard?.writeText) {
+        openTarget()
+        return
+      }
+
+      navigator.clipboard
+        .writeText(lobeChatInviteCode)
+        .then(() => {
+          descEl.innerHTML = 'AI Chat | 邀请码已复制 ✔'
+          setTimeout(() => {
+            descEl.innerHTML = originalText
+          }, 2000)
+          setTimeout(openTarget, 800)
+        })
+        .catch(openTarget)
+    })
+  })
+</script>

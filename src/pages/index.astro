@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets'
-
+import avatar from '@/assets/avatar.png'
 import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
@@ -9,84 +9,84 @@ import PageLayout from '@/layouts/BaseLayout.astro'
 import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
-import config from '@/site-config'
+import config, { highlightColor } from '@/site-config'
 
-const languages = ['Html', 'JavaScript', 'CSS', 'Shell']
-const frontend = ['TypeScript', 'Vite', 'Webpack', 'Astro']
-const backend = ['Vercel', 'Waline']
+const language = ['Python', 'C / C++', 'MATLAB', 'LaTeX', 'HTML', 'MySQL']
+const tool = ['VSCode', 'Obsidian', 'Zotero', 'Docker', 'VMware']
+const design = ['SAI', 'FL Studio', 'Manim', 'Blender']
 
-const MAX_POSTS = 10
+const MAX_POSTS = 15
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
-
-const imagePath = config.logo.src
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/*.{jpeg,jpg,png,gif,avif,webp}'
-)
-if (!images[imagePath])
-  throw new Error(
-    `"${imagePath}" does not exist in glob: "src/assets/*.{jpeg,jpg,png,gif,avif,webp}"`
-  )
 ---
 
-<PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
+<PageLayout meta={{ title: 'Home' }} highlightColor={highlightColor}>
   <main class='flex w-full flex-col items-center'>
-    <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
-      <Image
-        src={images[imagePath]()}
-        alt={config.logo.alt || 'Profile'}
-        class='h-28 w-auto rounded-full border p-1'
-        loading='eager'
-        fetchpriority='high'
-      />
+    <section class='animate mb-10 flex flex-col items-center gap-y-3' id='content-header'>
+      <div class='flex flex-col items-center gap-y-4 sm:flex-row sm:gap-x-8 sm:translate-x-3'>
+        <!-- <img
+          src='/avatar.png'
+          alt='profile'
+          class='avatar-hover h-28 w-28 rounded-full border p-1 object-cover'
+          loading='eager'
+        /> -->
+        <Image
+          src={avatar}
+          alt='profile'
+          class='avatar-hover h-28 w-28 rounded-full border p-1 object-cover'
+          loading='eager'
+        />
+        <div class='flex flex-col items-center gap-y-2 sm:items-start'>
 
-      <div class='flex flex-col items-center gap-y-4'>
-        <h1 class='text-3xl font-medium'>{config.author}</h1>
-        <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-          <Label title='Somewhere'>
-            <Icon name='location' class='size-5' slot='icon' />
-          </Label>
-          <Label
-            title='Source code'
-            as='a'
-            href='https://github.com/cworld1/astro-theme-pure'
-            target='_blank'
-          >
-            <Icon name='github' class='size-5' slot='icon' />
-          </Label>
+          <h1 class='text-3xl font-bold'>{config.author}</h1>
+
+          <div class='flex flex-wrap justify-center gap-x-7 gap-y-3 mt-1'>
+            <Label title='Beijing / Fuzhou' class='text-base text-muted-foreground'>
+              <Icon name='location' class='size-5' slot='icon' />
+            </Label>
+            <a
+              href='/about'
+              class='group flex flex-row items-center justify-center gap-x-1 text-base text-muted-foreground transition-all hover:opacity-75'
+            >
+              <Icon name='link' class='size-4 mr-1' />
+              <span>About me</span>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='18'
+                height='18'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke-width='2.5'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                class='stroke-muted-foreground group-hover:stroke-primary'
+              >
+                <line
+                  x1='5'
+                  y1='12'
+                  x2='19'
+                  y2='12'
+                  class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:scale-x-100'
+                />
+                <polyline
+                  points='12 5 19 12 12 19'
+                  class='translate-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1'
+                />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Get template */}
-      <a
-        href='https://github.com/cworld1/astro-theme-pure'
-        target='_blank'
-        class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
-      >
-        <span class='relative flex items-center justify-center'>
-          <span
-            class='absolute size-2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
-          ></span>
-          <span class='size-2 rounded-full bg-green-400'></span>
-        </span>
-        <p class='font-medium text-muted-foreground'>Get Template</p>
-      </a>
+      <!-- <Quote class='mt-12' /> -->
+      <Quote class='sm:self-start sm:ml-[9.02rem]' />
     </section>
 
     <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
-      <Section title='About'>
-        <p class='text-muted-foreground'>Developer / Designer</p>
-        <p class='text-muted-foreground'>
-          Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione
-          indoctum dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel,
-          at eum oratio possit voluptatum.
-        </p>
-        <Button title='More about me' class='w-fit self-end' href='/about' variant='ahead' />
-      </Section>
       {
         allPostsByDate.length > 0 && (
           <Section title='Posts'>
-            <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
+            <ul class='flex flex-col gap-y-2 sm:gap-y-2'>
               {allPostsByDate.map((p) => (
                 <li class='flex flex-col gap-x-2 sm:flex-row'>
                   <PostPreview post={p} />
@@ -127,27 +127,30 @@ if (!images[imagePath])
       />
     </Section> */
       }
-      <Section title='Education'>
-        <Card
-          as='a'
-          heading='Lorem ipsum'
-          subheading='Lorem ipsum dolor sit amet, vidit suscipit at mei.'
-          date='August 2021 - July 2025'
-          href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-        >
-          {
-            /* <ul class='ms-4 list-disc text-muted-foreground'>
-          <li>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-            molestiae laboriosam pariatur!
-          </li>
-          <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-        </ul> */
-          }
-        </Card>
-      </Section>
+      {
+      //   <Section title='Education'>
+      //   {/* <Card
+      //     as='a'
+      //     heading='Beijing Institute of Technology'
+      //     subheading='School of Future Technology & Interdisciplinary Science'
+      //     date='August 2023 - Present'
+      //     href='https://bit.edu.cn'
+      //   > */}
+      //   <Card
+      //     as='a'
+      //     heading='Beijing Institute of Technology'
+      //     subheading='School of Interdisciplinary Science'
+      //     date='August 2023 - Present'
+      //   >
+      //     <img
+      //       class='absolute end-0 z-0 m-0 -my-3 h-full w-1/2 object-cover opacity-20'
+      //       src='/images/bit-logo.svg'
+      //     />
+      //   </Card>
+      // </Section> 
+      }
 
-      <Section title='Website List'>
+      <!-- <Section title='Website List'>
         <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
           <ProjectCard
             href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
@@ -184,14 +187,31 @@ if (!images[imagePath])
           date='July 2024'
           href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
         />
-      </Section>
+      </Section> -->
+
+
+
+      <!-- <Section title='Papers'>
+        <div class='text-muted-foreground'>希望在不远的将来，这里能够填上一些东西。你可以的。</div>
+      </Section> -->
+
 
       <Section title='Skills'>
-        <SkillLayout title='Languages' skills={languages} />
-        <SkillLayout title='Frontend' skills={frontend} />
-        <SkillLayout title='Backend' skills={backend} />
+        <SkillLayout title='Programming' skills={language} />
+        <SkillLayout title='Tools' skills={tool} />
+        <SkillLayout title='Design' skills={design} />
       </Section>
     </div>
-    <Quote class='mt-12' />
   </main>
 </PageLayout>
+
+<style>
+  .avatar-hover {
+    transition: all 0.3s ease;
+  }
+
+  .avatar-hover:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px 2px rgba(var(--highlight-color-rgb, 214, 231, 255), 0.4);
+  }
+</style>

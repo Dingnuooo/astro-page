@@ -1,16 +1,16 @@
 ---
-import { PFSearch } from 'astro-pure/components/pages'
 import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import { integ } from '@/site-config'
+import Search from '@/components/Search.astro'
+import { highlightColor } from '@/site-config'
 
 const meta = {
-  description: 'Search relative posts of the whole blog',
   title: 'Search'
 }
+
 ---
 
-<PageLayout {meta}>
+<PageLayout {meta} highlightColor={highlightColor}>
   <Button title='Back' href='/blog' variant='back' />
   <main class='mt-6 lg:mt-10'>
     <div id='content-header' class='animate'>
@@ -18,16 +18,7 @@ const meta = {
     </div>
 
     <div id='content' class='animate'>
-      {
-        integ.pagefind ? (
-          <>
-            <p>Enter a search term or phrase to search the blog.</p>
-            <PFSearch />
-          </>
-        ) : (
-          <p>Pagefind is disabled.</p>
-        )
-      }
+      <Search />
     </div>
   </main>
 </PageLayout>

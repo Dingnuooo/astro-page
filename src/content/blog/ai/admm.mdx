@@ -1,0 +1,176 @@
+---
+title: 'ADMM 方法原理推导'
+description: '纯直观 不涉及太多数学的 ADMM 推导'
+tags:
+ - note
+ - ai
+publishDate: 2025-04-01
+updatedDate: 2026-03-29
+heroImage: { src: './illustrations/admm-cover.png'}
+---
+import { Aside } from 'astro-pure/user'
+
+{/* <Aside type="caution">
+更新中
+</Aside> */}
+
+前置内容：[KKT条件 ↗](../math-analysis/chapter9#915-不等式约束)
+
+优化算法做的事情就是为了求出满足 KKT 条件的解
+
+> 凸优化，指的是目标函数为凸函数、不等式约束为凸函数、等式约束为线性函数或仿射函数  
+> 凸函数：定义域为凸集、任意两点连线上的值 $\ge$ 对应自变量的函数值（即盆地形状，称为下凸函数；山峰那种称为上凸函数）
+
+## 惩罚函数与 dual ascent
+考虑对于优化问题
+$$
+\begin{aligned}  
+\min\limits_{x}\quad &f(x)\\  
+s.t.\quad &g_k(x)\leq0,\quad k=1,\cdots,K\\  
+\quad & h_\ell(x)=0,\quad \ell =1,\cdots,L  
+\end{aligned}
+$$
+
+我们把约束当成惩罚项。定义
+$$
+\tilde{f}(x)=f(x)+\sum\limits I_{k}(g_k(x))+\sum\limits J_{\ell }(h_\ell(x))
+$$
+其中 $I$ 和 $J$ 即理想罚函数，分别对应各自的约束
+- $I_k(\cdot)$ 当自变量 $\leq0$ 时为 0、$>0$ 时为 $+\infty$
+- $J_\ell(\cdot)$ 当自变量 $=0$ 时为 0、$\neq0$ 时为 $+\infty$
+
+这样我们相当于在无约束条件下做 $\min\tilde{f}(x)$，当解不符合约束时 $\tilde{f}$ 飙到正无穷，那么 minimize 过程就会自动把这些不符合约束的解踢掉。
+
+对比原问题的 Lagrange 函数：$L(x,\alpha ,\beta )=f(x)+\alpha ^Tg(x)+\beta ^Th(x)$，相当于用线性函数来近似这个惩罚函数。对于不等式约束，为了实现 $I_k$，那么斜率 $\alpha_k$ 就要是正的，这样 $g_k$ 大于 0 的时候就有正的惩罚了，而且 $\alpha_k$ 越大 惩罚越重。我们自然希望 $\alpha_k$ 越大越好，但是这会导致负半轴 $g_k(x)\leq0$ 出问题：为了得到尽可能小的值，minimize 过程会通过把 $g_k(x)$ 弄得很小来刷 $\tilde{f}$ 最小值，而不会去在乎原来的那个 $f(x)$ 是不是在变小。所以我们希望的是，$\alpha_k$ 在负半轴为 0、正半轴为 $+\infty$。
+
+一个自然的实现方式是，把惩罚从 $\alpha_kg_k(x)$ 改成 $\max \alpha_kg_k(x)$，使得不论什么时候都找一个 $\alpha_k$ 使惩罚最大化（<span class="text-foreground/40">这里其实是 sup，但我们假定存在严格可行点</span>）。这样，在负半轴 $\alpha_k$ 只能取最小值 0（否则惩罚就是负的）、在正半轴总能找到一个足够大的 $\alpha_k$ 使得惩罚 $\to\infty$。这样整完实际上就是理想惩罚函数
+$$
+I_k(g_k(x))=\max\limits_{\alpha_k\geq0}\alpha_kg_k(x)
+$$
+
+同理地，对于等式约束，也可以用同样的推理过程得到惩罚函数的表达式
+$$
+J_\ell(h_\ell(x))=\max\limits_{\beta_\ell}\beta_\ell h_\ell(x)
+$$
+注意 $\beta_\ell$ 没有限制范围，因为对于等式约束，负半轴也要惩罚，只有当 $h_\ell=0$ 时才不惩罚。因此当 $h>0$ 时取 $\beta>0$、因此当 $h<0$ 时取 $\beta<0$，使得随时有正惩罚。
+
+所以原始问题其解与下面这个问题的解是相同的：<span class="text-foreground/40">其中 $\alpha\geq0$ 的意思是每个分量都大于 0</span>
+$$
+\min\limits_{x}\max\limits_{\alpha\geq0 ,\,\beta }f(x)+\alpha ^Tg(x)+\beta ^Th(x)
+$$
+
+进一步地，**如果原问题是凸优化**，那么 max 和 min 可以互换（称为强对偶性），得到对偶问题
+$$
+\max\limits_{\alpha\geq0 ,\,\beta }\min\limits_{x}f(x)+\alpha ^Tg(x)+\beta ^Th(x)
+$$
+这样相当于把主元从 $x$ 变成了对偶变量 $\alpha$ 和 $\beta$，里头是一个关于 $\alpha$ 和 $\beta$ 的线性函数，因此 minimize 步骤的本质就是对一堆平面取小，这拼出来是一个上凸的山峰。这样外层问题就转化为“无约束地 maximize 一个上凸函数”，内层就是关于 $x$ 的含参 minimize，这两个问题都是好做的。
+
+这给出了一个求解方法，称为 **dual ascent**：轮流更新自变量和对偶变量，一步 min 一步 max：<span class="text-foreground/40">注意 不等式约束的乘子 $\alpha$ 需要取正值</span>
+$$
+\begin{aligned}
+\min:\quad x^{(i+1)} &= \arg\min_x L(x, \alpha^{(i)}, \beta^{(i)})\\
+\max:\quad \alpha^{(i+1)} &= \big[\alpha^{(i)} + \eta^{(i)} g(x^{(i+1)})\big]^+\\
+\beta^{(i+1)} &= \beta^{(i)} + \eta^{(i)} h(x^{(i+1)})\\
+\end{aligned}
+$$
+
+## 增广 Lagrange 函数法
+
+dual ascent 要求每一步的 $\arg\min$ 都能给出明确的极小值。当 $g,h$ 是线性约束时，如果 $f$ 不是一个足够凸的函数（例如绝对值函数），惩罚项很容易把 Lagrange 函数变成斜坡，这样 $\arg\min$ 就跑飞到无穷了。
+
+所以要通过某种方式，修改 Lagrange 函数，强行变成凸的，但不改变最优化的结果。最简单的凸因子就是二次函数。因此增加二次惩罚项：
+- 对于等式约束 $h_\ell(x)=0$，惩罚变为 $\beta_\ell h_\ell (x)+\dfrac{\rho}2\big(h_\ell (x)\big)^2$，其中 $\rho>0$ 为惩罚参数。只要 $\rho$ 足够大，就能把原问题强行凸化；且最优时 $h_\ell =0$，故增加这个惩罚并不会改变优化结果。
+- 对于不等式约束 $g_k(x)\leq0$，不能直接取平方，因为当 $g_k<0$ 时不应惩罚。解决方法：引入辅助量 $s_k\geq0$ 将不等式约束转化为等式约束，即 $g_k(x)+s_k=0$，然后仿照等式约束的惩罚
+    $$
+    \alpha_k(g_k(x)+s_k)+\dfrac\rho2\big(g_k(x)+s_k\big)^2
+    $$
+	这是一个关于 $s_k$ 的二次函数，所以在 minimize 的时候可以解析地给出 $\hat{s}_k$ 的值。开口向上，对称轴 $\hat{s}_k=\dfrac{\alpha_k+\rho g_k(x)}{\rho}$，由于 $s_k\geq0$：
+	- 当轴 $\leq0$ 时，取 $s_k=0$，化简得惩罚 $=\dfrac{\big(\alpha_k+\rho g_k(x)\big)^2-\alpha_k^2}{2\rho}$
+	- 当轴 $>0$ 时，取 $s_k=$ 轴，化简得惩罚 $=-\dfrac{\alpha_k^2}{2\rho}$
+	- 统一表达式为 $\dfrac{1}{2\rho} \bigg( \big(\left[ \alpha_k + \rho g_k(x)\right]^+\big)^2 - \alpha_k^2 \bigg)$，称为 PHR 罚函数（<span class="text-foreground/40">三个人名首字母</span>）
+
+于是问题转化为：<span class="text-foreground/40">其中 $[\,\cdot\,]^+$ 表示逐元素取正值，$\|\cdot\|^2$ 表示向量模长</span>
+$$
+\min\limits_{x}\max\limits_{\alpha\geq0 ,\,\beta }\,f(x) + \dfrac{1}{2\rho} \bigg( \big\|\ [ \alpha + \rho g(x)]^+\big\|^2 - \|\alpha\|^2 \bigg) + \left( \beta^T h(x) + \frac{\rho}{2} \|h(x)\|^2 \right)
+$$
+**特别地**，当只有等式约束的时候，通常令 $u=(1/\rho )\beta$，这样可以配方：
+$$
+\begin{aligned}
+L(x,\beta )&=f(x)+\beta^T h(x) + \frac{\rho}{2}\|h(x)\|^2 \\
+&= f(x)+\frac{\rho}{2} \left\| h(x) + \frac{1}{\rho}\beta \right\|^2 - \frac{1}{2\rho}\|\beta\|^2\\
+&=f(x)+\frac{\rho}{2}\left(\|h(x)+u\|^2-\|u\|^2\right)
+\end{aligned}
+$$
+然后对它做 dual ascent 就行了，更新方法是一样的。这称为**增广 Lagrange 函数法（ALM）**
+
+## ADMM
+
+对于一个优化问题，当问题规模很大的时候，通常有两种优化方式：要么一次只取一小部分样本来优化（例如 mini-batch 梯度下降），要么一次只优化 $\mathbf{x}$ 的一部分分量。前者具有通用性，因为随机样本保证了各样本同性；但后者不行，因为各个分量之间的耦合关系说不清。
+
+考虑一类优化问题，它的自变量是由两组物理意义完全不同的变量拼起来的，分别对应目标函数的两个部分。也即问题可以写成
+$$
+\begin{aligned}
+x&=(u,v)\\
+\min\limits_{x}\quad &f_1(u) + f_2(v)\\
+s.t.\quad &Au+Bv=c
+\end{aligned}
+$$
+比如 $u$ 是一个图像，对应 loss $f_1$；$v$ 是网络权重，对应 loss $f_2$，目标是最小化一个联合 loss $\alpha f_1+\beta f_2$，就属于这种优化问题。
+
+我们使用 dual ascent 来求解。Lagrange 函数
+$$
+L(u, v, \beta) = f_1(u) + f_2(v) + \beta^T(Au + Bv - c)
+$$
+在做 minimize 步骤时，由于使用线性惩罚，我们有
+$$
+\begin{aligned}
+\min_{x} L&=\min_{u, v}\  f_1(u) + f_2(v) + \beta^T(Au + Bv - c) \\
+&= \left( \min_u\  [f_1(u) + \beta^T A u] \right) + \left( \min_v \ [f_2(v) + \beta^T B v] \right) - \beta^T c
+\end{aligned}
+$$
+这说明，寻找 $x=(u,v)$ 联合最小值的过程，可以拆成 $u$ 和 $v$ 两个独立的小问题，分给两个 cpu 并行计算。也就是说，dual ascent 在解决可分问题的时候可并行。
+
+***
+
+但 dual ascent 需要目标函数足够凸。刚才的解决方法是 ALM，也即把惩罚改成二次的强行凸化：
+$$
+L_\rho(u, v, \beta) = f_1(u) + f_2(v) + \beta^T(Au + Bv - c) + \frac{\rho}{2}\|Au + Bv - c\|^2
+$$
+这就出问题了，因为这里引入了二次项，其中存在 $u$ 和 $v$ 的交叉项，打破了 dual ascent 的并行性。
+
+然而解决方法非常简单，只需要交替更新 $u$ 和 $v$ 就行了，这就是**交替方向乘子法（ADMM）**，相当于宏观上并行、微观上串行
+$$
+\begin{aligned}
+\min:\quad u^{(i+1)} &= \arg\min_u L(u, v^{(i)}, \beta^{(i)})\\
+v^{(i+1)} &= \arg\min_v L(u^{(i+1)}, v, \beta^{(i)})\\
+\max:\quad 
+\beta^{(i+1)} &= \beta^{(i)} + \eta^{(i)}(Au^{(i+1)} + Bv^{(i+1)} - c)\\
+\end{aligned}
+$$
+
+对于不等式约束，直接沿用 ALM 的结论，用 PHR 罚函数就行了，因为本质上 ADMM 只是把可分的两个部分交替来做。至于收不收敛，那是数学家的事。
+
+### 非线性约束
+
+需要注意，从头到尾我们讨论的都是线性约束情形，因为 dual ascent 要求凸优化，但实际当中大量的约束是非线性的，而且 ALM 还得对它平方，这导致增广 Lagrange 函数很扭曲，argmin 不好做。
+
+而 ADMM 的形式给出了一种解决思路，称为变量拆分，也即用两个变量，分别解决目标函数和约束函数。类似最开始讲的惩罚函数的想法，把约束写成惩罚项，只不过那会儿惩罚函数的自变量是 $x$，无法把约束剥离出来。所以换一个自变量，定义 $I_{\mathcal{S}}(z)=\begin{cases}0,&z\in \mathcal{S}\\+\infty,& \text{others}\end{cases}$，其中 $\mathcal{S}$ 即满足约束的 $x$ 构成的集合，这样问题就可以改写为
+$$
+\begin{aligned}
+\min\limits_{x, z}\quad &f(x) + I_{\mathcal{S}}(z)\\
+s.t.\quad &x - z = 0
+\end{aligned}
+$$
+然后就是交替更新步骤了。还是令 $u=(1/\rho )\beta$ 配方，迭代过程变为
+$$
+\begin{aligned}
+x^{(k+1)} &= \arg\min_x \left( f(x) + \frac{\rho}{2}\|x - z^{(k)} + u^{(k)}\|_2^2 \right) \\
+z^{(k+1)} &= \arg\min_z \left( I_{\mathcal{S}}(z) + \frac{\rho}{2}\|x^{(k+1)} - z + u^{(k)}\|_2^2 \right) \\
+u^{(k+1)} &= u^{(k)} + x^{(k+1)} - z^{(k+1)}
+\end{aligned}
+$$
+观察 $z$ 的更新步骤，其本质是在集合 $\mathcal{S}$ 中找一个离 $x^{(k+1)}\!+\!u^{(k)}$ 最近的点。所以只要 $\mathcal{S}$ 的形状不太复杂（例如圆形球形等），还是可以通过几何方法变成简单计算。
+
+### ADMM-Net
+
+Deep Unfolding 是一种迭代算法的网络化方法，我们把所有涉及到的这些变量 $x$、$z$、$u$ 看作网络中流动的特征，而参数 $\rho$ 则对应网络中每一层的权重，迭代几次就相当于流过几层（但一般层数不用那么大）。把这个方法代入 ADMM 就是 ADMM-Net。

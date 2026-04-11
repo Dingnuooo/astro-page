@@ -37,6 +37,13 @@ import '@pagefind/default-ui/css/ui.css'
             bundlePath: `${import.meta.env.BASE_URL.replace(/\/$/, '')}/pagefind/`,
             showImages: false,
             showSubResults: true,
+            ranking: {
+              // Prioritize exact phrase matches
+              termFrequency: 1.0,
+              termSaturation: 1.0,
+              termSimilarity: 3.0,  // Boost results where terms appear close together
+              pageLength: 0.5
+            },
             processResult: (result: { url: string; sub_results: Array<{ url: string }> }) => {
               result.url = formatURL(result.url)
               result.sub_results = result.sub_results.map((sub_result) => {

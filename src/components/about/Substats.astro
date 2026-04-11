@@ -8,6 +8,7 @@ interface SubstatsItem {
   color?: string
   link?: string
   text: string
+  desc?: string
   api?: string
   count?: number
 }
@@ -36,9 +37,9 @@ async function fetchCount(item: SubstatsItem) {
 await Promise.all(stats.map(fetchCount))
 ---
 
-<div class='grid grid-cols-1 gap-3 rounded-xl border p-2 sm:grid-cols-2 sm:p-3'>
+<div class='grid grid-cols-1 gap-3 rounded-xl border p-2 sm:grid-cols-2 lg:grid-cols-2 sm:p-3'>
   {
-    stats.map(({ link, platform, icon, color, count, text }) => (
+    stats.map(({ link, platform, icon, color, count, text, desc }) => (
       <a
         class='group text-muted-foreground no-underline'
         href={link}
@@ -56,18 +57,18 @@ await Promise.all(stats.map(fetchCount))
               <span class='text-sm font-normal'>{text}</span>
             </div>
           ) : (
-            'null'
+            <span class='text-sm font-normal'>{desc}</span>
           )}
         </div>
       </a>
     ))
   }
 </div>
-<div class='mt-2 text-right text-sm'>
+<!-- <div class='mt-2 text-right text-sm'>
   Display real-time; powered by <a
     class='text-muted-foreground'
     href='http://github.com/spencerwooo/substats'
     target='_blank'
     rel='noopener noreferrer'>Substats</a
   >
-</div>
+</div> -->

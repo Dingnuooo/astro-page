@@ -3,73 +3,99 @@ import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
+import zotero from '@/assets/tools/zotero.png'
+import DynamicSignature from '@/components/DynamicSignature.astro'
+import { highlightColor } from '@/site-config'
 
 const headings = [
   { depth: 2, slug: 'hobbies', text: 'Hobbies' },
-  { depth: 2, slug: 'tools', text: 'Tools' },
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'gossips', text: 'Gossips' },
+  { depth: 2, slug: 'tools', text: 'Tools' },
+  //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'about-blog', text: 'About Blog' }
 ]
 ---
 
-<PageLayout title='About' {headings} comment>
-  <p>Developer / Designer</p>
+<PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
-  </p>
-  <p>
-    Motto: Stay hungry, Stay foolish. <Spoiler>这里可以夹私货，比如为什么要演奏春日影！</Spoiler>
+    你好，我是 Dingnuooo，来自福建省福州市，现居北京市海淀区，AI for Communication 在读。这里收容了一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
   </p>
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* general-talk */}
   <h2 id='hobbies'>Hobbies</h2>
   <ul>
-    <li>Lorem ipsum dolor sit amet, vidit suscipit at mei.</li>
-    <li>
-      Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod
-      voluptua ne.
+    <li>我的人格类型为 INTJ-T <span class="text-foreground/60"><Spoiler>赛博人格 chinosan 是 ISFJ-T.</Spoiler></span></li>
+    <li>我阅读侦探小说，喜欢本格和社会派.</li>
+    <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏 ( Project Sekai / Phigros / Arcaea / maimai )
+      <ul>
+        <li>音押派玩家，所以只有遇上喜欢的曲目 / 谱面 / 曲师 才会推 ap.</li>
+        <li>也游玩其他有优秀的音乐美术的游戏</li>
+      </ul>
     </li>
-    <li>Ex dicat impedit mel, at eum oratio possit voluptatum.</li>
-    <li>Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.</li>
+    <li>喜欢<a href='/gallery' target='_blank'>随拍</a>但是摄影低手 学习中.</li>
   </ul>
 
-  {/* tools */}
-  <h2 id='tools'>Tools</h2>
-  <p>Current support tools as follow:</p>
-  <ToolSection
-    class='mb-5'
-    title='Design'
-    tools={[
+  {/* social-networks */}
+  <h2 id='social-networks'>Social Networks</h2>
+  <p>
+    您可以在以下平台找到我：
+  </p>
+  <Substats
+    stats={[
       {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
+        platform: 'GitHub',
+        icon: 'github',
+        link: 'https://github.com/dingnuooo',
+        desc: 'Code / Research',
+        text: 'followers'
       },
       {
-        name: 'Illustrator',
-        description: 'Vector Drawing',
-        href: 'https://www.adobe.com/products/illustrator',
-        icon: import('@/assets/tools/illustrator.svg?raw')
+        platform: 'bilibili',
+        icon: 'bilibili',
+        color: '#ed7b98',
+        link: 'https://space.bilibili.com/90563238',
+        desc: 'Videos',
+        text: 'followers',
+        // api: 'bilibili/90563238'
       },
       {
-        name: 'After Effects',
-        description: 'Motion Graphics',
-        href: 'https://www.adobe.com/products/aftereffects',
-        icon: import('@/assets/tools/aftereffects.svg?raw')
+        platform: 'Rednote',
+        icon: 'instagram',
+        color: '#D94551',
+        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
+        desc: 'Photography',
+        text: 'followers'
       },
       {
-        name: 'Premiere Pro',
-        description: 'Video Editing',
-        href: 'https://www.adobe.com/products/premiere',
-        icon: import('@/assets/tools/premiere.svg?raw')
-      }
+        platform: 'twitter',
+        icon: 'x',
+        color: '#7fbeff',
+        link: 'https://x.com/chinosan_dn',
+        desc: 'Photography / Posts',
+        text: 'followers'
+      },
+      {
+        platform: 'Steam',
+        icon: 'steam',
+        color: '#3570a0',
+        link: 'https://steamcommunity.com/id/dingnuooo',
+        desc: 'Games',
+        text: 'friends'
+      },
+      {
+        platform: 'Netease Music',
+        icon: 'netease',
+        color: '#D63C3C',
+        link: 'https://music.163.com/#/user/home?id=384322136',
+        desc: 'Music Collections',
+        text: 'followers'
+      },
     ]}
   />
+  
+  {/* tools */}
+  <h2 id='tools'>Tools</h2>
   <ToolSection
     class='mb-5'
     title='Productivity'
@@ -81,22 +107,22 @@ const headings = [
         icon: import('@/assets/tools/chrome.svg?raw')
       },
       {
-        name: 'Firefox',
-        description: 'Browser',
-        href: 'https://www.mozilla.org/en-US/firefox',
-        icon: import('@/assets/tools/firefox.svg?raw')
+        name: 'Tailscale',
+        description: 'VPN',
+        href: 'https://tailscale.com/',
+        icon: import('@/assets/tools/tailscale.svg?raw')
       },
       {
-        name: 'Notion',
-        description: 'Note Taking',
-        href: 'https://www.notion.so/',
-        icon: import('@/assets/tools/notion.svg?raw')
+        name: 'Obsidian',
+        description: 'Note Base & Markdown Editor',
+        href: 'https://obsidian.md/',
+        icon: import('@/assets/tools/obsidian.svg?raw')
       },
       {
-        name: 'Typora',
-        description: 'Markdown Editor',
-        href: 'https://typora.io/',
-        icon: import('@/assets/tools/typora.svg?raw')
+        name: 'Zotero',
+        description: 'Reference Manager',
+        href: 'https://www.zotero.org/',
+        icon: zotero
       }
     ]}
   />
@@ -105,23 +131,53 @@ const headings = [
     title='Development'
     tools={[
       {
-        name: 'VS Code',
+        name: 'Visual Studio Code',
         description: 'IDE',
         href: 'https://code.visualstudio.com/',
         icon: import('@/assets/tools/vscode.svg?raw')
       },
       {
-        name: 'Neovim',
-        description: 'IDE',
-        href: 'https://neovim.io/',
-        icon: import('@/assets/tools/neovim.svg?raw')
+        name: 'Warp',
+        description: 'Terminal',
+        href: 'https://www.warp.dev/',
+        icon: import('@/assets/tools/warp.svg?raw')
       },
       {
-        name: 'Sublime Text',
-        description: 'IDE',
-        href: 'https://www.sublimetext.com/',
-        icon: import('@/assets/tools/sublime.svg?raw')
+        name: 'LobeChat',
+        description: 'AI Chat | 点击复制邀请码 获更多额度',
+        href: 'https://app.lobehub.com/signin?referral=2kZ0K06l',
+        icon: import('@/assets/tools/lobechat.svg?raw')
       }
+    ]}
+  />
+  <ToolSection
+    class='mb-5'
+    title='Design'
+    tools={[
+      {
+        name: 'Easy Paint Tool SAI',
+        description: 'Digital Drawing',
+        href: 'https://www.systemax.jp/ja/sai/',
+        icon: import('@/assets/tools/sai.svg?raw')
+      },
+      {
+        name: 'Blender',
+        description: '3D Modeling & Rendering',
+        href: 'https://www.blender.org/',
+        icon: import('@/assets/tools/blender.svg?raw')
+      },
+      {
+        name: 'Photoshop',
+        description: 'Picture Editing',
+        href: 'https://www.adobe.com/products/photoshop',
+        icon: import('@/assets/tools/photoshop.svg?raw')
+      },
+      {
+        name: 'Reaper',
+        description: 'Music Arranging & Mixing',
+        href: 'https://www.reaper.fm/',
+        icon: import('@/assets/tools/reaper.svg?raw')
+      },
     ]}
   />
   <ToolSection
@@ -129,122 +185,95 @@ const headings = [
     title='Environment'
     tools={[
       {
-        name: 'Arch Linux',
-        description: 'Linux Distribution',
-        href: 'https://archlinux.org/',
-        icon: import('@/assets/tools/archlinux.svg?raw')
+        name: 'Windows 11',
+        description: 'Framework Laptop 16',
+        href: 'https://news.microsoft.com/windows11-general-availability/',
+        icon: import('@/assets/tools/windows11.svg?raw')
       },
       {
         name: 'Ubuntu 24.04 LTS',
         description: 'Linux Distribution',
         href: 'https://ubuntu.com/',
         icon: import('@/assets/tools/ubuntu.svg?raw')
-      },
-      {
-        name: 'MacOS Tahoe',
-        description: 'MacBook Air',
-        href: 'https://www.apple.com/macos/',
-        icon: import('@/assets/tools/apple.svg?raw')
-      },
-      {
-        name: 'Windows 11',
-        description: 'Framework Laptop 16',
-        href: 'https://news.microsoft.com/windows11-general-availability/',
-        icon: import('@/assets/tools/windows11.svg?raw')
-      }
-    ]}
-  />
-
-  {/* social-networks */}
-  <h2 id='social-networks'>Social Networks</h2>
-  <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne.
-  </p>
-  <Substats
-    stats={[
-      {
-        platform: 'GitHub',
-        icon: 'github',
-        link: 'https://github.com/cworld1',
-        text: 'followers',
-        api: 'github/cworld1'
-      },
-      {
-        platform: 'Telegram',
-        icon: 'telegram',
-        color: '#2ca5e0',
-        link: 'https://t.me/cworld0_cn',
-        text: 'subscribers',
-        api: 'telegram/cworld0_cn'
-      },
-      {
-        platform: 'Steam',
-        icon: 'steam',
-        color: '#50769d',
-        link: 'https://steamcommunity.com/id/cworld',
-        text: 'games',
-        api: 'steamgames/76561199021278120'
       }
     ]}
   />
 
   {/* gossips */}
-  <h2 id='gossips'>Gossips</h2>
+  <!-- <h2 id='gossips'>Gossips</h2>
   <Collapse title='Lorem ipsum'>
     Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
     dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
     possit voluptatum.
-  </Collapse>
+  </Collapse> -->
 
   {/* about-blog */}
   <h2 id='about-blog'>About Blog</h2>
-  <p>Website history:</p>
+  <!-- <p></p>
   <Timeline
     events={[
       {
-        date: '2024-04-29',
-        content:
-          'Website refactored using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
-      },
-      {
-        date: '2024-07-26',
-        content:
-          'Website abstracted as a theme and published on <a href="https://github.com/cworld1/astro-theme-pure"target="_blank">Github</a>'
-      },
-      {
-        date: '2024-07-27',
-        content: 'Began writing website docs'
+        date: '',
+        content: ''
       }
     ]}
-  />
+  /> -->
   <p>
-    The smooth operation and personalized customization of website also rely on the resources and
-    technical support provided by the following excellent projects/service providers:
+    本站笔记库源自 2022 年高中时期的笔记系统、思维模式和语言风格，2023 年 11 月开始电子化，2024 年 12 月使用 Hexo 框架搭建公开平台，2025 年 11 月迁移至现有框架与主题。
+  </p>
+  <p>
+    本站基于以下项目/服务商的技术支持：
   </p>
   <ul>
-    <li>Domain: <a href='#' target='_blank'>Vercel</a></li>
+    <li>域名：<a href='https://www.alibabacloud.com/' target='_blank'>Alibaba Cloud</a>.</li>
     <li>
-      Framework & Theme: <a href='https://astro.build/' target='_blank'>Astro</a> + <a
+      框架与主题：<a href='https://astro.build/' target='_blank'>Astro</a> & <a
         href='https://github.com/cworld1/astro-theme-pure'
         target='_blank'>Astro Theme Pure</a
-      >
+      >.
     </li>
     <li>
-      Site hosting: <a href='https://vercel.com/' target='_blank'>Vercel</a>
+      网页托管: <a href='https://vercel.com/' target='_blank'>Vercel</a>.
     </li>
-    <li>
-      CI/CD: <a href='https://vercel.com/workflow' target='_blank'>Vercel Workflow</a>
-    </li>
-    <li>Comment system: <a href='https://waline.js.org' target='_blank'>Waline</a></li>
-    <li>
-      Visits: <a href='https://supabase.com/' target='_blank'>Supabase</a> +
-      <a href='https://waline.js.org/' target='_blank'>Waline</a>
-    </li>
-    <li>
-      Other statistics: <a href='https://github.com/spencerwooo/substats' target='_blank'
+    <!-- <li>访问加速: <a href='https://cloud.tencent.com/product/teo' target='_blank'>Tencent EdgeOne</a>.</li> -->
+    <li>评论与浏览量统计: <a href='https://waline.js.org' target='_blank'>Waline</a>.</li>
+    <!-- <li>
+      粉丝数统计: <a href='https://github.com/spencerwooo/substats' target='_blank'
         >Substats</a
-      >
-    </li>
+      >（未启用）
+    </li> -->
   </ul>
+
+  <p>子站导航（暂时无内容，仅作为索引）:</p>
+  <ul>
+    <li>slidev 幻灯片合集：<a href='https://slide.dingnuooo.top/' target='_blank'>https://slide.dingnuooo.top/</a>.</li>
+    <li>HugoBlox 学术简历：<a href='https://cv.dingnuooo.top/' target='_blank'>https://cv.dingnuooo.top/</a>.</li>
+  </ul>
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='15rem' />
+  </div>
 </PageLayout>
+
+<style is:global>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+</style>

@@ -25,7 +25,7 @@ import config from './src/site.config.ts'
 // https://astro.build/config
 export default defineConfig({
   // [Basic]
-  site: 'https://astro-pure.js.org',
+  site: 'https://dingnuooo.top',
   // Deploy to a sub path
   // https://astro-pure.js.org/docs/setup/deployment#platform-with-base-path
   // base: '/astro-pure/',
@@ -37,6 +37,7 @@ export default defineConfig({
   // https://docs.astro.build/en/guides/deploy/
   adapter: vercel({ imageService: true }),
   output: 'server',
+  // output: 'static',
   // Local (standalone)
   // adapter: node({ mode: 'standalone' }),
   // output: 'server',
@@ -53,6 +54,34 @@ export default defineConfig({
       }
     ]
   },
+
+  //-----------------------
+  // 这一段是旧版的，新版当中删除掉了
+  // integrations: [
+  //   // astro-pure will automatically add sitemap, mdx & unocss
+  //   // sitemap(),
+  //   // mdx(),
+  //   AstroPureIntegration(config),
+  //   // (await import('@playform/compress')).default({
+  //   //   SVG: false,
+  //   //   Exclude: ['index.*.js']
+  //   // }),
+  //   sitemap({
+  //     priority: 1.0,
+  //     lastmod: new Date('2025-11-01'),
+  //   }),
+  //   // Temporary fix vercel adapter
+  //   // static build method is not needed
+  // ],
+  // // root: './my-project-directory',
+
+  // // Prefetch Options
+  // prefetch: true,
+  // // Server Options
+  // server: {
+  //   host: true
+  // },
+  //-----------------------
 
   // [Markdown]
   markdown: {

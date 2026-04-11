@@ -183,11 +183,14 @@ export const ThemeConfigSchema = () =>
       /** Blog page size for pagination */
       blogPageSize: z.number().optional().default(8),
 
-      /** Share buttons to show */
-      share: ShareSchema(),
+      /** Gallery sort order */
+      gallerySortOrder: z
+        .enum(['random', 'fileName'])
+        .optional()
+        .default('fileName'),
 
-      /** Enable image captions (default false) */
-      imageCaption: z.boolean().default(false).describe('Enable image captions')
+      /** Share buttons to show */
+      share: ShareSchema()
     })
   })
 

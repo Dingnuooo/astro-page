@@ -10,12 +10,16 @@ interface Props {
   headings?: MarkdownHeading[]
   view?: boolean
   comment?: boolean
+  wide?: boolean
+  highlightColor?: string
 }
 
-const { title, headings, view, comment: enableComment, ...props } = Astro.props
+// Dingnuooo changes (wide=false): Gallery wide layout support
+const { title, headings, view, comment: enableComment, wide=false, ...props } = Astro.props
 ---
 
-<PageLayout meta={{ title }} {...props}>
+<!-- Dingnuooo changes ({wide}): Gallery wide layout support -->
+<PageLayout meta={{ title }} {wide} {...props}>
   {headings?.length && <TOC headings={headings} slot='sidebar' />}
 
   <Fragment slot='header'>
