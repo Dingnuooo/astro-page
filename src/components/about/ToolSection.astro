@@ -80,7 +80,7 @@ function isImageMetadata(obj: unknown): obj is ImageMetadata {
             )}
             <div class='z-20 flex flex-col'>
               <div class='font-medium text-foreground'>{tool.name}</div>
-              <div class='font-normal'>{tool.description}</div>
+              <div class='font-normal' set:html={tool.description} />
             </div>
           </div>
         </a>

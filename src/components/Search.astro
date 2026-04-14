@@ -1,0 +1,21 @@
+---
+import './styles/search.css'
+---
+
+<site-search>
+  <aside class='form my-4'>
+    {
+      import.meta.env.DEV ? (
+        <div class='w-full rounded-xl border-2 bg-transparent px-4 py-2 pe-3 outline-none focus:border-foreground'>
+          You are in Dev mode, the search is disabled.
+        </div>
+      ) : (
+        <div id='flex-search' />
+      )
+    }
+  </aside>
+</site-search>
+
+<script>
+  import('./scripts/search.ts')
+</script>

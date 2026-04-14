@@ -2,14 +2,15 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
+import { highlightColor } from '@/site-config'
 // Plugin styles
 import 'katex/dist/katex.min.css'
-
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import config from 'virtual:config'
 import PageLayout from '@/layouts/ContentLayout.astro'
 import { Comment, PageInfo } from '@/components/waline'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -41,7 +42,7 @@ const socialImage = heroImage
     : heroImage.src.src
   : config.socialCard
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
-const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+const primaryColor = data.heroImage?.color ?? highlightColor
 ---
 
 <PageLayout
@@ -58,6 +59,10 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
   </Hero>
 
   <slot />
+
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='15rem' />
+  </div>
 
   <Fragment slot='bottom'>
     {/* Copyright */}
