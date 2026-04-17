@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
 import json from './_info.json'
 import DynamicSignature from '@/components/DynamicSignature.astro'
@@ -7,23 +8,30 @@ import { highlightColor, theme } from '@/site-config'
 const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager: true })
 
 const sortOrder = theme.content.gallerySortOrder || 'fileName'
+const shouldShuffleOnClient = sortOrder === 'random'
 
-const images = Object.entries(galleryFiles)
-  .sort((a, b) => {
-    // Keep SSR output deterministic; random mode is shuffled on the client.
-    return a[0].localeCompare(b[0])
-  })
-  .map(([path, mod]) => {
-    const src = (mod as any).default
-    const filename = path.split('/').pop()
-    const metadata = filename ? (json as any)[filename] : undefined
+const images = await Promise.all(
+  Object.entries(galleryFiles)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(async ([path, mod]) => {
+      const src = (mod as any).default
+      const filename = path.split('/').pop()
+      const metadata = filename ? (json as any)[filename] : undefined
+      const preview = await getImage({
+        src,
+        width: Math.min(src.width, 640),
+        format: 'webp',
+        quality: 45
+      })
 
-    return {
-      src,
-      metadata,
-      highResSrc: src.src
-    }
-  })
+      return {
+        src,
+        metadata,
+        preview,
+        highResSrc: src.src
+      }
+    })
+)
 ---
 
 <PageLayout title='Gallery' comment wide highlightColor={highlightColor}>
@@ -33,7 +41,10 @@ const images = Object.entries(galleryFiles)
   <div class='flex justify-end mt-8 md:mt--5 mb-8'>
     <DynamicSignature width='15rem' />
   </div>
-  <div class='gallery-container' data-sort-order={sortOrder}>
+  <div
+    class:list={['gallery-container', shouldShuffleOnClient && 'gallery-container--randomizing']}
+    data-randomize={shouldShuffleOnClient ? 'true' : 'false'}
+  >
     {
       images.map((item, index) => (
         <div
@@ -43,10 +54,10 @@ const images = Object.entries(galleryFiles)
           }}
         >
           <img
-            src={item.src.src}
+            src={item.preview.src}
             alt=''
-            width={item.src.width}
-            height={item.src.height}
+            width={item.preview.attributes.width}
+            height={item.preview.attributes.height}
             class='gallery-img'
             data-zoom-src={item.highResSrc}
             loading={index < 3 ? 'eager' : 'lazy'}
@@ -66,15 +77,22 @@ const images = Object.entries(galleryFiles)
       ))
     }
   </div>
-  
+  <noscript>
+    <style>
+      .gallery-container--randomizing {
+        visibility: visible !important;
+      }
+    </style>
+  </noscript>
+
   <div id='zoom-loader' class='fixed z-[20000] hidden pointer-events-none rounded-full bg-black/50 p-2'>
     <div class='loader-spinner'></div>
   </div>
 
   <script is:inline type='module'>
     import mediumZoom from 'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/+esm'
-    
-    // Move loader to body
+
+    // Move loader to body so it is not clipped by gallery container overflow.
     const loader = document.getElementById('zoom-loader')
     if (loader && loader.parentElement !== document.body) {
       document.body.appendChild(loader)
@@ -83,9 +101,50 @@ const images = Object.entries(galleryFiles)
     // Init with empty set
     const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
 
+    const hdLoadCache = new Map()
+    const preloadHighResImage = (hdSrc) => {
+      if (!hdSrc) {
+        return Promise.resolve()
+      }
+
+      const cached = hdLoadCache.get(hdSrc)
+      if (cached) {
+        return cached
+      }
+
+      const preloadPromise = new Promise((resolve, reject) => {
+        const temp = new Image()
+        temp.decoding = 'async'
+        temp.onload = () => resolve()
+        temp.onerror = () => reject(new Error(`unable to load high-res image: ${hdSrc}`))
+        temp.src = hdSrc
+      }).catch((error) => {
+        hdLoadCache.delete(hdSrc)
+        throw error
+      })
+
+      hdLoadCache.set(hdSrc, preloadPromise)
+      return preloadPromise
+    }
+
+    const showLoaderAtImageCenter = (img) => {
+      if (!loader) return
+
+      const rect = img.getBoundingClientRect()
+      const loaderSize = 48
+      loader.style.top = `${rect.top + rect.height / 2 - loaderSize / 2}px`
+      loader.style.left = `${rect.left + rect.width / 2 - loaderSize / 2}px`
+      loader.classList.remove('hidden')
+    }
+
+    const hideLoader = () => {
+      if (!loader) return
+      loader.classList.add('hidden')
+    }
+
     const applyClientRandomOrder = () => {
       const galleryContainer = document.querySelector('.gallery-container')
-      if (!galleryContainer || galleryContainer.getAttribute('data-sort-order') !== 'random') {
+      if (!galleryContainer || galleryContainer.getAttribute('data-randomize') !== 'true') {
         return
       }
 
@@ -106,6 +165,7 @@ const images = Object.entries(galleryFiles)
       })
 
       galleryContainer.prepend(fragment)
+      galleryContainer.classList.remove('gallery-container--randomizing')
     }
 
     applyClientRandomOrder()
@@ -131,49 +191,12 @@ const images = Object.entries(galleryFiles)
     const hideOverlay = (overlay) => toggleOverlay(overlay, false)
     const isOverlayVisible = (overlay) => !overlay.classList.contains('hidden')
 
-    // Cache preload promises so the same HD image is fetched only once.
-    const hdPreloadCache = new Map()
-    const preloadHighResImage = (hdSrc) => {
-      if (!hdSrc) {
-        return Promise.resolve()
-      }
-
-      const cached = hdPreloadCache.get(hdSrc)
-      if (cached) {
-        return cached
-      }
-
-      const preloadPromise = new Promise((resolve, reject) => {
-        const temp = new Image()
-        temp.decoding = 'async'
-        temp.onload = () => resolve()
-        temp.onerror = () => reject(new Error(`unable to preload high-res image: ${hdSrc}`))
-        temp.src = hdSrc
-      }).catch((error) => {
-        hdPreloadCache.delete(hdSrc)
-        throw error
-      })
-
-      hdPreloadCache.set(hdSrc, preloadPromise)
-      return preloadPromise
-    }
-
     // Logic for Info Button
     document.querySelectorAll('.info-btn').forEach(btn => {
        btn.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
           const galleryItem = btn.closest('.gallery-item')
-
-          if (galleryItem) {
-            const previewImg = galleryItem.querySelector('.gallery-img')
-            const hdSrc = previewImg?.getAttribute('data-zoom-src')
-            if (hdSrc) {
-              preloadHighResImage(hdSrc).catch(() => {
-                // Keep silent here, click handler has visible fallback behavior.
-              })
-            }
-          }
 
           const overlay = galleryItem?.querySelector('.gallery-overlay')
           if (overlay) {
@@ -216,28 +239,18 @@ const images = Object.entries(galleryFiles)
         const hdSrc = img.getAttribute('data-zoom-src')
         if (!hdSrc) return
 
-        // loader ring positioning
-        const rect = img.getBoundingClientRect()
-        const loaderSize = 48
-        loader.style.position = 'absolute'
-        loader.style.top = `${rect.top + window.scrollY + rect.height / 2 - loaderSize / 2}px`
-        loader.style.left = `${rect.left + window.scrollX + rect.width / 2 - loaderSize / 2}px`
-        loader.classList.remove('hidden')
-
-        const openZoom = () => {
-          loader.classList.add('hidden')
-          zoom.attach(img)
-          zoom.open({ target: img })
-        }
+        showLoaderAtImageCenter(img)
 
         try {
           await preloadHighResImage(hdSrc)
         } catch {
           console.error('unable to load high-res image:', hdSrc)
+        } finally {
+          hideLoader()
         }
 
-        // Fallback: still open zoom with current image
-        openZoom()
+        zoom.attach(img)
+        zoom.open({ target: img })
       })
     })
 
@@ -268,6 +281,10 @@ const images = Object.entries(galleryFiles)
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .gallery-container--randomizing {
+    visibility: hidden;
   }
 
   .gallery-item {
