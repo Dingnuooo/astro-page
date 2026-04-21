@@ -41,17 +41,6 @@ export function vitePluginUserConfig(
   const resolveId = (id: string, base = root) =>
     JSON.stringify(id.startsWith('.') ? resolve(fileURLToPath(base), id) : id)
 
-  /**
-   * Resolves a path to a Starlight file relative to this file.
-   * @example
-   * resolveLocalPath('../utils/git.ts');
-   * // => '"/users/houston/docs/node_modules/@astrojs/starlight/utils/git.ts"'
-   */
-  const resolveLocalPath = (path: string) =>
-    JSON.stringify(fileURLToPath(new URL(path, import.meta.url)))
-  const rootPath = fileURLToPath(root)
-  const docsPath = resolveCollectionPath('docs', srcDir)
-
   let collectionConfigImportPath = resolve(fileURLToPath(srcDir), './content.config.ts')
 
   // If not using legacy collections and the config doesn't exist, fallback to the legacy location.
