@@ -4,14 +4,7 @@ import config from 'virtual:config'
 import { Icon } from '../user'
 
 const footerConf = config.footer
-let social = footerConf.social || {}
-
-// If the list does not contain rss, add it.
-// Comment out this section of code to hide the RSS button
-// social.rss = {
-//   label: 'RSS',
-//   url: '/rss.xml'
-// }
+const social = footerConf.social || []
 
 const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
 ---
@@ -79,18 +72,12 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
       {/* Social Brands */}
       <div class='flex items-center gap-x-4'>
         {
-          footerConf.social &&
-            Object.entries(footerConf.social).map(([platform, { label, url }]) => (
-              <a
-                class='inline-block text-muted-foreground transition-all hover:text-muted-foreground/75'
-                href={url}
-                aria-label={label}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <Icon name={platform as keyof typeof footerConf.social} />
-              </a>
-            ))
+          social.map(({ label, href, icon }) => (
+            <a {href} rel='me' class='sl-flex'>
+              <span class='sr-only'>{label}</span>
+              <Icon name={icon} />
+            </a>
+          ))
         }
       </div>
     </div>

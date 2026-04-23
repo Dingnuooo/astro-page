@@ -3,13 +3,14 @@ import { dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 // Astro
 import type { AstroIntegration, RehypePlugins, RemarkPlugins } from 'astro'
-import { AstroError } from 'astro/errors'
 // Integrations
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
-import UnoCSS from 'unocss/astro'
+import { AstroError } from 'astro/errors'
+import UnoCSS from '@unocss/astro'
 
 import rehypeExternalLinks from './plugins/rehype-external-links'
+import rehypeImageCaption from './plugins/rehype-image-caption'
 import rehypeTable from './plugins/rehype-table'
 // Dingnuooo changes//remarkImageSize
 import { remarkAddZoomable, remarkImageSize, remarkReadingTime } from './plugins/remark-plugins'
@@ -67,6 +68,8 @@ export default function AstroPureIntegration(opts: UserInputConfig): AstroIntegr
         ])
         // Make table scrollable on overflow
         rehypePlugins.push(rehypeTable)
+        // Add image caption support
+        if (userConfig.content.imageCaption) rehypePlugins.push(rehypeImageCaption)
 
         // Add Starlight directives restoration integration at the end of the list so that remark
         // plugins injected by Starlight plugins through Astro integrations can handle text and
