@@ -1,10 +1,11 @@
 ---
-import links from '@/public/links.json'
+// import links from '@/public/links.json'
 import config from 'virtual:config'
 
 import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import FriendList from '@/components/links/FriendList.astro'
+// import FriendList from '@/components/links/FriendList.astro'
+
 
 const headings = [
   { depth: 2, slug: 'common-links', text: 'Common Links' },
@@ -12,23 +13,28 @@ const headings = [
   { depth: 2, slug: 'apply-links', text: 'Apply Links' }
 ]
 
-const { friends } = links
 const linksConf = config.integ.links
 const linkEditPage = 'https://github.com/cworld1/astro-theme-pure/blob/main/public/links.json'
 ---
 
 <PageLayout title='Links' {headings} comment>
-  <p>They're sorted randomly.</p>
+  <p>Links cards are temporarily hidden in this build.</p>
   <h2 id='common-links'>Common Links</h2>
-  <FriendList list={friends[0]} />
+  <!-- <FriendList list={friends[0]} /> -->
+  <p class='text-muted-foreground'>Common links are temporarily unavailable on this page.</p>
+
   <Collapse title='Links with Bad Status'>
-    <FriendList list={friends[1]} />
+  <!-- <FriendList list={friends[1]} /> -->
+  <p class='text-muted-foreground'>Hidden in this build.</p>
   </Collapse>
+
   <Collapse title='Link History Book'>
     <Timeline events={linksConf.logbook} />
   </Collapse>
+
   <h2 id='special-links'>Special Links</h2>
-  <FriendList list={friends[2]} />
+  <!-- <FriendList list={friends[2]} /> -->
+  <p class='text-muted-foreground'>Special links are temporarily unavailable on this page.</p>
 
   <!-- apply-links -->
   <h2 id='apply-links'>Apply Links</h2>
