@@ -1,27 +1,77 @@
 ---
 // https://waline.js.org/en/guide/features/pageview.html#use-alone
 import config from '@/site-config'
+
+const isDev = import.meta.env.DEV
 ---
 
 <script
   is:inline
   type='module'
   data-astro-rerun
-  define:vars={{ npmCDN: config.npmCDN, walineServer: config.integ.waline.server }}
+  define:vars={{ npmCDN: config.npmCDN, walineServer: config.integ.waline.server, isDev }}
 >
+  const pageviewSelector = '.waline-pageview-count'
+
+  function isPageVisible() {
+    return document.visibilityState === 'visible' && document.prerendering !== true
+  }
+
   async function loadPageview() {
     try {
-      const pageview = await import(`${npmCDN}/@waline/client@v3/dist/pageview.js`)
-      const el = document.querySelector('.waline-pageview-count')
-      if (el) {
-        pageview.pageviewCount({
+      const el = document.querySelector(pageviewSelector)
+      if (!el) return
+
+      const { pageviewCount } = await import(`${npmCDN}/@waline/client@v3/dist/pageview.js`)
+
+      if (isDev) {
+        pageviewCount({
           serverURL: walineServer,
-          path: window.location.pathname
+          path: window.location.pathname,
+          update: false
+        })
+        return
+      }
+
+      if (isPageVisible()) {
+        pageviewCount({
+          serverURL: walineServer,
+          path: window.location.pathname,
+          update: true
+        })
+        return
+      }
+
+      pageviewCount({
+        serverURL: walineServer,
+        path: window.location.pathname,
+        update: false
+      })
+
+      const activatePageview = () => {
+        if (!isPageVisible()) return
+
+        cleanup()
+        pageviewCount({
+          serverURL: walineServer,
+          path: window.location.pathname,
+          update: true
         })
       }
+
+      const cleanup = () => {
+        document.removeEventListener('visibilitychange', activatePageview)
+        document.removeEventListener('prerenderingchange', activatePageview)
+        window.removeEventListener('pageshow', activatePageview)
+      }
+
+      document.addEventListener('visibilitychange', activatePageview)
+      document.addEventListener('prerenderingchange', activatePageview)
+      window.addEventListener('pageshow', activatePageview)
     } catch (e) {
       console.error('Failed to load Waline pageview:', e)
     }
   }
+
   loadPageview()
 </script>

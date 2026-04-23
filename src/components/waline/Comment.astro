@@ -24,6 +24,7 @@ const { class: className } = Astro.props
   import config from 'virtual:config'
 
   const walineConfig = config.integ.waline
+  const additionalConfigs = walineConfig.additionalConfigs ?? {}
 
   class Comment extends HTMLElement {
     constructor() {
@@ -47,7 +48,8 @@ const { class: className } = Astro.props
         serverURL: walineConfig.server || '',
         emoji,
         reaction: ['/icons/heart-item.svg'],
-        ...walineConfig.additionalConfigs
+        ...additionalConfigs,
+        pageview: false
       })
     }
   }

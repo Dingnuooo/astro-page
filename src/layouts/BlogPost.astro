@@ -54,7 +54,7 @@ const primaryColor = data.heroImage?.color ?? highlightColor
 
   <Hero {data} {remarkPluginFrontmatter} slot='header'>
     <Fragment slot='description'>
-      {!isDraft && enableComment && <PageInfo comment class='mt-1' />}
+      {!isDraft && <PageInfo comment={enableComment} class='mt-1' />}
     </Fragment>
   </Hero>
 
