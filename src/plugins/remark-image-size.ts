@@ -5,7 +5,7 @@ import { visit } from 'unist-util-visit'
 /**
  * Remark plugin to add width to images from alt text
  * Syntax: ![alt text|width](image.png)
- * Example: ![My Image|500](./image.png) will set width to 500px
+ * Example: ![My Image|500](./image.png) will set max-width to 500px
  */
 export const remarkImageSize: Plugin<[], Root> = function () {
   return function (tree) {
@@ -28,12 +28,13 @@ export const remarkImageSize: Plugin<[], Root> = function () {
           node.data.hProperties = {}
         }
         
-        // Set width style while preserving existing properties
+        // Clamp the requested width to the available width so oversized values
+        // fall back to the default responsive rendering.
         const existingClass = node.data.hProperties.class || ''
         node.data.hProperties = {
           ...node.data.hProperties,
           class: existingClass, // Preserve zoomable class if exists
-          style: `width: ${width}px; height: auto;`
+          style: `max-width: min(${width}px, 100%); height: auto;`
         }
       }
     })
