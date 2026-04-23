@@ -1,15 +1,11 @@
 ---
-import { Image } from 'astro:assets'
-
-import { Button, Collapse, Icon } from 'astro-pure/user'
+import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import ProjectSection from '@/components/projects/ProjectSection.astro'
 import Sponsors from '@/components/projects/Sponsors.astro'
 import Sponsorship from '@/components/projects/Sponsorship.astro'
 import alipay from '@/assets/alipay-qrcode.jpg'
-import KeyIcon from '@/assets/icons/key.svg'
 import wechat from '@/assets/wechat-qrcode.jpg'
-import config, { highlightColor } from '@/site-config'
+import { highlightColor } from '@/site-config'
 
 const headings = [
   // { depth: 2, slug: 'theme', text: 'Theme' },
@@ -18,21 +14,29 @@ const headings = [
   // { depth: 2, slug: 'others', text: 'Others' },
   { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
 ]
+
+const githubRepo = 'Dingnuooo/astro-page'
+const snakeBaseUrl = `https://raw.githubusercontent.com/${githubRepo}/output`
+const snakeVersion = 'transparent-v1'
+const snakeSvgUrl = `${snakeBaseUrl}/github-snake-gitlab-light.svg?v=${snakeVersion}`
 ---
 
 <PageLayout title='Projects' {headings} view highlightColor={highlightColor}>
-  <p>Github Activities:</p>
   <p>
-    <img
-      src='https://ghchart.rshah.org/dingnuooo'
-      alt='github activities'
-      loading='lazy'
-      style='max-width: 100%; height: auto;'
-    />
+    GitHub Activities <span class='text-muted-foreground/50'
+      >(Animated by <a
+        class='text-muted-foreground'
+        href='https://github.com/Platane/snk'
+        target='_blank'>snk</a
+      >)</span>
   </p>
-  <!-- <p>
-    注：大部分是写笔记造成的 commits，真正 coding 的时间没有这么多。
-  </p> -->
+  <div
+    id='github-snake'
+    class='github-snake my-4 flex justify-center overflow-hidden'
+    data-page-path={Astro.url.pathname}
+    data-src={snakeSvgUrl}
+  >
+  </div>
   <Button title='Checkout sponsorship' class='w-fit' href='#sponsorship'>
     <Icon class='size-5' name='receive-money' slot='before' />
   </Button>
@@ -157,7 +161,12 @@ const headings = [
 
   <!-- sponsorship -->
   <h2 id='sponsorship'>Sponsorship</h2>
-  <p>本站仅负责内容创作及少量功能定制，网站主题并非出自我手。推荐关注主题原作者的<a href="https://github.com/cworld1/astro-theme-pure" target="_blank">优秀工作</a>。此处收到的赞助款项将在累计一定金额后，统一转交给主题原作者。</p>
+  <p>
+    本站仅负责内容创作及少量功能定制，网站主题并非出自我手。推荐关注主题原作者的<a
+      href='https://github.com/cworld1/astro-theme-pure'
+      target='_blank'>优秀工作</a
+    >。此处收到的赞助款项将在累计一定金额后，统一转交给主题原作者。
+  </p>
   <!-- <p>Chinese methods: <a >Afadian</a>, Wechat or Alipay </p> -->
   <Sponsorship
     methods={[
@@ -169,13 +178,154 @@ const headings = [
   <p>感谢以下赞助者。请通过邮件联系我以更新赞助列表：<code>dingnuooo@163.com</code></p>
   <Sponsors
     progressMax={50}
-    sponsors={[
-      { name: 'chinosannn', platform: 'Wechat', amount: 15, date: '2025-08-06' },
-    ]}
+    sponsors={[{ name: 'chinosannn', platform: 'Wechat', amount: 15, date: '2025-08-06' }]}
   />
 </PageLayout>
 
+<script>
+  const themedSnakeVars = {
+    '--cb': 'var(--snake-cb)',
+    '--cs': 'var(--snake-cs)',
+    '--ce': 'var(--snake-ce)',
+    '--c0': 'var(--snake-c0)',
+    '--c1': 'var(--snake-c1)',
+    '--c2': 'var(--snake-c2)',
+    '--c3': 'var(--snake-c3)',
+    '--c4': 'var(--snake-c4)'
+  }
+
+  let githubSnakeSvgRequest: Promise<string> | undefined
+
+  function fetchGithubSnakeSvg(src: string) {
+    if (githubSnakeSvgRequest) {
+      return githubSnakeSvgRequest
+    }
+
+    githubSnakeSvgRequest = fetch(src)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch snake SVG: ${response.status}`)
+        }
+
+        return response.text()
+      })
+      .catch((error) => {
+        githubSnakeSvgRequest = undefined
+        throw error
+      })
+
+    return githubSnakeSvgRequest
+  }
+
+  async function mountGithubSnake(container: HTMLElement) {
+    const src = container.dataset.src
+
+    if (!src || container.dataset.loaded === 'pending' || container.dataset.loaded === 'true') {
+      return
+    }
+
+    container.dataset.loaded = 'pending'
+
+    try {
+      const rawSvg = await fetchGithubSnakeSvg(src)
+
+      if (!container.isConnected || !isProjectsPageActive(container) || !isPageVisible()) {
+        container.dataset.loaded = 'idle'
+        return
+      }
+
+      const parsed = new DOMParser().parseFromString(rawSvg, 'image/svg+xml')
+      const svg = parsed.documentElement
+
+      if (svg.tagName.toLowerCase() !== 'svg') {
+        throw new Error('Snake SVG parsing failed')
+      }
+
+      svg.setAttribute('class', 'github-snake-svg')
+      svg.setAttribute('role', 'img')
+      svg.setAttribute('aria-label', 'GitHub contribution snake')
+      svg.removeAttribute('width')
+      svg.removeAttribute('height')
+      Object.entries(themedSnakeVars).forEach(([name, value]) => {
+        svg.style.setProperty(name, value)
+      })
+
+      container.replaceChildren(svg)
+      container.dataset.loaded = 'true'
+    } catch {
+      container.dataset.loaded = 'error'
+    }
+  }
+
+  function normalizePath(path: string) {
+    return path.replace(/\/$/, '') || '/'
+  }
+
+  function isPageVisible() {
+    const prerenderingDocument = document as Document & { prerendering?: boolean }
+    return document.visibilityState === 'visible' && prerenderingDocument.prerendering !== true
+  }
+
+  function isProjectsPageActive(container: HTMLElement) {
+    const pagePath = container.dataset.pagePath
+    if (!pagePath) return false
+
+    return normalizePath(window.location.pathname) === normalizePath(pagePath)
+  }
+
+  function initGithubSnake() {
+    const container = document.getElementById('github-snake') as HTMLElement | null
+    if (!container) return
+
+    const src = container.dataset.src
+    if (src) {
+      void fetchGithubSnakeSvg(src)
+    }
+
+    if (!isProjectsPageActive(container) || !isPageVisible()) {
+      return
+    }
+
+    void mountGithubSnake(container)
+  }
+
+  initGithubSnake()
+  document.addEventListener('astro:page-load', initGithubSnake)
+  document.addEventListener('visibilitychange', initGithubSnake)
+  document.addEventListener('prerenderingchange', initGithubSnake)
+  window.addEventListener('pageshow', initGithubSnake)
+</script>
+
 <style>
+  .github-snake {
+    --snake-cb: #00000010;
+    --snake-cs: #284779;
+    --snake-ce: #edebe6;
+    --snake-c0: #edebe6;
+    --snake-c1: #9dc7f1;
+    --snake-c2: #428fdc;
+    --snake-c3: #2f68b4;
+    --snake-c4: #284779;
+  }
+
+  :global(html.dark) .github-snake {
+    --snake-cb: #ffffff10;
+    --snake-cs: #9dc7f1;
+    --snake-ce: #2a2a36;
+    --snake-c0: #2a2a36;
+    --snake-c1: #284779;
+    --snake-c2: #2f68b4;
+    --snake-c3: #428fdc;
+    --snake-c4: #9dc7f1;
+  }
+
+  .github-snake :global(svg.github-snake-svg) {
+    display: block;
+    width: 102%;
+    max-width: none;
+    height: auto;
+  }
+
   .sponsorship-card {
     & .sponsorship-card-img {
       opacity: 0.3;
