@@ -1,5 +1,6 @@
 /* Pagefind UI Style for FlexSearch */
-#flex-search {
+#flex-search,
+[data-search-root] {
   --pagefind-ui-scale: 0.8;
   --pagefind-ui-primary: hsl(var(--primary) / var(--un-bg-opacity, 1));
   --pagefind-ui-text: hsl(var(--foreground) / var(--un-text-opacity, 1));
@@ -11,6 +12,10 @@
   --pagefind-ui-image-border-radius: calc(var(--radius) + 2px);
   --pagefind-ui-image-box-ratio: 3 / 2;
   --pagefind-ui-font: sans-serif;
+}
+
+#flex-search [hidden] {
+  display: none !important;
 }
 
 .pagefind-ui__search {
@@ -78,6 +83,13 @@
 .pagefind-ui__message {
   padding: calc(16px * var(--pagefind-ui-scale, 1));
   text-align: center;
+}
+
+[data-search-status] {
+  margin-top: calc(12px * var(--pagefind-ui-scale, 1));
+  margin-bottom: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .pagefind-ui__results {

@@ -3,10 +3,15 @@ import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import Search from '@/components/Search.astro'
 import { highlightColor } from '@/site-config'
+import { buildSearchIndex } from '@/utils/search-index'
+
+export const prerender = true
 
 const meta = {
   title: 'Search'
 }
+
+const searchDocuments = await buildSearchIndex()
 
 ---
 
@@ -18,7 +23,7 @@ const meta = {
     </div>
 
     <div id='content' class='animate'>
-      <Search />
+      <Search documents={searchDocuments} />
     </div>
   </main>
 </PageLayout>

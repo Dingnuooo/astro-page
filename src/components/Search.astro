@@ -1,5 +1,12 @@
 ---
 import './styles/search.css'
+import type { SearchIndexPayload } from '../types/search'
+
+interface Props {
+  documents?: SearchIndexPayload
+}
+
+const { documents = [] } = Astro.props
 ---
 
 <site-search>
@@ -10,11 +17,38 @@ import './styles/search.css'
           You are in Dev mode, the search is disabled.
         </div>
       ) : (
-        <div id='flex-search' />
+        <div id='flex-search' data-search-root>
+          <div class='pagefind-ui__search'>
+            <input
+              class='pagefind-ui__search-input'
+              type='text'
+              placeholder='Search'
+              aria-label='Search'
+              autocomplete='off'
+              spellcheck='false'
+              data-search-input
+            />
+            <button class='pagefind-ui__search-clear' type='button' aria-label='Clear search' data-search-clear hidden>
+              <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
+                <path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'></path>
+              </svg>
+            </button>
+          </div>
+          <p class='pagefind-ui__message' data-search-status>Preparing search index...</p>
+          <div class='pagefind-ui__results-area' data-search-results hidden></div>
+        </div>
       )
     }
   </aside>
 </site-search>
+
+{
+  documents.length > 0 && (
+    <script is:inline define:vars={{ searchDocuments: documents }}>
+      window.__SEARCH_DOCUMENTS__ = searchDocuments
+    </script>
+  )
+}
 
 <script>
   import('./scripts/search.ts')

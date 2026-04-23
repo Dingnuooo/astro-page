@@ -1,26 +1,46 @@
-import FlexSearch from 'flexsearch'
+import type { SearchDocument, SearchIndexPayload } from '../../types/search'
 
-interface ContentDetails {
-  slug: string
-  title: string
-  content: string
-  tags: string[]
-  links: string[]
-  collection: 'blog'
-  publishDate?: string
-}
-
-interface ContentIndex {
-  [slug: string]: ContentDetails
-}
-
-interface Item {
+interface SearchResultEntry {
   id: number
-  slug: string
-  title: string
-  content: string
-  tags: string[]
-  [key: string]: any // Index signature for FlexSearch compatibility
+}
+
+interface SearchableDocument extends SearchDocument {
+  id: number
+  [key: string]: string | number | boolean | null | Array<string | number | boolean | null>
+}
+
+interface SearchResultBucket {
+  result?: Array<number | SearchResultEntry>
+}
+
+interface SearchEngine {
+  addAsync: (id: number, item: SearchableDocument) => Promise<unknown>
+  searchAsync: (
+    query: string,
+    options: {
+      limit: number
+      index: string[]
+      enrich: boolean
+    }
+  ) => Promise<SearchResultBucket[]>
+}
+
+interface SearchContext {
+  documents: SearchIndexPayload
+  index: SearchEngine
+}
+
+interface SearchElements {
+  input: HTMLInputElement
+  clear: HTMLButtonElement
+  results: HTMLElement
+  status: HTMLElement
+}
+
+declare global {
+  interface Window {
+    __SEARCH_DOCUMENTS__?: SearchIndexPayload
+  }
 }
 
 // Encoder for CJK (Chinese, Japanese, Korean) languages with bigram support
@@ -95,17 +115,12 @@ const encoder = (str: string): string[] => {
   return tokens
 }
 
-const index = new FlexSearch.Document<Item>({
-  encode: encoder,
-  tokenize: 'forward',
-  document: {
-    id: 'id',
-    tag: 'tags',
-    index: ['title', 'content']
-  }
-})
-
 const contextWindowWords = 15
+let searchContextPromise: Promise<SearchContext> | null = null
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 function highlight(searchTerm: string, text: string): string {
   if (!searchTerm || !text) return text
@@ -114,7 +129,7 @@ function highlight(searchTerm: string, text: string): string {
   let result = text
   
   for (const term of terms) {
-    const regex = new RegExp(`(${term})`, 'gi')
+    const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi')
     result = result.replace(regex, '<mark>$1</mark>')
   }
   
@@ -150,214 +165,305 @@ function resolveUrl(slug: string): string {
   return `/${slug}`
 }
 
-async function setupSearch(containerElement: HTMLElement, data: ContentIndex) {
-  const searchInput = document.createElement('input')
-  searchInput.type = 'text'
-  searchInput.className = 'pagefind-ui__search-input'
-  searchInput.placeholder = 'Search'
-  searchInput.setAttribute('aria-label', 'Search')
+function setStatus(statusElement: HTMLElement, message?: string) {
+  if (!message) {
+    statusElement.hidden = true
+    return
+  }
   
-  const searchClear = document.createElement('button')
-  searchClear.className = 'pagefind-ui__search-clear'
-  searchClear.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>`
-  searchClear.style.display = 'none'
-  searchClear.addEventListener('click', () => {
-    searchInput.value = ''
-    searchClear.style.display = 'none'
-    resultsArea.innerHTML = ''
-    resultsArea.style.display = 'none'
-    searchInput.focus()
-  })
+  statusElement.textContent = message
+  statusElement.hidden = false
+}
+
+function clearResults(resultsElement: HTMLElement) {
+  resultsElement.innerHTML = ''
+  resultsElement.hidden = true
+}
+
+function setClearVisible(clearButton: HTMLButtonElement, visible: boolean) {
+  clearButton.hidden = !visible
+}
+
+async function createSearchEngine(): Promise<SearchEngine> {
+  const { default: FlexSearch } = await import('flexsearch')
   
-  const searchWrapper = document.createElement('div')
-  searchWrapper.className = 'pagefind-ui__search'
-  searchWrapper.appendChild(searchInput)
-  searchWrapper.appendChild(searchClear)
-  
-  const resultsArea = document.createElement('div')
-  resultsArea.className = 'pagefind-ui__results-area'
-  resultsArea.style.display = 'none'
-  
-  containerElement.appendChild(searchWrapper)
-  containerElement.appendChild(resultsArea)
-  
-  const idDataMap = Object.keys(data)
-  let debounceTimer: ReturnType<typeof setTimeout>
-  
-  searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim()
-    
-    if (query) {
-      searchClear.style.display = 'block'
-    } else {
-      searchClear.style.display = 'none'
-      resultsArea.innerHTML = ''
-      resultsArea.style.display = 'none'
-      return
+  return new FlexSearch.Document<SearchableDocument>({
+    encode: encoder,
+    tokenize: 'forward',
+    document: {
+      id: 'id',
+      tag: 'tags',
+      index: ['title', 'content']
     }
-    
-    clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(async () => {
-      await performSearch(query)
-    }, 300)
-  })
+  }) as SearchEngine
+}
+
+async function loadContentIndex(): Promise<SearchIndexPayload> {
+  const embeddedDocuments = window.__SEARCH_DOCUMENTS__
+  if (Array.isArray(embeddedDocuments) && embeddedDocuments.length > 0) {
+    return embeddedDocuments
+  }
+
+  const response = await fetch('/contentIndex.json')
+  if (!response.ok) {
+    throw new Error(`Failed to fetch contentIndex.json: ${response.status}`)
+  }
   
-  async function performSearch(query: string) {
-    if (!query) {
-      resultsArea.innerHTML = ''
-      resultsArea.style.display = 'none'
-      return
-    }
-    
-    try {
-      const searchResults = await index.searchAsync(query, {
-        limit: 30, // Get more results to filter
-        index: ['title', 'content'],
-        enrich: true
+  return response.json() as Promise<SearchIndexPayload>
+}
+
+async function fillIndex(index: SearchEngine, documents: SearchIndexPayload) {
+  await Promise.all(
+    documents.map((document: SearchDocument, id: number) =>
+      index.addAsync(id, {
+        id,
+        ...document
       })
-      
-      const resultIds = new Set<number>()
-      
-      // Collect all result IDs
-      for (const result of searchResults) {
-        if (result.result && Array.isArray(result.result)) {
-          for (const item of result.result) {
-            if (typeof item === 'object' && item !== null && 'id' in item) {
-              resultIds.add((item as any).id as number)
-            } else if (typeof item === 'number') {
-              resultIds.add(item)
-            }
-          }
-        }
+    )
+  )
+}
+
+function prepareSearchContext(): Promise<SearchContext> {
+  if (!searchContextPromise) {
+    searchContextPromise = Promise.all([loadContentIndex(), createSearchEngine()])
+      .then(async ([documents, index]) => {
+        await fillIndex(index, documents)
+        return { documents, index }
+      })
+      .catch((error) => {
+        searchContextPromise = null
+        throw error
+      })
+  }
+  
+  return searchContextPromise
+}
+
+function scheduleSearchWarmup() {
+  const idleWindow = window as Window & {
+    requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number
+  }
+  
+  if (idleWindow.requestIdleCallback) {
+    idleWindow.requestIdleCallback(() => {
+      void prepareSearchContext()
+    }, { timeout: 1200 })
+    return
+  }
+  
+  window.setTimeout(() => {
+    void prepareSearchContext()
+  }, 0)
+}
+
+function collectResultIds(searchResults: SearchResultBucket[]): number[] {
+  const resultIds = new Set<number>()
+  
+  for (const result of searchResults) {
+    if (!result.result || !Array.isArray(result.result)) continue
+    
+    for (const item of result.result) {
+      if (typeof item === 'number') {
+        resultIds.add(item)
+        continue
       }
       
-      // Filter results to ensure they actually contain the search terms
-      const filtered = filterRelevantResults(Array.from(resultIds), query)
-      displayResults(filtered, query)
-    } catch (error) {
-      console.error('Search error:', error)
-      displayResults([], query)
+      if (typeof item === 'object' && item !== null && 'id' in item) {
+        resultIds.add(item.id)
+      }
     }
   }
   
-  function filterRelevantResults(resultIds: number[], query: string): number[] {
-    const normalizedQuery = query.toLowerCase().trim()
-    
-    return resultIds.filter(id => {
-      const slug = idDataMap[id]
-      const item = data[slug]
+  return Array.from(resultIds)
+}
+
+function filterRelevantResults(documents: SearchIndexPayload, resultIds: number[], query: string): number[] {
+  const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean)
+  
+  return resultIds
+    .filter((id) => {
+      const item = documents[id]
       if (!item) return false
       
       const titleLower = item.title.toLowerCase()
       const contentLower = item.content.toLowerCase()
       
-      // Check if title or content contains the search query
-      return titleLower.includes(normalizedQuery) || contentLower.includes(normalizedQuery)
-    }).slice(0, 10) // Limit to top 10 after filtering
-  }
-  
-  function displayResults(resultIds: number[], query: string) {
-    resultsArea.innerHTML = ''
-    
-    if (resultIds.length === 0) {
-      resultsArea.style.display = 'block'
-      const message = document.createElement('p')
-      message.className = 'pagefind-ui__message'
-      message.textContent = `No results for "${query}"`
-      resultsArea.appendChild(message)
-      return
-    }
-    
-    resultsArea.style.display = 'block'
-    
-    const heading = document.createElement('p')
-    heading.className = 'pagefind-ui__results-heading'
-    heading.textContent = `${resultIds.length} result${resultIds.length === 1 ? '' : 's'} for "${query}"`
-    resultsArea.appendChild(heading)
-    
-    const resultsList = document.createElement('ol')
-    resultsList.className = 'pagefind-ui__results'
-    
-    for (const id of resultIds) {
-      const slug = idDataMap[id]
-      const item = data[slug]
-      if (!item) continue
-      
-      const li = document.createElement('li')
-      li.className = 'pagefind-ui__result'
-      
-      const link = document.createElement('a')
-      link.className = 'pagefind-ui__result-link'
-      link.href = resolveUrl(slug)
-      
-      const title = document.createElement('p')
-      title.className = 'pagefind-ui__result-title'
-      title.innerHTML = highlight(query, item.title)
-      
-      const excerpt = document.createElement('p')
-      excerpt.className = 'pagefind-ui__result-excerpt'
-      const excerptText = createExcerpt(item.content, query)
-      excerpt.innerHTML = highlight(query, excerptText)
-      
-      link.appendChild(title)
-      link.appendChild(excerpt)
-      
-      if (item.tags && item.tags.length > 0) {
-        const tags = document.createElement('p')
-        tags.className = 'pagefind-ui__result-tags'
-        tags.innerHTML = item.tags.map(tag => `<span class="pagefind-ui__result-tag">${tag}</span>`).join('')
-        link.appendChild(tags)
-      }
-      
-      li.appendChild(link)
-      resultsList.appendChild(li)
-    }
-    
-    resultsArea.appendChild(resultsList)
-  }
-  
-  await fillIndex(data)
+      return terms.every((term) => titleLower.includes(term) || contentLower.includes(term))
+    })
+    .slice(0, 10)
 }
 
-let indexPopulated = false
-async function fillIndex(data: ContentIndex) {
-  if (indexPopulated) return
+function displayResults(resultsElement: HTMLElement, documents: SearchIndexPayload, resultIds: number[], query: string) {
+  resultsElement.innerHTML = ''
+  resultsElement.hidden = false
   
-  let id = 0
-  const promises: Array<Promise<unknown>> = []
+  if (resultIds.length === 0) {
+    const message = document.createElement('p')
+    message.className = 'pagefind-ui__message'
+    message.textContent = `No results for "${query}"`
+    resultsElement.appendChild(message)
+    return
+  }
   
-  for (const [slug, fileData] of Object.entries(data)) {
-    promises.push(
-      index.addAsync(id++, {
-        id,
-        slug: slug,
-        title: fileData.title,
-        content: fileData.content,
-        tags: fileData.tags
+  const heading = document.createElement('p')
+  heading.className = 'pagefind-ui__results-heading'
+  heading.textContent = `${resultIds.length} result${resultIds.length === 1 ? '' : 's'} for "${query}"`
+  resultsElement.appendChild(heading)
+  
+  const resultsList = document.createElement('ol')
+  resultsList.className = 'pagefind-ui__results'
+  
+  for (const id of resultIds) {
+    const item = documents[id]
+    if (!item) continue
+    
+    const li = document.createElement('li')
+    li.className = 'pagefind-ui__result'
+    
+    const link = document.createElement('a')
+    link.className = 'pagefind-ui__result-link'
+    link.href = resolveUrl(item.slug)
+    
+    const title = document.createElement('p')
+    title.className = 'pagefind-ui__result-title'
+    title.innerHTML = highlight(query, item.title)
+    
+    const excerpt = document.createElement('p')
+    excerpt.className = 'pagefind-ui__result-excerpt'
+    excerpt.innerHTML = highlight(query, createExcerpt(item.content, query))
+    
+    link.appendChild(title)
+    link.appendChild(excerpt)
+    
+    if (item.tags.length > 0) {
+      const tags = document.createElement('p')
+      tags.className = 'pagefind-ui__result-tags'
+      tags.innerHTML = item.tags.map((tag: string) => `<span class="pagefind-ui__result-tag">${tag}</span>`).join('')
+      link.appendChild(tags)
+    }
+    
+    li.appendChild(link)
+    resultsList.appendChild(li)
+  }
+  
+  resultsElement.appendChild(resultsList)
+}
+
+function getSearchElements(): SearchElements | null {
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]')
+  const clear = document.querySelector<HTMLButtonElement>('[data-search-clear]')
+  const results = document.querySelector<HTMLElement>('[data-search-results]')
+  const status = document.querySelector<HTMLElement>('[data-search-status]')
+  
+  if (!input || !clear || !results || !status) {
+    return null
+  }
+  
+  return { input, clear, results, status }
+}
+
+function initSearch() {
+  const elements = getSearchElements()
+  if (!elements) return
+  
+  let debounceTimer: number | undefined
+  let requestId = 0
+  
+  const updateIdleStatus = () => {
+    if (elements.input.value.trim()) return
+    
+    void prepareSearchContext()
+      .then(() => {
+        if (!elements.input.value.trim()) {
+          setStatus(elements.status)
+        }
       })
-    )
+      .catch((error) => {
+        console.error('Failed to warm search index:', error)
+        if (!elements.input.value.trim()) {
+          setStatus(elements.status, 'Search is temporarily unavailable.')
+        }
+      })
   }
   
-  await Promise.all(promises)
-  indexPopulated = true
-}
-
-async function initSearch() {
-  try {
-    const response = await fetch('/contentIndex.json')
-    if (!response.ok) {
-      console.error('Failed to fetch contentIndex.json')
+  const performSearch = async (query: string) => {
+    const currentRequestId = ++requestId
+    
+    if (!query) {
+      clearResults(elements.results)
+      updateIdleStatus()
       return
     }
     
-    const data: ContentIndex = await response.json()
-    const searchContainer = document.getElementById('flex-search')
+    setStatus(elements.status, 'Preparing search index...')
     
-    if (searchContainer) {
-      await setupSearch(searchContainer, data)
+    try {
+      const { documents, index } = await prepareSearchContext()
+      if (currentRequestId !== requestId) return
+      
+      setStatus(elements.status, 'Searching...')
+      const searchResults = await index.searchAsync(query, {
+        limit: 30,
+        index: ['title', 'content'],
+        enrich: true
+      })
+      if (currentRequestId !== requestId) return
+      
+      const filteredResults = filterRelevantResults(documents, collectResultIds(searchResults), query)
+      displayResults(elements.results, documents, filteredResults, query)
+      setStatus(elements.status)
+    } catch (error) {
+      if (currentRequestId !== requestId) return
+      
+      console.error('Search error:', error)
+      clearResults(elements.results)
+      setStatus(elements.status, 'Search is temporarily unavailable.')
     }
-  } catch (error) {
-    console.error('Failed to initialize search:', error)
+  }
+  
+  const handleInput = () => {
+    const query = elements.input.value.trim()
+    setClearVisible(elements.clear, Boolean(query))
+    
+    if (debounceTimer !== undefined) {
+      window.clearTimeout(debounceTimer)
+    }
+    
+    if (!query) {
+      requestId += 1
+      clearResults(elements.results)
+      updateIdleStatus()
+      return
+    }
+    
+    setStatus(elements.status, 'Preparing search index...')
+    debounceTimer = window.setTimeout(() => {
+      void performSearch(query)
+    }, 200)
+  }
+  
+  elements.input.addEventListener('focus', () => {
+    void prepareSearchContext()
+  })
+  elements.input.addEventListener('input', handleInput)
+  
+  elements.clear.addEventListener('click', () => {
+    requestId += 1
+    elements.input.value = ''
+    setClearVisible(elements.clear, false)
+    clearResults(elements.results)
+    updateIdleStatus()
+    elements.input.focus()
+  })
+  
+  const initialQuery = new URLSearchParams(window.location.search).get('q')?.trim()
+  if (initialQuery) {
+    elements.input.value = initialQuery
+    setClearVisible(elements.clear, true)
+    void performSearch(initialQuery)
+  } else {
+    scheduleSearchWarmup()
+    updateIdleStatus()
   }
 }
 
