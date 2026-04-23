@@ -23,12 +23,18 @@ const images = await Promise.all(
         format: 'webp',
         quality: 45
       })
+      const zoomImage = await getImage({
+        src,
+        width: src.width,
+        format: 'webp',
+        quality: 76
+      })
 
       return {
         src,
         metadata,
         preview,
-        highResSrc: src.src
+        zoomImage
       }
     })
 )
@@ -59,7 +65,7 @@ const images = await Promise.all(
             width={item.preview.attributes.width}
             height={item.preview.attributes.height}
             class='gallery-img'
-            data-zoom-src={item.highResSrc}
+            data-zoom-src={item.zoomImage.src}
             loading={index < 3 ? 'eager' : 'lazy'}
             fetchpriority={index < 3 ? 'high' : 'auto'}
             decoding='async'
@@ -101,30 +107,91 @@ const images = await Promise.all(
     // Init with empty set
     const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
 
-    const hdLoadCache = new Map()
+    const zoomImageLoadCache = new Map()
+    const hoverPreloadTimers = new WeakMap()
+    const hoverIntentDelay = 140
+    const connection =
+      navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection
+    const allowsProactivePreload =
+      !connection?.saveData && !/(^|-)2g$/.test(connection?.effectiveType ?? '')
+    const canHoverPreload = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    let activeHoverPreload = false
+
     const preloadHighResImage = (hdSrc) => {
       if (!hdSrc) {
         return Promise.resolve()
       }
 
-      const cached = hdLoadCache.get(hdSrc)
-      if (cached) {
-        return cached
+      const cached = zoomImageLoadCache.get(hdSrc)
+      if (cached?.status === 'loaded') {
+        return Promise.resolve()
+      }
+      if (cached?.promise) {
+        return cached.promise
       }
 
+      let temp = new Image()
+      temp.decoding = 'async'
+
       const preloadPromise = new Promise((resolve, reject) => {
-        const temp = new Image()
-        temp.decoding = 'async'
-        temp.onload = () => resolve()
-        temp.onerror = () => reject(new Error(`unable to load high-res image: ${hdSrc}`))
+        temp.onload = () => {
+          temp.onload = null
+          temp.onerror = null
+          temp = null
+          zoomImageLoadCache.set(hdSrc, { status: 'loaded' })
+          resolve()
+        }
+        temp.onerror = () => {
+          temp.onload = null
+          temp.onerror = null
+          temp = null
+          zoomImageLoadCache.delete(hdSrc)
+          reject(new Error(`unable to load high-res image: ${hdSrc}`))
+        }
         temp.src = hdSrc
-      }).catch((error) => {
-        hdLoadCache.delete(hdSrc)
-        throw error
       })
 
-      hdLoadCache.set(hdSrc, preloadPromise)
+      zoomImageLoadCache.set(hdSrc, { status: 'loading', promise: preloadPromise })
       return preloadPromise
+    }
+
+    const cancelHoverPreload = (img) => {
+      const timer = hoverPreloadTimers.get(img)
+      if (timer) {
+        window.clearTimeout(timer)
+        hoverPreloadTimers.delete(img)
+      }
+    }
+
+    const scheduleHoverPreload = (img) => {
+      if (!allowsProactivePreload || !canHoverPreload) {
+        return
+      }
+
+      const hdSrc = img.getAttribute('data-zoom-src')
+      if (!hdSrc || zoomImageLoadCache.get(hdSrc)?.status === 'loaded') {
+        return
+      }
+
+      cancelHoverPreload(img)
+
+      const timer = window.setTimeout(() => {
+        hoverPreloadTimers.delete(img)
+        if (activeHoverPreload) {
+          return
+        }
+
+        activeHoverPreload = true
+        preloadHighResImage(hdSrc)
+          .catch(() => {
+            console.error('unable to preheat high-res image:', hdSrc)
+          })
+          .finally(() => {
+            activeHoverPreload = false
+          })
+      }, hoverIntentDelay)
+
+      hoverPreloadTimers.set(img, timer)
     }
 
     const showLoaderAtImageCenter = (img) => {
@@ -225,6 +292,29 @@ const images = await Promise.all(
 
     // Logic for Image zoom
     document.querySelectorAll('.gallery-img').forEach(img => {
+      img.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse') {
+          return
+        }
+
+        const hdSrc = img.getAttribute('data-zoom-src')
+        if (!hdSrc) {
+          return
+        }
+
+        preloadHighResImage(hdSrc).catch(() => {
+          console.error('unable to preheat high-res image:', hdSrc)
+        })
+      }, { passive: true })
+
+      img.addEventListener('mouseenter', () => {
+        scheduleHoverPreload(img)
+      })
+
+      img.addEventListener('mouseleave', () => {
+        cancelHoverPreload(img)
+      })
+
       img.addEventListener('click', async (e) => {
         const galleryItem = img.closest('.gallery-item')
         const overlay = galleryItem?.querySelector('.gallery-overlay')
@@ -234,6 +324,7 @@ const images = await Promise.all(
 
         e.preventDefault()
         e.stopPropagation()
+        cancelHoverPreload(img)
 
         const hdSrc = img.getAttribute('data-zoom-src')
         if (!hdSrc) return
