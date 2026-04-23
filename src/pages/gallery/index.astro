@@ -85,7 +85,7 @@ const images = await Promise.all(
     </style>
   </noscript>
 
-  <div id='zoom-loader' class='fixed z-[20000] hidden pointer-events-none rounded-full bg-black/50 p-2'>
+  <div id='zoom-loader' class='absolute z-[20000] hidden pointer-events-none rounded-full bg-black/50 p-2'>
     <div class='loader-spinner'></div>
   </div>
 
@@ -131,9 +131,8 @@ const images = await Promise.all(
       if (!loader) return
 
       const rect = img.getBoundingClientRect()
-      const loaderSize = 48
-      loader.style.top = `${rect.top + rect.height / 2 - loaderSize / 2}px`
-      loader.style.left = `${rect.left + rect.width / 2 - loaderSize / 2}px`
+      loader.style.top = `${window.scrollY + rect.top + rect.height / 2}px`
+      loader.style.left = `${window.scrollX + rect.left + rect.width / 2}px`
       loader.classList.remove('hidden')
     }
 
@@ -262,6 +261,10 @@ const images = await Promise.all(
 </PageLayout>
 
 <style>
+  #zoom-loader {
+    transform: translate(-50%, -50%);
+  }
+
   .loader-spinner {
     width: 32px;
     height: 32px;
