@@ -4,6 +4,7 @@ import AstroPureIntegration from 'astro-pure'
 import { defineConfig, fontProviders } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import type { Plugin } from 'vite'
 
 // Local integrations
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
@@ -21,6 +22,16 @@ import {
   transformerRemoveNotationEscape
 } from './src/plugins/shiki-official/transformers.ts'
 import config from './src/site.config.ts'
+
+const watcherListenerLimitPlugin: Plugin = {
+  name: 'watcher-listener-limit',
+  configureServer(server) {
+    const nextLimit = 20
+    if (server.watcher.getMaxListeners() < nextLimit) {
+      server.watcher.setMaxListeners(nextLimit)
+    }
+  }
+}
 
 // https://astro.build/config
 export default defineConfig({
@@ -153,6 +164,10 @@ export default defineConfig({
     // mdx(),
     AstroPureIntegration(config)
   ],
+
+  vite: {
+    plugins: [watcherListenerLimitPlugin]
+  },
 
   // [Experimental]
   experimental: {

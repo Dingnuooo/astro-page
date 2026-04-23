@@ -1,41 +1,53 @@
-export function getTheme() {
-  return localStorage.getItem('theme')
+const themes = ['dark', 'light'] as const
+
+type Theme = (typeof themes)[number]
+
+let isListeningThemeChange = false
+
+function isTheme(theme?: string | null): theme is Theme {
+  return theme === 'dark' || theme === 'light'
 }
 
-export function listenThemeChange(theme?: string) {
-  // If theme is specified, no need to listen window theme change
-  if (theme && theme !== 'system') return
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    setTheme(e.matches ? 'dark' : 'light')
+function getSystemTheme(): Theme {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function resolveTheme(theme?: string | null): Theme {
+  return isTheme(theme) ? theme : getSystemTheme()
+}
+
+export function getTheme() {
+  const theme = localStorage.getItem('theme')
+  return isTheme(theme) ? theme : null
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', theme === 'dark' ? '#0B0B10' : '#FCFCFD')
+}
+
+export function listenThemeChange() {
+  if (isListeningThemeChange) return
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (getTheme()) return
+    applyTheme(getSystemTheme())
   })
+
+  isListeningThemeChange = true
 }
 
 export function setTheme(theme?: string, save = false) {
-  const themes = ['system', 'dark', 'light']
-  if (theme) {
-    if (!themes.includes(theme)) return
-    if (save) localStorage.setItem('theme', theme)
-  } else {
-    theme = getTheme() ?? undefined
-    if (save) {
-      // Set theme equals undefined, switch cycle in ['system', 'dark', 'light']
-      const currentIndex = themes.indexOf(theme ?? 'system')
-      theme = themes[(currentIndex + 1) % themes.length]
-      localStorage.setItem('theme', theme) // save theme
-    }
-  }
-  let targetTheme = theme
-  if (theme === 'system') {
-    targetTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    // Listen theme change
-    listenThemeChange(theme)
+  const currentTheme = resolveTheme(getTheme())
+  const targetTheme = theme ? resolveTheme(theme) : save ? (currentTheme === 'dark' ? 'light' : 'dark') : currentTheme
+
+  if (save) {
+    localStorage.setItem('theme', targetTheme)
   }
 
-  // Set theme
-  document.documentElement.classList.toggle('dark', targetTheme === 'dark')
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', targetTheme === 'dark' ? '#0B0B10' : '#FCFCFD')
+  applyTheme(targetTheme)
 
-  return theme
+  return targetTheme
 }

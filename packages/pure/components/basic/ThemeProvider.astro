@@ -4,12 +4,17 @@
 
 {/* Use inline mode to quick load color, which can avoid splash */}
 <script is:inline>
+  function getStoredTheme() {
+    const theme = localStorage.getItem('theme')
+    return theme === 'light' || theme === 'dark' ? theme : null
+  }
+
+  function getResolvedTheme() {
+    return getStoredTheme() || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  }
+
   function simpleSetTheme() {
-    let theme = localStorage.getItem('theme')
-    // If undefined or 'system', get from system
-    if (!theme || theme === 'system') {
-      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    }
+    const theme = getResolvedTheme()
     document.documentElement.classList.toggle('dark', theme === 'dark')
     document
       .querySelector('meta[name="theme-color"]')
@@ -23,7 +28,6 @@
   import { Icons } from '../../libs/icons'
   import { listenThemeChange } from '../../utils'
 
-  // Listen for theme change event
   listenThemeChange()
   // Listen for toast event
   document.addEventListener('toast', (e) => {
