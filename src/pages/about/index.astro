@@ -3,9 +3,10 @@ import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
-import zotero from '@/assets/tools/zotero.png'
 import DynamicSignature from '@/components/DynamicSignature.astro'
 import { highlightColor } from '@/site-config'
+
+import zotero from '@/assets/tools/zotero.png'
 
 const headings = [
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
@@ -17,7 +18,7 @@ const headings = [
 
 <PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
-    欢迎光临。我是丁诺（chinosan），来自福建省福州市，现居于北京市，AI for Communication 在读。这里收容了一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
+    欢迎光临。我是丁诺（chinosan），这里收容了一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
   </p>
 
   <!-- <h2 id='hobbies'>Hobbies</h2> -->
@@ -25,12 +26,7 @@ const headings = [
   <ul>
     <li>我的人格类型为 INTJ-T.</li>
     <li>我阅读侦探小说，喜欢本格和社会派.</li>
-    <li>我游玩 Minecraft（生电 / 建筑）与音乐游戏.
-      <ul>
-        <li>音押派玩家，所以只有遇上喜欢的曲目 / 谱面 / 曲师 才会推 ap.</li>
-        <li>也游玩其他有优秀的音乐美术的游戏</li>
-      </ul>
-    </li>
+    <li>我主要游玩 Minecraft（生电 / 建筑）与音乐游戏.</li>
     <li>喜欢<a href='/gallery' target='_blank'>随拍</a>但是摄影低手 学习中.</li>
   </ul>
   
@@ -114,9 +110,21 @@ const headings = [
       },
       {
         name: 'Obsidian',
-        description: 'Note Vault & Markdown Editor',
+        description: 'Note Vault',
         href: 'https://obsidian.md/',
         icon: import('@/assets/tools/obsidian.svg?raw')
+      },
+      {
+        name: 'Moonlight · Axixi',
+        description: 'Remote Desktop',
+        href: 'https://axixi2233.github.io/index.html',
+        icon: import('@/assets/tools/moonlight-axixi.svg?raw')
+      },
+      {
+        name: 'Codex',
+        description: 'AI Agent',
+        href: 'https://openai.com/codex/',
+        icon: import('@/assets/tools/codex.svg?raw')
       },
       {
         name: 'Zotero',
@@ -155,20 +163,20 @@ const headings = [
         icon: import('@/assets/tools/sai.svg?raw')
       },
       {
-        name: 'Blender',
-        description: '3D Modeling & Rendering',
-        href: 'https://www.blender.org/',
-        icon: import('@/assets/tools/blender.svg?raw')
+        name: 'ComfyUI',
+        description: 'AI Image Workflow',
+        href: 'https://www.comfy.org/',
+        icon: import('@/assets/tools/comfyui.svg?raw')
       },
       {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
+        name: 'Lightroom',
+        description: 'Photo Editing',
+        href: 'https://www.adobe.com/products/photoshop-lightroom.html',
+        icon: import('@/assets/tools/lightroom.svg?raw')
       },
       {
         name: 'Reaper',
-        description: 'Music Arranging & Mixing',
+        description: 'Mixing & Mastering',
         href: 'https://www.reaper.fm/',
         icon: import('@/assets/tools/reaper.svg?raw')
       },
