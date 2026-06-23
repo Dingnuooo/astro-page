@@ -79,3 +79,20 @@ export const remarkReadingTime: Plugin<[], Root> =
       data.astro.frontmatter.words = readingTime.words
     }
   }
+
+/**
+ * [Dingnuooo changes] remarkMarkHName
+ * Companion to remark-highlight-mark: that plugin creates `highlight` mdast
+ * nodes but doesn't set data.hName, so remark-rehype renders them as <div>.
+ * This sets hName='mark' so they become <mark>. Must run AFTER remarkHighlightMark.
+ */
+export const remarkMarkHName: Plugin<[], Root> = function () {
+  return function (tree) {
+    visit(tree, (node) => {
+      if (node.type === 'highlight') {
+        if (!node.data) node.data = {}
+        node.data.hName = 'mark'
+      }
+    })
+  }
+}

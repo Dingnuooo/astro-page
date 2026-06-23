@@ -13,7 +13,8 @@ import rehypeExternalLinks from './plugins/rehype-external-links'
 import rehypeImageCaption from './plugins/rehype-image-caption'
 import rehypeTable from './plugins/rehype-table'
 // Dingnuooo changes//remarkImageSize
-import { remarkAddZoomable, remarkImageSize, remarkReadingTime } from './plugins/remark-plugins'
+import { remarkAddZoomable, remarkImageSize, remarkMarkHName, remarkReadingTime } from './plugins/remark-plugins'
+import { remarkHighlightMark } from 'remark-highlight-mark'
 import { vitePluginUserConfig } from './plugins/virtual-user-config'
 import { UserConfigSchema, type UserInputConfig } from './types/user-config'
 import { parseWithFriendlyErrors } from './utils/error-map'
@@ -54,6 +55,8 @@ export default function AstroPureIntegration(opts: UserInputConfig): AstroIntegr
         // Add supported remark plugins based on user config.
         // remarkImageSize must run before remarkAddZoomable to preserve size info
         remarkPlugins.push(remarkImageSize)
+        remarkPlugins.push(remarkHighlightMark as any)
+        remarkPlugins.push(remarkMarkHName)
         if (userConfig.integ.mediumZoom.enable)
           remarkPlugins.push([remarkAddZoomable, userConfig.integ.mediumZoom.options])
         remarkPlugins.push(remarkReadingTime)

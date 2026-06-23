@@ -62,3 +62,11 @@ a {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
 }
+
+/* Mark highlight (==text== syntax via remarkMark) */
+.prose mark {
+  background: hsl(var(--primary) / 0.25);
+  color: inherit;
+  padding: 0 0.2em;
+  border-radius: 0.2em;
+}
