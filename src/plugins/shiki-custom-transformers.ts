@@ -120,7 +120,7 @@ export const addCopyButton = (timeout?: number): ShikiTransformer => {
   }
 }
 
-// Add a copy button to the code block
+// Add a collapse button to the code block
 export const addCollapse = (displayLineCount?: number): ShikiTransformer => {
   const line = displayLineCount || 15
   return {

@@ -6,12 +6,11 @@ import type { AstroIntegration, RehypePlugins, RemarkPlugins } from 'astro'
 // Integrations
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
-import { AstroError } from 'astro/errors'
 import UnoCSS from '@unocss/astro'
+import { AstroError } from 'astro/errors'
 
 import rehypeExternalLinks from './plugins/rehype-external-links'
 import rehypeImageCaption from './plugins/rehype-image-caption'
-import rehypeTable from './plugins/rehype-table'
 // Dingnuooo changes//remarkImageSize
 import { remarkAddZoomable, remarkImageSize, remarkMarkHName, remarkReadingTime } from './plugins/remark-plugins'
 import { remarkHighlightMark } from 'remark-highlight-mark'
@@ -69,8 +68,6 @@ export default function AstroPureIntegration(opts: UserInputConfig): AstroIntegr
             contentProperties: userConfig.content.externalLinks.properties
           }
         ])
-        // Make table scrollable on overflow
-        rehypePlugins.push(rehypeTable)
         // Add image caption support
         if (userConfig.content.imageCaption) rehypePlugins.push(rehypeImageCaption)
 
