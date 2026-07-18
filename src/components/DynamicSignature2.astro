@@ -54,9 +54,9 @@ const {
   mode = 'loop',
   drawDelay = 140,
   rollbackDelay = 55,
-  loopPause = 1500,
+  loopPause = 2000,
   threshold = 1,
-  defaultDuration = 460,
+  defaultDuration = 360,
   strokeDurations = [defaultDuration * 3.67, defaultDuration * 1.5, defaultDuration * 0.85],
   thinWidthRetention = 0.34,
   thickWidthRetention = 0.72,
@@ -119,9 +119,9 @@ dotCenter.y /= dotStroke.samples.length
 dotCenter.x = displayX(dotCenter.x)
 const dotRadius = displayWidth(
   dotStroke.samples.reduce((sum, sample) => sum + sample.width, 0) / dotStroke.samples.length
-) / 2
-const rayInnerRadius = dotRadius + 3
-const rayOuterRadius = dotRadius + 10
+) / 2 * 1.15
+const rayInnerRadius = dotRadius + 3.5
+const rayOuterRadius = dotRadius + 12
 const dotRays = Array.from({ length: 8 }, (_, index) => {
   const angle = -Math.PI / 2 + index * Math.PI / 4
   return {
@@ -186,7 +186,7 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
                 y1={ray.y1}
                 x2={ray.x2}
                 y2={ray.y2}
-                stroke-width="1.7"
+                stroke-width="2.6"
               />
             ))
           }
@@ -233,6 +233,7 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
   .signature-ray {
     stroke: currentColor;
     stroke-linecap: round;
+    filter: drop-shadow(0 0 1.5px currentColor);
   }
 
   .dynamic-signature-2[data-reduced-motion='true'] .signature-segment {
@@ -241,6 +242,11 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
 
   .dynamic-signature-2[data-reduced-motion='true'] .signature-dot {
     opacity: 1;
+    transform: scale(1);
+  }
+
+  .dynamic-signature-2[data-reduced-motion='true'] .signature-rays {
+    opacity: 0.85;
     transform: scale(1);
   }
 </style>
@@ -300,7 +306,7 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
     const dotFrames = appearing
       ? [
           { opacity: 0, transform: 'scale(0.25)', offset: 0 },
-          { opacity: 1, transform: 'scale(1.08)', offset: 0.58 },
+          { opacity: 1, transform: 'scale(1.22)', offset: 0.52 },
           { opacity: 1, transform: 'scale(1)', offset: 1 }
         ]
       : [
@@ -309,10 +315,10 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
           { opacity: 0, transform: 'scale(0.25)', offset: 1 }
         ]
     const rayFrames = [
-      { opacity: 0, transform: 'scale(0.45)', offset: 0 },
-      { opacity: 1, transform: 'scale(0.72)', offset: 0.24 },
-      { opacity: 0.7, transform: 'scale(1)', offset: 0.62 },
-      { opacity: 0, transform: 'scale(1.32)', offset: 1 }
+      { opacity: 0, transform: 'scale(0.38)', offset: 0 },
+      { opacity: 1, transform: 'scale(0.82)', offset: 0.2 },
+      { opacity: 1, transform: 'scale(1.08)', offset: 0.58 },
+      { opacity: 0, transform: 'scale(1.48)', offset: 1 }
     ]
     const options: KeyframeAnimationOptions = { duration, easing: 'ease-out', fill: 'forwards' }
     const animations = [dot.animate(dotFrames, options), rays.animate(rayFrames, options)]
@@ -349,15 +355,17 @@ const dotRays = Array.from({ length: 8 }, (_, index) => {
         await animateConnectedStrokes(container, mainStrokes, 0, 1, mainDuration)
         if (!dotStroke) return
         await wait(drawDelay)
-        await animateDot(dotStroke, true, Number(dotStroke.dataset.duration) || 600)
+        const dotEffectDuration = Math.max(Number(dotStroke.dataset.duration) || 600, 520)
+        await animateDot(dotStroke, true, dotEffectDuration)
       }
 
       const rollbackSequentially = async () => {
         if (dotStroke) {
-          await animateDot(dotStroke, false, (Number(dotStroke.dataset.duration) || 600) * 0.8)
+          const dotEffectDuration = Math.max(Number(dotStroke.dataset.duration) || 600, 520)
+          await animateDot(dotStroke, false, dotEffectDuration * 0.55)
           await wait(rollbackDelay)
         }
-        await animateConnectedStrokes(container, mainStrokes, 1, 0, mainDuration * 0.8)
+        await animateConnectedStrokes(container, mainStrokes, 1, 0, mainDuration * 0.55)
       }
 
       if (container.dataset.mode === 'once-on-view') {

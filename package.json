@@ -18,7 +18,9 @@
     "yijiansilian": "bun lint && bun sync && bun check && bun format",
     "clean": "rmdir /s /q .astro .vercel dist",
     "cache:avatars": "tsx preset/scripts/cacheAvatars.ts",
-    "cache:snake": "node scripts/cache-snake.mjs"
+    "cache:snake": "node scripts/cache-snake.mjs",
+    "indexnow": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/indexnow.ps1",
+    "indexnow:dry": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/indexnow.ps1 -DryRun"
   },
   "dependencies": {
     "@astrojs/check": "0.9.9",
