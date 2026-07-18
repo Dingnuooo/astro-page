@@ -3,9 +3,9 @@ import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } fro
 export const theme: ThemeUserConfig = {
   // === Basic configuration ===
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: 'Dingnuooo\'s Notes',
+  title: 'chinosan\'s notes',
   /** Will be used in index page & copyright declaration */
-  author: 'Dingnuooo',
+  author: 'chinosan',
   /** Description metadata for your website. Can be used in page metadata. */
   description: 'Never put down your hammer.',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
@@ -215,7 +215,7 @@ export const terms: CardListData = {
 
 /** Dingnuooo change: Highlight color for gradient background on pages */
 /** 默认颜色配置位于 src\assets\styles\app.css 的 primary */
-export const highlightColor = '#7f9be7' //default 659EB9 new #b54ccf
+export const highlightColor = '#7351c4' //default 659EB9
 
 const config = { ...theme, integ } as Config
 export default config

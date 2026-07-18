@@ -33,17 +33,17 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
           data-avatar-trigger
           role='button'
           tabindex='0'
-          aria-label='Preview chinosannn profile'
+          aria-label='Preview Dingnuooo profile'
         >
           <Image
-            src={avatar}
+            src={chinosannnAvatar}
             alt='profile'
             class='avatar-layer avatar-base h-28 w-28 rounded-full border p-1 object-cover'
             loading='eager'
           />
           <Image
-            src={chinosannnAvatar}
-            alt='chinosannn avatar'
+            src={avatar}
+            alt='Dingnuooo avatar'
             class='avatar-layer avatar-alt h-28 w-28 rounded-full border p-1 object-cover'
             loading='eager'
           />
@@ -52,7 +52,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
           <h1 class='author-switch text-3xl font-bold'>
             <span class='author-default'>{config.author}</span>
-            <span class='author-alt'>chinosannn</span>
+            <span class='author-alt'>Dingnuooo</span>
           </h1>
 
           <div class='flex flex-wrap justify-center gap-x-7 gap-y-3 mt-1'>
@@ -310,7 +310,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     content: '';
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(#b54ccf, transparent);
+    background-image: linear-gradient(#7f9be7, transparent);
     opacity: 0;
     transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }

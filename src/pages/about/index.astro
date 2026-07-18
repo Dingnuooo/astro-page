@@ -9,7 +9,7 @@ import { highlightColor } from '@/site-config'
 import zotero from '@/assets/tools/zotero.png'
 
 const headings = [
-  { depth: 2, slug: 'findme', text: 'Profiles' },
+  { depth: 2, slug: 'findme', text: 'Social' },
   { depth: 2, slug: 'tools', text: 'Tools' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'colophon', text: 'Colophon' }
@@ -34,9 +34,9 @@ const headings = [
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* findme */}
-  <h2 id='findme'>Profiles</h2>
+  <h2 id='findme'>Social</h2>
   <p>
-    您可以在以下平台找到我。
+    您可以在以下平台关注我。
   </p>
   <Substats
     stats={[
@@ -44,7 +44,15 @@ const headings = [
         platform: 'GitHub',
         icon: 'github',
         link: 'https://github.com/dingnuooo',
-        desc: 'Code / Research',
+        desc: 'Projects',
+        text: 'followers'
+      },
+      {
+        platform: 'Rednote',
+        icon: 'instagram',
+        color: '#D94551',
+        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
+        desc: 'Posts',
         text: 'followers'
       },
       {
@@ -57,19 +65,11 @@ const headings = [
         // api: 'bilibili/90563238'
       },
       {
-        platform: 'Rednote',
-        icon: 'instagram',
-        color: '#D94551',
-        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
-        desc: 'Photography',
-        text: 'followers'
-      },
-      {
         platform: 'twitter',
         icon: 'x',
         color: '#7fbeff',
         link: 'https://x.com/chinosan_dn',
-        desc: 'Photography',
+        desc: 'Posts / Photographs',
         text: 'followers'
       },
       {
