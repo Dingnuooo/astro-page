@@ -282,6 +282,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
   .author-switch > span {
     grid-area: 1 / 1;
+    justify-self: center;
     transition:
       transform var(--avatar-transition),
       opacity var(--avatar-transition);
@@ -324,6 +325,12 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
     .author-switch > span,
     :global(#highlight-gradient)::after {
       transition: none;
+    }
+  }
+
+  @media (min-width: 640px) {
+    .author-switch > span {
+      justify-self: start;
     }
   }
 </style>

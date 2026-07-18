@@ -5,8 +5,8 @@ import config from 'virtual:config'
 import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import FriendList from '@/components/links/FriendList.astro'
-
 import { highlightColor } from '@/site-config'
+import DynamicSignature2 from '@/components/DynamicSignature2.astro'
 
 const headings = [
   { depth: 2, slug: 'common-links', text: 'Common Links' },
@@ -16,7 +16,7 @@ const headings = [
 
 const { friends } = links
 const linksConf = config.integ.links
-const linkEditPage = 'https://github.com/cworld1/astro-theme-pure/blob/main/public/links.json'
+const linkEditPage = 'https://github.com/Dingnuooo/astro-page/blob/main/public/links.json'
 ---
 
 <PageLayout title='Links' {headings} comment highlightColor={highlightColor}>
@@ -68,4 +68,7 @@ const linkEditPage = 'https://github.com/cworld1/astro-theme-pure/blob/main/publ
     </li>
     <li>内容不违反国家法律 Content does not violate laws</li>
   </ul>
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature2 width='11rem' />
+  </div>
 </PageLayout>
