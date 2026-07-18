@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:check": "astro check --watch & astro dev",
+    "prebuild": "npm run cache:snake",
     "build": "astro-pure check && astro check && astro build",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1",
     "preview": "astro preview",
@@ -16,7 +17,8 @@
     "lint": "eslint --fix 'src/**/*.{js,ts,jsx,tsx,astro}'",
     "yijiansilian": "bun lint && bun sync && bun check && bun format",
     "clean": "rmdir /s /q .astro .vercel dist",
-    "cache:avatars": "tsx preset/scripts/cacheAvatars.ts"
+    "cache:avatars": "tsx preset/scripts/cacheAvatars.ts",
+    "cache:snake": "node scripts/cache-snake.mjs"
   },
   "dependencies": {
     "@astrojs/check": "0.9.9",
