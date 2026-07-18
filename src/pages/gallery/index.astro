@@ -4,6 +4,7 @@ import { getImage } from 'astro:assets'
 import PageLayout from '@/layouts/CommonPage.astro'
 import DynamicSignature2 from '@/components/DynamicSignature2.astro'
 import { highlightColor, theme } from '@/site-config'
+import { renderGallerySubtitle } from '@/utils/gallery'
 
 import json from './_info.json'
 
@@ -11,19 +12,6 @@ const galleryFiles = import.meta.glob('./_assets/*.{jpg,jpeg,png,webp}', { eager
 
 const sortOrder = theme.content.gallerySortOrder || 'fileName'
 const shouldShuffleOnClient = sortOrder === 'random'
-
-const escapeHtml = (value: string) =>
-  value.replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`)
-
-// Escape all content before restoring the one supported Markdown construct.
-const renderSubtitle = (subtitle: unknown) => {
-  const escaped = escapeHtml(typeof subtitle === 'string' ? subtitle : '')
-
-  return escaped.replace(
-    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-white underline decoration-white/60 underline-offset-2 hover:decoration-white">$1</a>'
-  )
-}
 
 const images = await Promise.all(
   Object.entries(galleryFiles)
@@ -111,7 +99,7 @@ const images = await Promise.all(
             </p>
             <p
               class='text-white/80 text-[11px] sm:text-xs font-mono whitespace-pre-line'
-              set:html={renderSubtitle(item.metadata?.subtitle)}
+              set:html={renderGallerySubtitle(item.metadata?.subtitle)}
             />
           </div>
         </div>
@@ -120,7 +108,7 @@ const images = await Promise.all(
   </div>
 
   <p>&nbsp;</p>
-  <p class='text-foreground/40'>* 部分图片包含 AI 生成内容 / Contains AI-generated elements.</p>
+  <p class='text-foreground/40'>* 部分图片包含 AI 生成或编辑的内容 / Contains AI-generated elements.</p>
   <noscript>
     <style>
       .gallery-container--randomizing {

@@ -1,0 +1,221 @@
+---
+import type { ImageMetadata } from 'astro'
+import { getImage } from 'astro:assets'
+
+import galleryInfo from '@/pages/gallery/_info.json'
+import { renderGallerySubtitle } from '@/utils/gallery'
+
+const selectedImages = [
+  'gradually-awaking.jpg',
+  'kunminglake.jpg',
+  'nene-white2.jpg',
+  'longmen.jpg'
+] as const
+
+const galleryFiles = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/pages/gallery/_assets/*.{jpg,jpeg,png,webp}',
+  { eager: true }
+)
+
+const images = await Promise.all(
+  selectedImages.map(async (filename) => {
+    const path = `/src/pages/gallery/_assets/${filename}`
+    const src = galleryFiles[path]?.default
+
+    if (!src) throw new Error(`Gallery image not found: ${filename}`)
+
+    return {
+      src,
+      metadata: galleryInfo[filename],
+      preview: await getImage({
+        src,
+        width: Math.min(src.width, 640),
+        format: 'webp',
+        quality: 45
+      }),
+      zoomImage: await getImage({
+        src,
+        width: src.width,
+        format: 'webp',
+        quality: 76
+      })
+    }
+  })
+)
+
+const rows = Array.from({ length: Math.ceil(images.length / 2) }, (_, index) =>
+  images.slice(index * 2, index * 2 + 2)
+)
+---
+
+<div class='featured-gallery'>
+  {
+    rows.map((row) => (
+      <div class='featured-gallery-row'>
+        {row.map((item) => (
+          <div
+            class='featured-gallery-item group'
+            style={{ '--ratio': item.src.width / item.src.height }}
+          >
+            <img
+              src={item.preview.src}
+              alt={item.metadata.title || item.metadata.subtitle || 'Gallery photo'}
+              width={item.preview.attributes.width}
+              height={item.preview.attributes.height}
+              class='featured-gallery-img'
+              data-zoom-src={item.zoomImage.src}
+              role='button'
+              tabindex='0'
+              aria-label={`放大“${item.metadata.title || '这张图片'}”`}
+              loading='lazy'
+              fetchpriority='low'
+              decoding='async'
+            />
+
+            <div class='featured-gallery-caption absolute inset-0 z-10 flex flex-col justify-end p-3 text-left sm:p-4'>
+              <h3 class='mb-1 whitespace-pre-line text-xs font-medium text-white sm:text-base'>
+                {item.metadata.title || 'No title'}
+              </h3>
+              <p
+                class='whitespace-pre-line font-mono text-[10px] text-white/80 sm:text-xs'
+                set:html={renderGallerySubtitle(item.metadata.subtitle)}
+              />
+            </div>
+
+            <div
+              class='featured-gallery-loading absolute inset-0 z-20 hidden pointer-events-none items-center justify-center'
+              aria-hidden='true'
+              data-gallery-loading
+            >
+              <div class='rounded-full bg-black/50 p-2 backdrop-blur-sm'>
+                <div class='featured-gallery-spinner' />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ))
+  }
+</div>
+
+<script is:inline type='module'>
+  let zoomPromise
+
+  const getZoom = () => {
+    if (!zoomPromise) {
+      zoomPromise = import('https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/+esm').then(
+        ({ default: mediumZoom }) => {
+          const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
+          zoom.on('closed', ({ target }) => zoom.detach(target))
+          return zoom
+        }
+      )
+    }
+
+    return zoomPromise
+  }
+
+  const openImage = async (image) => {
+    if (image.dataset.zoomLoading === 'true') return
+
+    const loader = image.closest('.featured-gallery-item')?.querySelector('[data-gallery-loading]')
+
+    image.dataset.zoomLoading = 'true'
+    loader?.classList.remove('hidden')
+    loader?.classList.add('flex')
+
+    try {
+      const zoom = await getZoom()
+      zoom.attach(image)
+      await zoom.open({ target: image })
+    } catch (error) {
+      console.error('unable to open featured gallery image:', error)
+    } finally {
+      delete image.dataset.zoomLoading
+      loader?.classList.add('hidden')
+      loader?.classList.remove('flex')
+    }
+  }
+
+  document.querySelectorAll('.featured-gallery-img').forEach((image) => {
+    image.addEventListener('click', () => openImage(image))
+    image.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return
+      event.preventDefault()
+      openImage(image)
+    })
+  })
+</script>
+
+<style>
+  .featured-gallery-spinner {
+    width: 32px;
+    height: 32px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: featured-gallery-spin 1s linear infinite;
+  }
+
+  @keyframes featured-gallery-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .featured-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .featured-gallery-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .featured-gallery-item {
+    position: relative;
+    height: 210px;
+    min-width: 0;
+    flex-basis: calc(210px * var(--ratio));
+    flex-grow: var(--ratio);
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .featured-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    vertical-align: bottom;
+    cursor: zoom-in;
+  }
+
+  .featured-gallery-caption {
+    background: linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.78) 100%);
+    pointer-events: none;
+  }
+
+  :global(.featured-gallery-caption a) {
+    pointer-events: auto;
+  }
+
+  :global(.featured-gallery-img.medium-zoom-image--opened) {
+    object-fit: contain;
+    z-index: 9999;
+  }
+
+  @media (max-width: 640px) {
+    .featured-gallery-item {
+      height: 145px;
+      flex-basis: calc(145px * var(--ratio));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .featured-gallery-spinner {
+      animation: none;
+    }
+  }
+</style>

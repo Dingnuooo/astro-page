@@ -6,18 +6,19 @@ import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import ProjectCard from '@/components/home/ProjectCard.astro'
+import FeaturedGallery from '@/components/home/FeaturedGallery.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
-import chinosannnAvatar from '@/assets/chinosannn_avatar.png'
+import chinosanAvatar from '@/assets/chinosan_avatar.png'
 import config, { highlightColor } from '@/site-config'
 
 // const language = ['Python', 'C / C++', 'MATLAB', 'LaTeX', 'HTML', 'MySQL']
 // const tool = ['VSCode', 'Obsidian', 'Zotero', 'Docker']
 // const design = ['SAI', 'Lightroom', 'FL Studio', 'Reaper', 'Blender']
 
-const MAX_POSTS = 15
+
+const MAX_POSTS = 6
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 ---
@@ -37,7 +38,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
           aria-label='Preview Dingnuooo profile'
         >
           <Image
-            src={chinosannnAvatar}
+            src={chinosanAvatar}
             alt='profile'
             class='avatar-layer avatar-base h-28 w-28 rounded-full border p-1 object-cover'
             loading='eager'
@@ -64,7 +65,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
               class='group flex flex-row items-center justify-center gap-x-1 text-base text-muted-foreground transition-all hover:opacity-75'
             >
               <Icon name='link' class='size-4 mr-1' />
-              <span>About me</span>
+              <span>About Me</span>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='18'
@@ -113,77 +114,48 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         )
       }
 
-      {
-        // <Section title='Experience'>
-        // <Card
-        //   heading='Lorem Ipsum'
-        //   subheading='Sit amet consectetur'
-        //   date='Dec 2022 - Nov 2023'
-        //   imagePath='/src/assets/about-astro.png'
-        //   altText='Lorem, ipsum dolor sit'
-        //   imageClass='h-12 w-auto md:-start-16'
-        // >
-        //   <ul class='ms-4 list-disc text-muted-foreground'>
-        //     <li>
-        //       Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
-        //       molestiae laboriosam pariatur!
-        //       <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
-        //     </li>
-        //   </ul>
-        // </Card>
-        // <Card
-        //   heading='Lorem Ipsum'
-        //   subheading='Sit amet consectetur'
-        //   date='Dec 2022 - Nov 2023'
-        //   imagePath='/src/assets/about-astro.png'
-        //   altText='Lorem, ipsum dolor sit'
-        //   imageClass='h-12 w-auto md:-start-16'
-        // />
-        // </Section>
-      }
-      {
-        (
-          <Section title='Education'>
-            <Card
-              as='a'
-              heading='Beijing Institute of Technology'
-              subheading='School of Interdisciplinary Science'
-              date='August 2023 - Present'
-            ></Card>
-          </Section>
-        )
-      }
+      <!-- <Section title='Experience'>
+      <Card
+        heading='Lorem Ipsum'
+        subheading='Sit amet consectetur'
+        date='Dec 2022 - Nov 2023'
+        imagePath='/src/assets/about-astro.png'
+        altText='Lorem, ipsum dolor sit'
+        imageClass='h-12 w-auto md:-start-16'
+      >
+        <ul class='ms-4 list-disc text-muted-foreground'>
+          <li>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
+            molestiae laboriosam pariatur!
+            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
+          </li>
+        </ul>
+      </Card>
+      <Card
+        heading='Lorem Ipsum'
+        subheading='Sit amet consectetur'
+        date='Dec 2022 - Nov 2023'
+        imagePath='/src/assets/about-astro.png'
+        altText='Lorem, ipsum dolor sit'
+        imageClass='h-12 w-auto md:-start-16'
+      />
+      </Section> -->
 
-      <!-- <Section title='Website List'>
-        <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Do not go gentle into that good night'
-            imagePath='/src/assets/projects/1.avif'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Old age burn and rave at close of day'
-            imagePath='/src/assets/projects/2.avif'
-          />
-          <ProjectCard
-            href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-            heading='Lorem ipsum'
-            subheading='Rage, rage against the dying of the light'
-            imagePath='/src/assets/projects/3.avif'
-          />
-          <ProjectCard
-            href='/projects'
-            heading='More projects'
-            subheading='Check out more projects'
-            imagePath='/src/assets/projects/4.avif'
-          />
-        </div>
+      <Section title='Gallery'>
+        <FeaturedGallery />
+        <Button title='More photos' class='w-fit self-end' href='/gallery' variant='ahead' />
       </Section>
 
-      <Section title='Certifications'>
+      <Section title='Education'>
+        <Card
+          as='a'
+          heading='Beijing Institute of Technology'
+          subheading='School of Interdisciplinary Science'
+          date='August 2023 - Present'
+        />
+      </Section>
+
+      <!-- <Section title='Certifications'>
         <Card
           as='a'
           heading='Lorem ipsum'
