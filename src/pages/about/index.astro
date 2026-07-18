@@ -8,7 +8,7 @@ import zotero from '@/assets/tools/zotero.png'
 import { highlightColor } from '@/site-config'
 
 const headings = [
-  { depth: 2, slug: 'findme', text: 'Social' },
+  { depth: 2, slug: 'social', text: 'Social' },
   { depth: 2, slug: 'tools', text: 'Tools' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
   { depth: 2, slug: 'colophon', text: 'Colophon' }
@@ -17,8 +17,7 @@ const headings = [
 
 <PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
-    欢迎光临。我是丁诺
-    (chinosan)，这里是我的小站，收纳一些笔记和想法。真诚的分享创作，是一切思想与机遇的根源。
+    欢迎光临。我是丁诺 (chinosan)，在这里收纳一些想法。真诚的分享是一切思想与机遇的根源。
   </p>
 
   <!-- <h2 id='hobbies'>Hobbies</h2> -->
@@ -41,7 +40,7 @@ const headings = [
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* findme */}
-  <h2 id='findme'>Social</h2>
+  <h2 id='social'>Social</h2>
   <p>您可以在以下平台找到我。</p>
   <Substats
     stats={[
@@ -49,49 +48,54 @@ const headings = [
         platform: 'GitHub',
         icon: 'github',
         link: 'https://github.com/dingnuooo',
-        desc: 'Projects',
-        text: 'followers'
+        desc: 'Projects'
       },
-      {
-        platform: 'Rednote',
-        icon: 'instagram',
-        color: '#D94551',
-        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
-        desc: 'Posts',
-        text: 'followers'
-      },
-      {
-        platform: 'bilibili',
-        icon: 'bilibili',
-        color: '#ed7b98',
-        link: 'https://space.bilibili.com/90563238',
-        desc: 'Videos / Livestream',
-        text: 'followers'
-        // api: 'bilibili/90563238'
+            {
+        platform: 'Email',
+        icon: 'email',
+        color: '#C4A7A8',
+        desc: 'dingnuooo@163.com'
       },
       {
         platform: 'twitter',
         icon: 'x',
         color: '#7fbeff',
         link: 'https://x.com/chinosan_dn',
-        desc: 'Posts / Photographs',
-        text: 'followers'
+        desc: 'Posts / Photographs'
+      },
+      {
+        platform: 'bilibili',
+        icon: 'bilibili',
+        color: '#ed7b98',
+        link: 'https://space.bilibili.com/90563238',
+        desc: 'Videos / Livestream'
+      },
+      {
+        platform: 'Rednote',
+        icon: 'instagram',
+        color: '#D94551',
+        link: 'https://www.xiaohongshu.com/user/profile/623f388200000000100067db',
+        desc: 'Posts'
+      },
+      {
+        platform: 'QQ',
+        icon: 'reddit',
+        color: '#8599FF',
+        desc: '3843883270'
       },
       {
         platform: 'Steam',
         icon: 'steam',
         color: '#3570a0',
         link: 'https://steamcommunity.com/id/dingnuooo',
-        desc: 'Games',
-        text: 'friends'
+        desc: 'Games'
       },
       {
         platform: 'Netease Music',
         icon: 'netease',
         color: '#D63C3C',
         link: 'https://music.163.com/#/user/home?id=384322136',
-        desc: 'Music Collections',
-        text: 'followers'
+        desc: 'Music Collections'
       }
     ]}
   />

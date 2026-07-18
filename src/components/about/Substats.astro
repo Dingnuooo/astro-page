@@ -7,7 +7,7 @@ interface SubstatsItem {
   icon: IconsType
   color?: string
   link?: string
-  text: string
+  text?: string
   desc?: string
   api?: string
   count?: number
@@ -39,13 +39,8 @@ await Promise.all(stats.map(fetchCount))
 
 <div class='grid grid-cols-1 gap-3 rounded-xl border p-2 sm:grid-cols-2 lg:grid-cols-2 sm:p-3'>
   {
-    stats.map(({ link, platform, icon, color, count, text, desc }) => (
-      <a
-        class='group text-muted-foreground no-underline'
-        href={link}
-        target='_blank'
-        rel='noopener noreferrer'
-      >
+    stats.map(({ link, platform, icon, color, count, text, desc }) => {
+      const content = (
         <div class='flex items-center gap-3 rounded-lg border border-transparent px-3 py-2 transition-all hover:border-border hover:bg-muted'>
           {icon && <Icon name={icon} color={color} />}
           <div class='flex-1 text-foreground transition-colors group-hover:text-primary'>
@@ -60,10 +55,45 @@ await Promise.all(stats.map(fetchCount))
             <span class='text-sm font-normal'>{desc}</span>
           )}
         </div>
-      </a>
-    ))
+      )
+
+      return link ? (
+        <a
+          class='group block text-muted-foreground no-underline'
+          href={link}
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          {content}
+        </a>
+      ) : (
+        <button
+          type='button'
+          class='group w-full cursor-pointer appearance-none border-0 bg-transparent p-0 text-left text-muted-foreground'
+          data-copy-substat
+          data-copy-value={desc}
+          aria-label={`复制 ${platform}`}
+        >
+          {content}
+        </button>
+      )
+    })
   }
 </div>
+
+<script>
+  import { showToast } from 'astro-pure/utils'
+
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-substat]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const value = button.dataset.copyValue
+      if (!value) return
+
+      navigator.clipboard.writeText(value)
+      showToast({ message: `Copied "${value}" to clipboard!` })
+    })
+  })
+</script>
 <!-- <div class='mt-2 text-right text-sm'>
   Display real-time; powered by <a
     class='text-muted-foreground'
