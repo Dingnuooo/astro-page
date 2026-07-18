@@ -9,33 +9,34 @@ import { highlightColor } from '@/site-config'
 import zotero from '@/assets/tools/zotero.png'
 
 const headings = [
-  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
+  { depth: 2, slug: 'findme', text: 'Profiles' },
   { depth: 2, slug: 'tools', text: 'Tools' },
   //{ depth: 2, slug: 'gossips', text: 'Gossips' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+  { depth: 2, slug: 'colophon', text: 'Colophon' }
 ]
 ---
 
 <PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
-    欢迎光临。我是丁诺（chinosan），这里收容了一些在现实中由于种种原因无法释放的思绪。写一些笔记、讲义、灵感、藏书等文字内容。言不尽意，但我享受这与世界交互、转译和创造知识的过程，以及将这些独白分享与您的快乐。
+    欢迎光临。我是丁诺（chinosan），在这里写一些笔记、灵感、藏书、独白等内容。广泛的调研阅读 与真诚的分享创作，是我认为一切思想与机遇的根源。
   </p>
 
   <!-- <h2 id='hobbies'>Hobbies</h2> -->
    
   <ul>
     <li>我的人格类型为 INTJ-T.</li>
-    <li>我阅读侦探小说，喜欢本格和社会派.</li>
-    <li>我主要游玩 Minecraft（生电 / 建筑）与音乐游戏.</li>
-    <li>喜欢<a href='/gallery' target='_blank'>随拍</a>但是摄影低手 学习中.</li>
+    <li>我的的研究兴趣集中在 AgenticRL 与群体智能。</li>
+    <li>我阅读推理小说，本格与社会派.</li>
+    <li>底边 coser / 摄影低手. 随拍集 → <a href='/gallery' target='_blank'>Gallery</a>.</li>
+    <li>我主要游玩 Minecraft（生电 / 建筑）与音乐游戏（プロセカ / Arcaea）.</li>
   </ul>
   
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
-  {/* social-networks */}
-  <h2 id='social-networks'>Social Networks</h2>
+  {/* findme */}
+  <h2 id='findme'>Profiles</h2>
   <p>
-    您可以在以下社交平台找到我。
+    您可以在以下平台找到我。
   </p>
   <Substats
     stats={[
@@ -51,7 +52,7 @@ const headings = [
         icon: 'bilibili',
         color: '#ed7b98',
         link: 'https://space.bilibili.com/90563238',
-        desc: 'Videos',
+        desc: 'Videos / Livestream',
         text: 'followers',
         // api: 'bilibili/90563238'
       },
@@ -68,7 +69,7 @@ const headings = [
         icon: 'x',
         color: '#7fbeff',
         link: 'https://x.com/chinosan_dn',
-        desc: 'Photography / Posts',
+        desc: 'Photography',
         text: 'followers'
       },
       {
@@ -209,8 +210,8 @@ const headings = [
     possit voluptatum.
   </Collapse> -->
 
-  {/* about-blog */}
-  <h2 id='about-blog'>About Blog</h2>
+  {/* colophon */}
+  <h2 id='colophon'>Colophon</h2>
   <!-- <p></p>
   <Timeline
     events={[
@@ -221,7 +222,7 @@ const headings = [
     ]}
   /> -->
   <p>
-    本站笔记库源自 2022 年高中时期的笔记系统、思维模式和语言风格，2023 年 11 月开始电子化，2024 年 12 月使用 Hexo 框架搭建公开平台，2025 年 11 月迁移至现有框架与主题。
+    本站笔记库源自中学时期的笔记系统、行文思路和语言风格，2023 年 11 月开始电子化，2024 年 12 月使用 Hexo 框架搭建公开平台，2025 年 11 月迁移至现有框架与主题。
   </p>
   <p>
     本站基于以下项目/服务商的技术支持：

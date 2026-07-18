@@ -8,13 +8,81 @@
           "name": "Arthals' ink",
           "intro": "所见高山远木，阔云流风；所幸岁月盈余，了无拘束",
           "link": "https://arthals.ink/",
-          "avatar": "https://cdn.arthals.ink/Arthals.png"
+          "avatar": "https://cdn.arthals.ink/Arthals.png",
+          "avatar_cache": {
+            "hash": "d5a2168afb7c8ed6",
+            "path": "/avatars/d5a2168afb7c8ed6.png"
+          }
         },
         {
           "name": "CWorld Site",
           "intro": "求知若愚，虚怀若谷",
           "link": "https://cworld0.com/",
-          "avatar": "https://cravatar.cn/avatar/1ffe42aa45a6b1444a786b1f32dfa8aa?s=200"
+          "avatar": "https://cworld0.com/_vercel/image?url=_astro%2Favatar.CKYBHtS3.png&w=750&q=100",
+          "avatar_cache": {
+            "hash": "c656431eb87fc143",
+            "path": "/avatars/c656431eb87fc143.png"
+          }
+        },
+        {
+          "name": "邮文的萤火屋",
+          "intro": "",
+          "link": "https://blog.welain.com/",
+          "avatar": "https://i2.hdslb.com/bfs/face/1bc17673fbf83498a9eec83d98813543f5d2f7ba.webp@152w_152h_1c_1s.webp",
+          "avatar_cache": {
+            "hash": "5036ce5cafef66ff",
+            "path": "/avatars/5036ce5cafef66ff.webp"
+          }
+        },
+        {
+          "name": "Axi's Blog",
+          "intro": "",
+          "link": "https://axi404.top/",
+          "avatar": "https://axi404.top/_vercel/image?url=_astro%2Favatar.ykokBi4Y.png&w=828&q=100&dpl=dpl_F39gE3FkZBgcGvQKN2xxQdCRbGDt",
+          "avatar_cache": {
+            "hash": "a270a3f3a89eb4af",
+            "path": "/avatars/a270a3f3a89eb4af.png"
+          }
+        },
+        {
+          "name": "灵的梦境",
+          "intro": "",
+          "link": "https://lemonadorable.github.io/",
+          "avatar": "https://lemonadorable.github.io/_astro/avatar.Blv-t1p9_ZVi3gG.webp",
+          "avatar_cache": {
+            "hash": "4c3cad1ab59d699a",
+            "path": "/avatars/4c3cad1ab59d699a.webp"
+          }
+        },
+        {
+          "name": "Dingnuooo's Notes",
+          "intro": "握紧你的锄头",
+          "link": "https://dingnuooo.top/",
+          "avatar": "https://dingnuooo.top/_astro/avatar.CyXz1jNc_Z28wPDk.webp",
+          "avatar_cache": {
+            "hash": "0938c08d679b573a",
+            "path": "/avatars/0938c08d679b573a.webp"
+          }
+        },
+        {
+          "name": "Chika Komari",
+          "intro": "A unified track across structural, semantic, and psychological signal mining",
+          "link": "https://joker-of-gotham.github.io/",
+          "avatar": "https://avatars.githubusercontent.com/u/151602028?v=4",
+          "avatar_cache": {
+            "hash": "f820f1d637ee1fbf",
+            "path": "/avatars/f820f1d637ee1fbf.jpg"
+          }
+        },
+        {
+          "name": "Jiaxuan's Blog",
+          "intro": "Notes on machine learning and optimization",
+          "link": "https://jiaxuanzou0714.github.io/",
+          "avatar": "https://i2.hdslb.com/bfs/face/f2d9af5a3aab857831d696e7797734bb38331bc5.jpg@128w_128h_1c_1s.webp",
+          "avatar_cache": {
+            "hash": "ce125a11bafb3818",
+            "path": "/avatars/ce125a11bafb3818.webp"
+          }
         }
       ]
     },
@@ -26,14 +94,7 @@
     {
       "id_name": "special-links",
       "desc": "Other special links",
-      "link_list": [
-        {
-          "name": "Astro",
-          "intro": "The web framework for content-driven websites",
-          "link": "https://astro.build/",
-          "avatar": "https://avatars.githubusercontent.com/u/44914786?s=200&v=4"
-        }
-      ]
+      "link_list": []
     }
   ]
 }

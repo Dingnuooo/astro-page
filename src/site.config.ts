@@ -51,6 +51,7 @@ export const theme: ThemeUserConfig = {
     menu: [
       { title: 'Blog', link: '/blog' },
       { title: 'Projects', link: '/projects' },
+      { title: 'Links', link: '/links' },
       { title: 'Gallery', link: '/gallery' },
       { title: 'About', link: '/about' },
       // { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
