@@ -1,7 +1,7 @@
 {
   "changle-zhanggang.jpg": {
     "title": "往前走 不要回头.",
-    "subtitle": "出镜 - 我\n摄影 - @Nina"
+    "subtitle": ""
   },
   "dalian-forest-zoo.jpg": {
     "title": "大连的海 天然的饱和度",
@@ -81,7 +81,7 @@
   },
   "citic.jpg": {
     "title": "耗尽全力攀爬高塔的人呐",
-    "subtitle": "北京·四惠东\n出镜 - 我\n摄影 - 我"
+    "subtitle": "北京·四惠东"
   },
   "dalian-xinghai-bay.jpg": {
     "title": "大连的海 天然的饱和度",
@@ -100,7 +100,7 @@
   },
   "sea-of-earth-temple.jpg": {
       "title": "地坛的海",
-      "subtitle": "北京·地坛公园\n出镜 - AI\n摄影 - 我"
+      "subtitle": "北京·地坛公园"
   },
   "fuzhou-firework.jpg": {
     "title": "FIREWORK DATA PATCHER",
@@ -172,11 +172,11 @@
   },
   "nene-white1.jpg": {
     "title": "小森林柚子？！",
-    "subtitle": "出镜 - 我\n摄影 - [@易安易安安](https://x.com/YEEEEAN1)"
+    "subtitle": "摄影 - [@易安易安安](https://x.com/YEEEEAN1)"
   },
   "nene-white2.jpg": {
-    "title": "人机也要摆造型嘛",
-    "subtitle": "出镜 - 我\n摄影 - [@易安易安安](https://x.com/YEEEEAN1)"
+    "title": "幕间的小憩~",
+    "subtitle": "摄影 - [@易安易安安](https://x.com/YEEEEAN1)"
   },
 
 
@@ -205,6 +205,12 @@
     "title": "祥云化作大雁\n永远地飞往了属于他们的蓝天",
     "subtitle": "北京·颐和园"
   },
+
+  "longmen.jpg": {
+    "title": "放下可悲 涵养慈悲",
+    "subtitle": "洛阳·龙门石窟"
+  },
+
   "sunset-bit-lijiao.jpg": {
     "title": "落霞",
     "subtitle": "校园掠影"
@@ -223,7 +229,7 @@
   },
   "tianjin-dante-statue.jpg": {
     "title": "光影是沉默女神的祈祷",
-    "subtitle": "天津·天津建国道"
+    "subtitle": "天津·建国道"
   },
   "tianjin-port.png": {
     "title": "",
