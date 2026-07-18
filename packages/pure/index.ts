@@ -8,12 +8,17 @@ import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import UnoCSS from '@unocss/astro'
 import { AstroError } from 'astro/errors'
+import { remarkHighlightMark } from 'remark-highlight-mark'
 
 import rehypeExternalLinks from './plugins/rehype-external-links'
 import rehypeImageCaption from './plugins/rehype-image-caption'
 // Dingnuooo changes//remarkImageSize
-import { remarkAddZoomable, remarkImageSize, remarkMarkHName, remarkReadingTime } from './plugins/remark-plugins'
-import { remarkHighlightMark } from 'remark-highlight-mark'
+import {
+  remarkAddZoomable,
+  remarkImageSize,
+  remarkMarkHName,
+  remarkReadingTime
+} from './plugins/remark-plugins'
 import { vitePluginUserConfig } from './plugins/virtual-user-config'
 import { UserConfigSchema, type UserInputConfig } from './types/user-config'
 import { parseWithFriendlyErrors } from './utils/error-map'

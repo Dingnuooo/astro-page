@@ -13,7 +13,7 @@ interface Props {
   wide?: boolean // Dingnuooo changes: Gallery wide layout support
 }
 
-const { meta, highlightColor, back = '/', wide=false, ...props } = Astro.props
+const { meta, highlightColor, back = '/', wide = false, ...props } = Astro.props
 ---
 
 <PageLayout {meta} {highlightColor} {...props}>
@@ -28,7 +28,7 @@ const { meta, highlightColor, back = '/', wide=false, ...props } = Astro.props
       style='height:calc(100vh - 7rem);'
       id='sidebar'
     >
-    <!-- Dingnuooo changes (cn(xxx),wide&&'hidden'): Gallery wide layout support -->
+      <!-- Dingnuooo changes (cn(xxx),wide&&'hidden'): Gallery wide layout support -->
       <slot name='sidebar' />
     </aside>
     <div
@@ -49,7 +49,7 @@ const { meta, highlightColor, back = '/', wide=false, ...props } = Astro.props
         id='content'
         class={cn(
           'max-w-none animate mt-8 md:min-w-[45ch] overflow-x-hidden',
-          wide ? '':integ.typography.class
+          wide ? '' : integ.typography.class
           // Dingnuooo changes (wide ? "":): Gallery wide layout support
         )}
       >

@@ -3,14 +3,17 @@ import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
 import { highlightColor } from '@/site-config'
+
 // Plugin styles
 import 'katex/dist/katex.min.css'
+
+import config from 'virtual:config'
+
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
-import config from 'virtual:config'
 import PageLayout from '@/layouts/ContentLayout.astro'
-import { Comment, PageInfo } from '@/components/waline'
 import DynamicSignature2 from '@/components/DynamicSignature2.astro'
+import { Comment, PageInfo } from '@/components/waline'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -69,8 +72,7 @@ const primaryColor = data.heroImage?.color ?? highlightColor
     <Copyright {data} />
     {/* Article recommend */}
     <ArticleBottom collections={posts} {id} class='mt-3 sm:mt-6' />
-    { /* Comment */
-    !isDraft && enableComment && <Comment class='mt-3 sm:mt-6' />}
+    {/* Comment */ !isDraft && enableComment && <Comment class='mt-3 sm:mt-6' />}
   </Fragment>
 
   <slot name='bottom-sidebar' slot='bottom-sidebar' />

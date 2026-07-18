@@ -24,10 +24,10 @@ export const remarkImageSize: Plugin<[], Root> = function () {
       const match = node.alt.match(/^(.+?)\|(\d+)$/)
       if (match) {
         const [, actualAlt, width] = match
-        
+
         // Update alt text to remove size specification
         node.alt = actualAlt.trim()
-        
+
         // Add width to node data for HTML rendering
         if (!node.data) {
           node.data = {}
@@ -35,7 +35,7 @@ export const remarkImageSize: Plugin<[], Root> = function () {
         if (!node.data.hProperties) {
           node.data.hProperties = {}
         }
-        
+
         // Clamp the requested width to the available width. When the viewport
         // is narrower than the requested size, this behaves the same as the
         // default responsive image rendering.
@@ -57,7 +57,7 @@ export const remarkAddZoomable: Plugin<[{ className?: string }], Root> = functio
       if (!node.data.hProperties) {
         node.data.hProperties = {}
       }
-      
+
       // Add zoomable class while preserving existing properties
       node.data.hProperties = {
         ...node.data.hProperties,

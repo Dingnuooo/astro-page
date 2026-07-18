@@ -39,6 +39,7 @@ ignore.*
 bunfig.toml
 /src/content/blog/test.*
 /test/
+CLAUDE.md
 
 # Generated during npm prebuild
 /public/images/github-snake.svg

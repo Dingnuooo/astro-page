@@ -41,7 +41,13 @@ export function listenThemeChange() {
 
 export function setTheme(theme?: string, save = false) {
   const currentTheme = resolveTheme(getTheme())
-  const targetTheme = theme ? resolveTheme(theme) : save ? (currentTheme === 'dark' ? 'light' : 'dark') : currentTheme
+  const targetTheme = theme
+    ? resolveTheme(theme)
+    : save
+      ? currentTheme === 'dark'
+        ? 'light'
+        : 'dark'
+      : currentTheme
 
   if (save) {
     localStorage.setItem('theme', targetTheme)

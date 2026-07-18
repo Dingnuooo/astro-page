@@ -4,9 +4,8 @@ import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 import ToolSection from '@/components/about/ToolSection.astro'
 import DynamicSignature2 from '@/components/DynamicSignature2.astro'
-import { highlightColor } from '@/site-config'
-
 import zotero from '@/assets/tools/zotero.png'
+import { highlightColor } from '@/site-config'
 
 const headings = [
   { depth: 2, slug: 'findme', text: 'Social' },
@@ -18,28 +17,32 @@ const headings = [
 
 <PageLayout title='About' {headings} comment highlightColor={highlightColor}>
   <p>
-    欢迎光临。我是丁诺 (chinosan)，这里是我的小站，收纳一些笔记和想法。真诚的分享创作，是一切思想与机遇的根源。
+    欢迎光临。我是丁诺
+    (chinosan)，这里是我的小站，收纳一些笔记和想法。真诚的分享创作，是一切思想与机遇的根源。
   </p>
 
   <!-- <h2 id='hobbies'>Hobbies</h2> -->
-   
+
   <ul>
     <li>我的人格类型是 INTJ-T.</li>
     <li>我研究兴趣集中在 AgenticRL 与群体智能.</li>
     <li>摄影低手 / 底边 coser，<a href='/gallery' target='_blank'>影像集 → Gallery</a>.</li>
     <li>我主要阅读推理小说，本格与社会派.</li>
     <li>我主要游玩 Minecraft（生电 / 建筑）与音乐游戏（Arcaea / pjsk）.</li>
-    <li>握紧你的锄头. <a class="text-foreground" href='/blog/default/never-put-down-your-hammer' target='_blank'>只有当锄头松开了坚硬的地面，所有的生长才会成为可能</a>.</li>
-    
+    <li>
+      握紧你的锄头. <a
+        class='text-foreground'
+        href='/blog/default/never-put-down-your-hammer'
+        target='_blank'>只有当锄头松开了坚硬的地面，所有的生长才会成为可能</a
+      >.
+    </li>
   </ul>
-  
+
   <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' variant='ahead' />
 
   {/* findme */}
   <h2 id='findme'>Social</h2>
-  <p>
-    您可以在以下平台找到我。
-  </p>
+  <p>您可以在以下平台找到我。</p>
   <Substats
     stats={[
       {
@@ -63,7 +66,7 @@ const headings = [
         color: '#ed7b98',
         link: 'https://space.bilibili.com/90563238',
         desc: 'Videos / Livestream',
-        text: 'followers',
+        text: 'followers'
         // api: 'bilibili/90563238'
       },
       {
@@ -89,10 +92,10 @@ const headings = [
         link: 'https://music.163.com/#/user/home?id=384322136',
         desc: 'Music Collections',
         text: 'followers'
-      },
+      }
     ]}
   />
-  
+
   {/* tools */}
   <h2 id='tools'>Tools</h2>
   <ToolSection
@@ -182,7 +185,7 @@ const headings = [
         description: 'Mixing & Mastering',
         href: 'https://www.reaper.fm/',
         icon: import('@/assets/tools/reaper.svg?raw')
-      },
+      }
     ]}
   />
   <ToolSection
@@ -223,16 +226,14 @@ const headings = [
       }
     ]}
   /> -->
-  <p>
-    本站基于以下项目/服务商的技术支持：
-  </p>
+  <p>本站基于以下项目/服务商的技术支持：</p>
   <ul>
     <li>域名：<a href='https://cloud.tencent.com/' target='_blank'>Tencent Cloud</a>.</li>
     <li>网页托管：<a href='https://pages.cloudflare.com/' target='_blank'>Cloudflare Pages</a>.</li>
     <li>
       框架与主题：<a href='https://astro.build/' target='_blank'>Astro</a> & <a
-      href='https://github.com/cworld1/astro-theme-pure'
-      target='_blank'>Astro Theme Pure</a
+        href='https://github.com/cworld1/astro-theme-pure'
+        target='_blank'>Astro Theme Pure</a
       >.
     </li>
     <li>评论与浏览量统计: <a href='https://waline.js.org' target='_blank'>Waline</a>.</li>
@@ -240,8 +241,16 @@ const headings = [
 
   <p>子站导航（暂时无内容，仅作为索引）:</p>
   <ul>
-    <li>slidev 幻灯片合集：<a href='https://slide.chinosan.com/' target='_blank'>https://slide.chinosan.com/</a>.</li>
-    <li>HugoBlox 学术简历：<a href='https://cv.chinosan.com/' target='_blank'>https://cv.chinosan.com/</a>.</li>
+    <li>
+      slidev 幻灯片合集：<a href='https://slide.chinosan.com/' target='_blank'
+        >https://slide.chinosan.com/</a
+      >.
+    </li>
+    <li>
+      HugoBlox 学术简历：<a href='https://cv.chinosan.com/' target='_blank'
+        >https://cv.chinosan.com/</a
+      >.
+    </li>
   </ul>
   <div class='flex justify-end mt-12'>
     <DynamicSignature2 width='11rem' />

@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets'
-import avatar from '@/assets/avatar.png'
-import chinosannnAvatar from '@/assets/chinosannn_avatar.png'
+
 import { Quote } from 'astro-pure/advanced'
 import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
@@ -10,6 +9,8 @@ import PageLayout from '@/layouts/BaseLayout.astro'
 import ProjectCard from '@/components/home/ProjectCard.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
+import avatar from '@/assets/avatar.png'
+import chinosannnAvatar from '@/assets/chinosannn_avatar.png'
 import config, { highlightColor } from '@/site-config'
 
 // const language = ['Python', 'C / C++', 'MATLAB', 'LaTeX', 'HTML', 'MySQL']
@@ -49,7 +50,6 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
           />
         </div>
         <div class='author-content flex flex-col items-center gap-y-2 sm:items-start'>
-
           <h1 class='author-switch text-3xl font-bold'>
             <span class='author-default'>{config.author}</span>
             <span class='author-alt'>Dingnuooo</span>
@@ -82,11 +82,11 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
                   x2='19'
                   y2='12'
                   class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:scale-x-100'
-                />
+                ></line>
                 <polyline
                   points='12 5 19 12 12 19'
                   class='translate-x-0 transition-all duration-300 ease-in-out group-hover:translate-x-1'
-                />
+                ></polyline>
               </svg>
             </a>
           </div>
@@ -127,7 +127,6 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         //     <li>
         //       Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore debitis recusandae, ut
         //       molestiae laboriosam pariatur!
-
         //       <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, pariatur!</li>
         //     </li>
         //   </ul>
@@ -143,17 +142,18 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         // </Section>
       }
       {
-        <Section title='Education'>
-        <Card
-          as='a'
-          heading='Beijing Institute of Technology'
-          subheading='School of Interdisciplinary Science'
-          date='August 2023 - Present'
-        >
-        </Card>
-        </Section> 
+        (
+          <Section title='Education'>
+            <Card
+              as='a'
+              heading='Beijing Institute of Technology'
+              subheading='School of Interdisciplinary Science'
+              date='August 2023 - Present'
+            ></Card>
+          </Section>
+        )
       }
-      
+
       <!-- <Section title='Website List'>
         <div class='grid grid-cols-1 gap-3 sm:grid-cols-2'>
           <ProjectCard
@@ -203,7 +203,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 </PageLayout>
 
 <script is:inline>
-  (() => {
+  ;(() => {
     const profile = document.querySelector('[data-profile-hover]')
     const trigger = document.querySelector('[data-avatar-trigger]')
 

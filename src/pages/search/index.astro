@@ -2,8 +2,8 @@
 import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import Search from '@/components/Search.astro'
-import { highlightColor } from '@/site-config'
 import { buildSearchIndex } from '@/utils/search-index'
+import { highlightColor } from '@/site-config'
 
 export const prerender = true
 
@@ -12,7 +12,6 @@ const meta = {
 }
 
 const searchDocuments = await buildSearchIndex()
-
 ---
 
 <PageLayout {meta} highlightColor={highlightColor}>

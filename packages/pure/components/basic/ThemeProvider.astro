@@ -10,7 +10,10 @@
   }
 
   function getResolvedTheme() {
-    return getStoredTheme() || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    return (
+      getStoredTheme() ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    )
   }
 
   function simpleSetTheme() {

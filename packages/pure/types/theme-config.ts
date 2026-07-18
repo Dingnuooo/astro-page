@@ -184,10 +184,7 @@ export const ThemeConfigSchema = () =>
       blogPageSize: z.number().optional().default(8),
 
       /** Gallery sort order */
-      gallerySortOrder: z
-        .enum(['random', 'fileName'])
-        .optional()
-        .default('fileName'),
+      gallerySortOrder: z.enum(['random', 'fileName']).optional().default('fileName'),
 
       /** Share buttons to show */
       share: ShareSchema(),

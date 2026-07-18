@@ -4,6 +4,7 @@ import type { Root } from 'mdast'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
+
 import type { SearchIndexPayload } from '../types/search'
 
 // Extract text content from markdown AST, removing markdown syntax.

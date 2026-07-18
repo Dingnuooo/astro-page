@@ -3,7 +3,7 @@ import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } fro
 export const theme: ThemeUserConfig = {
   // === Basic configuration ===
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: 'chinosan\'s notes',
+  title: "chinosan's notes",
   /** Will be used in index page & copyright declaration */
   author: 'chinosan',
   /** Description metadata for your website. Can be used in page metadata. */
@@ -34,7 +34,6 @@ export const theme: ThemeUserConfig = {
   prerender: true, // pagefind search is not supported with prerendering disabled
   npmCDN: 'https://cdn.jsdelivr.net/npm',
 
-
   // Still in test
   head: [
     /* Telegram channel */
@@ -53,7 +52,7 @@ export const theme: ThemeUserConfig = {
       { title: 'Projects', link: '/projects' },
       { title: 'Links', link: '/links' },
       { title: 'Gallery', link: '/gallery' },
-      { title: 'About', link: '/about' },
+      { title: 'About', link: '/about' }
       // { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
     ]
   },
@@ -73,7 +72,7 @@ export const theme: ThemeUserConfig = {
       {
         title: 'Travelling',
         link: 'https://www.travellings.cn/go.html'
-      },
+      }
       // Privacy Policy link
       // {
       //   title: 'Site Policy',
@@ -184,7 +183,8 @@ export const integ: IntegrationUserConfig = {
       noRss: true,
       locale: {
         reaction0: 'Like',
-        placeholder: '欢迎评论，无需登录，请留下您的邮箱（或主要社交媒体联系方式）以接收回复。\nWelcome to comment. (Email to receive replies. Login is unnecessary)'
+        placeholder:
+          '欢迎评论，无需登录，请留下您的邮箱（或主要社交媒体联系方式）以接收回复。\nWelcome to comment. (Email to receive replies. Login is unnecessary)'
       },
       imageUploader: false
     }

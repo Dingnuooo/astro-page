@@ -4,9 +4,9 @@ import config from 'virtual:config'
 
 import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
+import DynamicSignature2 from '@/components/DynamicSignature2.astro'
 import FriendList from '@/components/links/FriendList.astro'
 import { highlightColor } from '@/site-config'
-import DynamicSignature2 from '@/components/DynamicSignature2.astro'
 
 const headings = [
   { depth: 2, slug: 'common-links', text: 'Common Links' },
@@ -31,7 +31,7 @@ const linkEditPage = 'https://github.com/Dingnuooo/astro-page/blob/main/public/l
   <Collapse title='Link History Book'>
     <Timeline events={linksConf.logbook} />
   </Collapse>
-<!-- 
+  <!-- 
   <h2 id='special-links'>Special Links</h2>
   <FriendList list={friends[2]} /> -->
 

@@ -27,7 +27,12 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
                     .filter(({ pos }) => pos === 2)
                     .map(({ title, link, style }) => (
                       <span>
-                        <a href={link} target={title === 'Travelling' ? '_blank' : undefined} rel={title === 'Travelling' ? 'noopener noreferrer' : undefined} class={style}>
+                        <a
+                          href={link}
+                          target={title === 'Travelling' ? '_blank' : undefined}
+                          rel={title === 'Travelling' ? 'noopener noreferrer' : undefined}
+                          class={style}
+                        >
                           {title}
                         </a>
                       </span>
@@ -45,8 +50,14 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
               <a href='https://github.com/withastro/astro' target='_blank'>
                 Astro
               </a>
-              &
-              Theme.<a href='https://github.com/cworld1/astro-theme-pure' target='_blank' rel="noopener noreferrer">Pure</a>
+              & Theme.
+              <a
+                href='https://github.com/cworld1/astro-theme-pure'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Pure
+              </a>
             </span>
           )
         }
@@ -65,8 +76,6 @@ const footerLink1 = footerConf.links?.filter(({ pos }) => pos === 1) || []
             </div>
           )
         }
-        
-        
       </div>
 
       {/* Social Brands */}

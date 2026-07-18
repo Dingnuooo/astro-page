@@ -41,7 +41,7 @@ import '@pagefind/default-ui/css/ui.css'
               // Prioritize exact phrase matches
               termFrequency: 1.0,
               termSaturation: 1.0,
-              termSimilarity: 3.0,  // Boost results where terms appear close together
+              termSimilarity: 3.0, // Boost results where terms appear close together
               pageLength: 0.5
             },
             processResult: (result: { url: string; sub_results: Array<{ url: string }> }) => {
