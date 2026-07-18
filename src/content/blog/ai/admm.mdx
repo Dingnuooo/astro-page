@@ -56,7 +56,7 @@ J_\ell(h_\ell(x))=\max\limits_{\beta_\ell}\beta_\ell h_\ell(x)
 $$
 注意 $\beta_\ell$ 没有限制范围，因为对于等式约束，负半轴也要惩罚，只有当 $h_\ell=0$ 时才不惩罚。因此当 $h>0$ 时取 $\beta>0$、当 $h<0$ 时取 $\beta<0$，使得随时有正惩罚。
 
-所以原始问题的解与下面这个问题的解是相同的：<span class="text-foreground/40">其中 $\alpha\geq0$ 的意思是每个分量都大于 0</span>
+所以原始问题的解与下面这个问题的解是相同的：<span class="text-foreground/40">其中 $\alpha\geq0$ 的意思是每个分量都大于等于 0</span>
 $$
 \min\limits_{x}\max\limits_{\alpha\geq0 ,\,\beta }f(x)+\alpha ^Tg(x)+\beta ^Th(x)
 $$
@@ -78,7 +78,7 @@ $$
 
 ### 增广 Lagrange 函数法
 
-dual ascent 要求每一步的 argmin 都能给出明确的极小值。当 $g,h$ 是线性约束时，如果 $f$ 不是一个足够凸的函数（例如绝对值函数），惩罚项很容易把 Lagrange 函数变成斜坡，这样 $\arg\min$ 就跑飞到无穷了。
+dual ascent 要求每一步的 argmin 都能给出明确的极小值。当 $g,h$ 是线性约束时，如果 $f$ 不是一个足够凸的函数，惩罚项很容易把 Lagrange 函数变成斜坡。例如绝对值函数，它就是一个不是很凸的东西，在做 $\arg\min (|x|+\alpha x)$ 的时候，如果 $\alpha$ 超过 1，那么整个加起来就是一个往 $-\infty$ 的斜坡，最小值就跑飞了。
 
 所以要通过某种方式，修改 Lagrange 函数，强行变成凸的，但不改变最优化的结果。最简单的凸因子就是二次函数。因此增加二次惩罚项：
 - 对于等式约束 $h_\ell(x)=0$，惩罚变为 $\beta_\ell h_\ell (x)+\dfrac{\rho}2\big(h_\ell (x)\big)^2$，其中 $\rho>0$ 为惩罚参数。只要 $\rho$ 足够大，就能把原问题强行凸化；且最优时 $h_\ell =0$，故增加这个惩罚并不会改变优化结果。
@@ -89,7 +89,7 @@ dual ascent 要求每一步的 argmin 都能给出明确的极小值。当 $g,h$
 	这是一个关于 $s_k$ 的二次函数，所以在 minimize 的时候可以解析地给出 $\hat{s}_k$ 的值。这个二次函数开口向上、对称轴 $\hat{s}_k=\dfrac{\alpha_k+\rho g_k(x)}{\rho}$，由于 $s_k\geq0$：
 	- 当轴 $\leq0$ 时，取 $s_k=0$，化简得惩罚 $=\dfrac{\big(\alpha_k+\rho g_k(x)\big)^2-\alpha_k^2}{2\rho}$
 	- 当轴 $>0$ 时，取 $s_k=$ 轴，化简得惩罚 $=-\dfrac{\alpha_k^2}{2\rho}$
-	- 统一表达式为 $\dfrac{1}{2\rho} \bigg( \big(\left[ \alpha_k + \rho g_k(x)\right]^+\big)^2 - \alpha_k^2 \bigg)$，称为 PHR 罚函数
+	- 统一表达式为 $\dfrac{1}{2\rho} \bigg( \big(\left[ \alpha_k + \rho g_k(x)\right]^+\big)^2 - \alpha_k^2 \bigg)$。这叫做 PHR 罚函数
 
 于是问题转化为：<span class="text-foreground/40">其中 $[\,\cdot\,]^+$ 表示逐元素取正值，$\|\cdot\|^2$ 表示向量模长的平方</span>
 $$
@@ -118,7 +118,7 @@ $$
 这称为**缩放形式的 ALM**。其中学习率一般取 1，因为凸优化的时候 $\beta$ 的最佳学习率就是 $\rho$，于是 $u$ 的学习率就是 1<span class="text-foreground/40">（why?）</span>
 ### ADMM
 
-对于一个优化问题，当问题规模很大的时候，通常有两种优化方式：要么一次只取一小部分样本来优化（例如 mini-batch 梯度下降），要么一次只优化 $\mathbf{x}$ 的一部分分量。前者具有通用性，因为随机样本保证了各样本同性；但后者不行，因为各个分量之间的耦合关系说不清。
+对于一个优化问题，当问题规模很大的时候，通常有两种优化方式：要么一次只取一小部分样本来优化（例如 mini-batch 梯度下降），要么一次只优化自变量 $x$ 的一部分分量。前者具有通用性，因为随机样本保证了各样本同性；但后者不行，因为各个分量之间的耦合关系说不清。
 
 考虑一类优化问题，它的自变量是由两组物理意义完全不同的变量拼起来的，分别对应目标函数的两个部分。也即问题可以写成
 $$
