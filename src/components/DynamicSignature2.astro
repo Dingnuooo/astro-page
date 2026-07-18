@@ -1,0 +1,388 @@
+---
+import centerlineSource from '@/assets/signature/chinosan-centerline.svg?url'
+import widthProfileData from '@/assets/signature/chinosan-width-profile.json'
+
+interface Props {
+  class?: string
+  width?: string
+  mode?: 'loop' | 'once-on-view'
+  drawDelay?: number
+  rollbackDelay?: number
+  loopPause?: number
+  threshold?: number
+  defaultDuration?: number
+  strokeDurations?: [number, number, number]
+  thinWidthRetention?: number
+  thickWidthRetention?: number
+  horizontalScale?: number
+}
+
+interface WidthSample {
+  t: number
+  x: number
+  y: number
+  width: number
+}
+
+interface WidthStroke {
+  id: string
+  length: number
+  samples: WidthSample[]
+}
+
+interface WidthProfile {
+  format: string
+  version: number
+  viewBox: number[]
+  strokes: WidthStroke[]
+}
+
+interface RenderSegment {
+  id: string
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+  width: number
+  start: number
+  end: number
+}
+
+const {
+  class: className,
+  width,
+  mode = 'loop',
+  drawDelay = 140,
+  rollbackDelay = 55,
+  loopPause = 1500,
+  threshold = 1,
+  defaultDuration = 460,
+  strokeDurations = [defaultDuration * 3.67, defaultDuration * 1.5, defaultDuration * 0.85],
+  thinWidthRetention = 0.34,
+  thickWidthRetention = 0.72,
+  horizontalScale = 0.88
+} = Astro.props
+const profile = widthProfileData as unknown as WidthProfile
+
+if (
+  profile.format !== 'dynamic-signature-width-profile' ||
+  profile.viewBox.length !== 4 ||
+  profile.strokes.length !== 3
+) {
+  throw new Error('DynamicSignature2 requires the exported three-stroke width profile')
+}
+
+const mainWidths = profile.strokes.slice(0, 2).flatMap((stroke) => stroke.samples.map((sample) => sample.width))
+const sortedMainWidths = mainWidths.slice().sort((a, b) => a - b)
+const minimumWidth = sortedMainWidths[0]
+const maximumWidth = sortedMainWidths[sortedMainWidths.length - 1]
+const widthCenter = sortedMainWidths[Math.floor(sortedMainWidths.length / 2)]
+const thinRetention = Math.min(1, Math.max(0, thinWidthRetention))
+const thickRetention = Math.min(1, Math.max(thinRetention, thickWidthRetention))
+const horizontalCenter = profile.viewBox[0] + profile.viewBox[2] / 2
+const normalizedHorizontalScale = Math.min(1, Math.max(0.5, horizontalScale))
+const displayX = (value: number) => horizontalCenter + (value - horizontalCenter) * normalizedHorizontalScale
+const displayWidth = (value: number) => {
+  const normalized = Math.min(1, Math.max(0, (value - minimumWidth) / (maximumWidth - minimumWidth)))
+  const smooth = normalized * normalized * (3 - 2 * normalized)
+  const retention = thinRetention + (thickRetention - thinRetention) * smooth
+  return widthCenter + (value - widthCenter) * retention
+}
+
+const renderStrokes = profile.strokes.map((stroke, strokeIndex) => {
+  const segments: RenderSegment[] = []
+  for (let index = 1; index < stroke.samples.length; index += 1) {
+    const previous = stroke.samples[index - 1]
+    const current = stroke.samples[index]
+    segments.push({
+      id: `${stroke.id}-${String(index).padStart(3, '0')}`,
+      x1: displayX(previous.x),
+      y1: previous.y,
+      x2: displayX(current.x),
+      y2: current.y,
+      width: displayWidth((previous.width + current.width) / 2),
+      start: previous.t,
+      end: current.t
+    })
+  }
+  return { id: stroke.id, duration: strokeDurations[strokeIndex], segments }
+})
+
+const viewBox = profile.viewBox.join(' ')
+const dotStroke = profile.strokes[2]
+const dotCenter = dotStroke.samples.reduce(
+  (center, sample) => ({ x: center.x + sample.x, y: center.y + sample.y }),
+  { x: 0, y: 0 }
+)
+dotCenter.x /= dotStroke.samples.length
+dotCenter.y /= dotStroke.samples.length
+dotCenter.x = displayX(dotCenter.x)
+const dotRadius = displayWidth(
+  dotStroke.samples.reduce((sum, sample) => sum + sample.width, 0) / dotStroke.samples.length
+) / 2
+const rayInnerRadius = dotRadius + 3
+const rayOuterRadius = dotRadius + 10
+const dotRays = Array.from({ length: 8 }, (_, index) => {
+  const angle = -Math.PI / 2 + index * Math.PI / 4
+  return {
+    x1: dotCenter.x + Math.cos(angle) * rayInnerRadius,
+    y1: dotCenter.y + Math.sin(angle) * rayInnerRadius,
+    x2: dotCenter.x + Math.cos(angle) * rayOuterRadius,
+    y2: dotCenter.y + Math.sin(angle) * rayOuterRadius
+  }
+})
+---
+
+<div
+  class:list={['dynamic-signature-2 text-black dark:text-white', className]}
+  style={{ width }}
+  data-mode={mode}
+  data-draw-delay={drawDelay}
+  data-rollback-delay={rollbackDelay}
+  data-loop-pause={loopPause}
+  data-threshold={threshold}
+>
+  <svg
+    viewBox={viewBox}
+    preserveAspectRatio="xMidYMid meet"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="Chinosan signature"
+    data-centerline-source={centerlineSource}
+  >
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      {
+        renderStrokes.slice(0, 2).map((stroke, strokeIndex) => (
+          <g class="signature-stroke" data-stroke={strokeIndex + 1} data-duration={stroke.duration}>
+            {stroke.segments.map((segment) => (
+              <line
+                class="signature-segment"
+                data-start={segment.start}
+                data-end={segment.end}
+                x1={segment.x1}
+                y1={segment.y1}
+                x2={segment.x2}
+                y2={segment.y2}
+                stroke-width={segment.width}
+                pathLength="1"
+              />
+            ))}
+          </g>
+        ))
+      }
+      <g
+        class="signature-stroke signature-dot-stroke"
+        data-stroke="3"
+        data-kind="dot"
+        data-duration={renderStrokes[2].duration}
+        style={`transform-origin: ${dotCenter.x}px ${dotCenter.y}px`}
+      >
+        <g class="signature-rays" style={`transform-origin: ${dotCenter.x}px ${dotCenter.y}px`}>
+          {
+            dotRays.map((ray) => (
+              <line
+                class="signature-ray"
+                x1={ray.x1}
+                y1={ray.y1}
+                x2={ray.x2}
+                y2={ray.y2}
+                stroke-width="1.7"
+              />
+            ))
+          }
+        </g>
+        <circle
+          class="signature-dot"
+          cx={dotCenter.x}
+          cy={dotCenter.y}
+          r={dotRadius}
+          fill="currentColor"
+          stroke="none"
+          style={`transform-origin: ${dotCenter.x}px ${dotCenter.y}px`}
+        />
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .dynamic-signature-2 {
+    width: 100%;
+    max-width: 400px;
+    line-height: 0;
+  }
+
+  .dynamic-signature-2 svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .signature-segment {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .signature-dot,
+  .signature-rays {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+
+  .signature-ray {
+    stroke: currentColor;
+    stroke-linecap: round;
+  }
+
+  .dynamic-signature-2[data-reduced-motion='true'] .signature-segment {
+    stroke-dashoffset: 0;
+  }
+
+  .dynamic-signature-2[data-reduced-motion='true'] .signature-dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+
+<script>
+  const wait = (duration: number) => new Promise((resolve) => window.setTimeout(resolve, duration))
+
+  const setStrokeProgress = (stroke: SVGGElement, progress: number) => {
+    stroke.querySelectorAll<SVGLineElement>('.signature-segment').forEach((segment) => {
+      const start = Number(segment.dataset.start)
+      const end = Number(segment.dataset.end)
+      const localProgress = Math.min(1, Math.max(0, (progress - start) / Math.max(0.00001, end - start)))
+      segment.style.strokeDashoffset = String(1 - localProgress)
+    })
+  }
+
+  const animateConnectedStrokes = (
+    container: HTMLElement,
+    strokes: SVGGElement[],
+    from: number,
+    to: number,
+    duration: number
+  ) => new Promise<void>((resolve) => {
+    const strokeDurations = strokes.map((stroke) => Number(stroke.dataset.duration) || 600)
+    const totalDuration = strokeDurations.reduce((sum, value) => sum + value, 0)
+    const startedAt = performance.now()
+    const frame = (now: number) => {
+      if (!container.isConnected) {
+        resolve()
+        return
+      }
+      const elapsed = Math.min(1, (now - startedAt) / Math.max(1, duration))
+      const eased = (1 - Math.cos(Math.PI * elapsed)) / 2
+      const timelinePosition = (from + (to - from) * eased) * totalDuration
+      let strokeStart = 0
+      strokes.forEach((stroke, index) => {
+        const strokeDuration = strokeDurations[index]
+        const progress = (timelinePosition - strokeStart) / strokeDuration
+        setStrokeProgress(stroke, Math.min(1, Math.max(0, progress)))
+        strokeStart += strokeDuration
+      })
+      if (elapsed < 1) requestAnimationFrame(frame)
+      else resolve()
+    }
+    requestAnimationFrame(frame)
+  })
+
+  const animateDot = async (
+    stroke: SVGGElement,
+    appearing: boolean,
+    duration: number
+  ) => {
+    const dot = stroke.querySelector<SVGCircleElement>('.signature-dot')
+    const rays = stroke.querySelector<SVGGElement>('.signature-rays')
+    if (!dot || !rays) return
+
+    const dotFrames = appearing
+      ? [
+          { opacity: 0, transform: 'scale(0.25)', offset: 0 },
+          { opacity: 1, transform: 'scale(1.08)', offset: 0.58 },
+          { opacity: 1, transform: 'scale(1)', offset: 1 }
+        ]
+      : [
+          { opacity: 1, transform: 'scale(1)', offset: 0 },
+          { opacity: 1, transform: 'scale(1.06)', offset: 0.3 },
+          { opacity: 0, transform: 'scale(0.25)', offset: 1 }
+        ]
+    const rayFrames = [
+      { opacity: 0, transform: 'scale(0.45)', offset: 0 },
+      { opacity: 1, transform: 'scale(0.72)', offset: 0.24 },
+      { opacity: 0.7, transform: 'scale(1)', offset: 0.62 },
+      { opacity: 0, transform: 'scale(1.32)', offset: 1 }
+    ]
+    const options: KeyframeAnimationOptions = { duration, easing: 'ease-out', fill: 'forwards' }
+    const animations = [dot.animate(dotFrames, options), rays.animate(rayFrames, options)]
+    await Promise.all(animations.map((animation) => animation.finished.catch(() => undefined)))
+  }
+
+  const initializeDynamicSignatures = () => {
+    document.querySelectorAll<HTMLElement>('.dynamic-signature-2').forEach((container) => {
+      if (container.dataset.initialized === 'true') return
+      container.dataset.initialized = 'true'
+
+      const strokes = Array.from(container.querySelectorAll<SVGGElement>('.signature-stroke'))
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (!strokes.length || reducedMotion) {
+        container.dataset.reducedMotion = 'true'
+        return
+      }
+
+      const drawDelay = Number(container.dataset.drawDelay) || 0
+      const rollbackDelay = Number(container.dataset.rollbackDelay) || 0
+      const loopPause = Number(container.dataset.loopPause) || 0
+      const threshold = Number(container.dataset.threshold) || 1
+
+      strokes.forEach((stroke) => setStrokeProgress(stroke, 0))
+      const mainStrokes = strokes.filter((stroke) => stroke.dataset.kind !== 'dot')
+      const dotStroke = strokes.find((stroke) => stroke.dataset.kind === 'dot')
+      const mainDuration = mainStrokes.reduce(
+        (sum, stroke) => sum + (Number(stroke.dataset.duration) || 600),
+        0
+      )
+
+      const drawSequentially = async () => {
+        await animateConnectedStrokes(container, mainStrokes, 0, 1, mainDuration)
+        if (!dotStroke) return
+        await wait(drawDelay)
+        await animateDot(dotStroke, true, Number(dotStroke.dataset.duration) || 600)
+      }
+
+      const rollbackSequentially = async () => {
+        if (dotStroke) {
+          await animateDot(dotStroke, false, (Number(dotStroke.dataset.duration) || 600) * 0.8)
+          await wait(rollbackDelay)
+        }
+        await animateConnectedStrokes(container, mainStrokes, 1, 0, mainDuration * 0.8)
+      }
+
+      if (container.dataset.mode === 'once-on-view') {
+        const observer = new IntersectionObserver((entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return
+          observer.disconnect()
+          wait(500).then(drawSequentially)
+        }, { threshold })
+        observer.observe(container)
+        return
+      }
+
+      const runLoop = async () => {
+        await wait(500)
+        while (container.isConnected) {
+          await drawSequentially()
+          await wait(loopPause)
+          await rollbackSequentially()
+          await wait(loopPause / 2)
+        }
+      }
+      runLoop()
+    })
+  }
+
+  initializeDynamicSignatures()
+  document.addEventListener('astro:page-load', initializeDynamicSignatures)
+</script>
