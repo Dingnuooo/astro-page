@@ -135,6 +135,33 @@ const typographyConfig: TypographyOptions = {
     'ol, ul': { 'padding-inline-start': '1.625em' },
     'ol>li, ul>li': { 'padding-inline-start': '.375em' },
     li: { 'margin-top': '.5em', 'margin-bottom': '.5em' },
+
+    // ===== Custom spacing adjustments =====
+    // Line height adjustments (舒展型 vs 紧凑型)
+    'p, blockquote, li, .aside': { 'line-height': '1.64' }, // 舒展型：正文、引用、列表项、Aside
+    'table, pre, code': { 'line-height': '1.6' }, // 紧凑型：表格、代码块
+
+    // Block spacing adjustments
+    // 中等间距：前序段落到子块
+    'p + ul, p + ol, p + pre, p + blockquote, p + table, p + .aside': { 'margin-top': '-1em' },
+
+    // 中等间距：所有层级的列表项之间
+    'li + li': { 'margin-top': '-0.2em' },
+
+    // 中等间距：li 内容到嵌套列表（适用所有嵌套层级）
+    'li > ul, li > ol': { 'margin-top': '-0.2em' },
+
+    // 最大间距：嵌套列表到 li 内后续内容
+    'li > ul + *, li > ol + *': { 'margin-top': '1.5em' },
+
+    // 最大间距：子块到后续段落
+    'ul + p, ol + p, pre + p, blockquote + p, table + p, .aside + p': { 'margin-top': '1.5em' },
+
+    // 最大间距：段落间、非正文块间
+    'p + p, ul + ul, ol + ol, pre + pre, blockquote + blockquote, table + table, .aside + .aside': {
+      'margin-top': '1.5em'
+    },
+
     // Others
     img: { 'border-radius': radius, margin: '0 auto' },
     kbd: {

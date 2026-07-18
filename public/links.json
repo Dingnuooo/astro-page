@@ -83,6 +83,16 @@
             "hash": "ce125a11bafb3818",
             "path": "/avatars/ce125a11bafb3818.webp"
           }
+        },
+        {
+          "name": "Joye Personal Blog",
+          "intro": "Stay hungry, stay foolish",
+          "link": "https://www.joyehuang.me/",
+          "avatar": "https://joyehuang.me/favicon/favicon.ico",
+          "avatar_cache": {
+            "hash": "67ce3dbd2ce89672",
+            "path": "/avatars/67ce3dbd2ce89672.ico"
+          }
         }
       ]
     },
