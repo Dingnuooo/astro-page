@@ -12,6 +12,7 @@ const isDev = import.meta.env.DEV
   define:vars={{ npmCDN: config.npmCDN, walineServer: config.integ.waline.server, isDev }}
 >
   const pageviewSelector = '.waline-pageview-count'
+  const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
 
   function isPageVisible() {
     return document.visibilityState === 'visible' && document.prerendering !== true
@@ -24,7 +25,7 @@ const isDev = import.meta.env.DEV
 
       const { pageviewCount } = await import(`${npmCDN}/@waline/client@v3/dist/pageview.js`)
 
-      if (isDev) {
+      if (isDev || isLocalhost) {
         pageviewCount({
           serverURL: walineServer,
           path: window.location.pathname,
