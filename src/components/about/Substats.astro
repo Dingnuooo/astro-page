@@ -7,10 +7,7 @@ interface SubstatsItem {
   icon: IconsType
   color?: string
   link?: string
-  text?: string
-  desc?: string
-  api?: string
-  count?: number
+  desc: string
 }
 
 type Props = {
@@ -18,42 +15,18 @@ type Props = {
 }
 
 const { stats } = Astro.props as Props
-
-async function fetchCount(item: SubstatsItem) {
-  if (!item.api) return
-  try {
-    const response = await fetch(`https://api.swo.moe/stats/${item.api}`)
-    const data = await response.json()
-    if (data.failed) {
-      throw new Error(data.message)
-    } else {
-      item.count = data.count
-    }
-  } catch (error) {
-    console.error(`Error in Substats fetching: ${error}`)
-  }
-}
-
-await Promise.all(stats.map(fetchCount))
 ---
 
 <div class='grid grid-cols-1 gap-3 rounded-xl border p-2 sm:grid-cols-2 lg:grid-cols-2 sm:p-3'>
   {
-    stats.map(({ link, platform, icon, color, count, text, desc }) => {
+    stats.map(({ link, platform, icon, color, desc }) => {
       const content = (
         <div class='flex items-center gap-3 rounded-lg border border-transparent px-3 py-2 transition-all hover:border-border hover:bg-muted'>
-          {icon && <Icon name={icon} color={color} />}
-          <div class='flex-1 text-foreground transition-colors group-hover:text-primary'>
+          <Icon name={icon} color={color} />
+          <div class='flex-1 font-medium text-foreground transition-colors group-hover:text-primary'>
             {platform}
           </div>
-          {count ? (
-            <div class='flex items-center gap-1.5'>
-              <samp>{count}</samp>
-              <span class='text-sm font-normal'>{text}</span>
-            </div>
-          ) : (
-            <span class='text-sm font-normal'>{desc}</span>
-          )}
+          <span class='text-sm font-normal'>{desc}</span>
         </div>
       )
 
@@ -85,20 +58,15 @@ await Promise.all(stats.map(fetchCount))
   import { showToast } from 'astro-pure/utils'
 
   document.querySelectorAll<HTMLButtonElement>('[data-copy-substat]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const value = button.dataset.copyValue
-      if (!value) return
+    button.addEventListener('click', async () => {
+      const value = button.dataset.copyValue!
 
-      navigator.clipboard.writeText(value)
-      showToast({ message: `Copied "${value}" to clipboard!` })
+      try {
+        await navigator.clipboard.writeText(value)
+        showToast({ message: `Copied "${value}" to clipboard!` })
+      } catch (error) {
+        console.error('Unable to copy substat:', error)
+      }
     })
   })
 </script>
-<!-- <div class='mt-2 text-right text-sm'>
-  Display real-time; powered by <a
-    class='text-muted-foreground'
-    href='http://github.com/spencerwooo/substats'
-    target='_blank'
-    rel='noopener noreferrer'>Substats</a
-  >
-</div> -->
