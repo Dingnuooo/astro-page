@@ -9,7 +9,10 @@ const selectedImages = [
   'gradually-awaking.jpg',
   'kunminglake.jpg',
   'nene-white2.jpg',
+  'dalian-forest-zoo.jpg',
+  'world-robot-conference1.jpg',
   'longmen.jpg'
+
 ] as const
 
 const galleryFiles = import.meta.glob<{ default: ImageMetadata }>(
@@ -106,7 +109,14 @@ const rows = Array.from({ length: Math.ceil(images.length / 2) }, (_, index) =>
       zoomPromise = import('https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/+esm').then(
         ({ default: mediumZoom }) => {
           const zoom = mediumZoom({ background: 'rgba(0,0,0,0.8)' })
-          zoom.on('closed', ({ target }) => zoom.detach(target))
+          zoom.on('closed', ({ target }) => {
+            const previewSrc = target.dataset.previewSrc
+            if (previewSrc) {
+              target.src = previewSrc
+              delete target.dataset.previewSrc
+            }
+            zoom.detach(target)
+          })
           return zoom
         }
       )
@@ -115,25 +125,62 @@ const rows = Array.from({ length: Math.ceil(images.length / 2) }, (_, index) =>
     return zoomPromise
   }
 
+  const waitForImage = (src) =>
+    new Promise((resolve, reject) => {
+      const image = new Image()
+      image.decoding = 'async'
+      image.onload = () => resolve()
+      image.onerror = () => reject(new Error(`unable to load featured gallery image: ${src}`))
+      image.src = src
+    })
+
+  const showLoader = (loader) => {
+    if (!loader) return
+    loader.classList.remove('hidden')
+    loader.classList.add('flex')
+    loader.style.display = 'flex'
+  }
+
+  const hideLoader = (loader) => {
+    if (!loader) return
+    loader.classList.add('hidden')
+    loader.classList.remove('flex')
+    loader.style.display = 'none'
+  }
+
   const openImage = async (image) => {
     if (image.dataset.zoomLoading === 'true') return
 
     const loader = image.closest('.featured-gallery-item')?.querySelector('[data-gallery-loading]')
+    const zoomSrc = image.dataset.zoomSrc
+    const previewSrc = image.getAttribute('src')
 
     image.dataset.zoomLoading = 'true'
-    loader?.classList.remove('hidden')
-    loader?.classList.add('flex')
+    showLoader(loader)
 
     try {
+      // Let the loader paint before starting the network request.
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+
+      if (zoomSrc && zoomSrc !== image.currentSrc) {
+        await waitForImage(zoomSrc)
+        if (previewSrc) image.dataset.previewSrc = previewSrc
+        image.src = zoomSrc
+        await image.decode().catch(() => {})
+      }
+
       const zoom = await getZoom()
       zoom.attach(image)
       await zoom.open({ target: image })
     } catch (error) {
       console.error('unable to open featured gallery image:', error)
+      if (image.dataset.previewSrc) {
+        image.src = image.dataset.previewSrc
+        delete image.dataset.previewSrc
+      }
     } finally {
       delete image.dataset.zoomLoading
-      loader?.classList.add('hidden')
-      loader?.classList.remove('flex')
+      hideLoader(loader)
     }
   }
 
