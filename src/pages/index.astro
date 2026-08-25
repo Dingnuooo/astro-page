@@ -12,11 +12,11 @@ import SkillLayout from '@/components/home/SkillLayout.astro'
 import avatar from '@/assets/avatar.png'
 import chinosanAvatar from '@/assets/chinosan_avatar.png'
 import config, { highlightColor } from '@/site-config'
+import DynamicSignature2 from '@/components/DynamicSignature2.astro'
 
 // const language = ['Python', 'C / C++', 'MATLAB', 'LaTeX', 'HTML', 'MySQL']
 // const tool = ['VSCode', 'Obsidian', 'Zotero', 'Docker']
 // const design = ['SAI', 'Lightroom', 'FL Studio', 'Reaper', 'Blender']
-
 
 const MAX_POSTS = 6
 const allPosts = await getBlogCollection()
@@ -24,8 +24,12 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 ---
 
 <PageLayout meta={{ title: 'Home' }} highlightColor={highlightColor}>
-  <main class='flex w-full flex-col items-center'>
-    <section class='animate mb-10 flex flex-col items-center gap-y-3' id='content-header'>
+  <main class='home-scroll flex w-full flex-col items-center' data-home-scroll>
+    <section
+      class='animate mb-10 flex flex-col items-center gap-y-3'
+      id='content-header'
+      data-home-intro
+    >
       <div
         class='profile-hover flex flex-col items-center gap-y-4 sm:flex-row sm:gap-x-8 sm:translate-x-3'
         data-profile-hover
@@ -95,10 +99,22 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       </div>
 
       <!-- <Quote class='mt-12' /> -->
-      <Quote class='sm:self-start sm:ml-[9.02rem]' />
+      <div class='mt-4 sm:self-start sm:ml-7.00rem'>
+        <Quote />
+      </div>
     </section>
 
-    <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
+    <button
+      class='home-expand-trigger'
+      type='button'
+      aria-label='Show homepage content'
+      title='Show homepage content'
+      data-home-expand
+    >
+      <Icon name='up' class='size-6' />
+    </button>
+
+    <div id='content' class='animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6' data-home-content>
       {
         allPostsByDate.length > 0 && (
           <Section title='Posts'>
@@ -171,11 +187,123 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         <SkillLayout title='Design' skills={design} />
       </Section> -->
     </div>
+    <p class='mt-10 text-center text-base text-muted-foreground'> — · —</p> 
+    <DynamicSignature2 width='10rem' class='mt-5 self-center' />
   </main>
 </PageLayout>
 
 <script is:inline>
   ;(() => {
+    const home = document.querySelector('[data-home-scroll]')
+    const intro = document.querySelector('[data-home-intro]')
+    const content = document.querySelector('[data-home-content]')
+
+    if (
+      home instanceof HTMLElement &&
+      intro instanceof HTMLElement &&
+      content instanceof HTMLElement
+    ) {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+      if (reducedMotion.matches) {
+        home.classList.add('home-scroll-reduced')
+      } else {
+        const expand = home.querySelector('[data-home-expand]')
+        let frame = 0
+        let distance = 1
+        let homeTop = 0
+        let introHeight = 0
+        let lastIncomplete
+        let lastContentActive
+
+        const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value))
+        const getNaturalTop = (element) => {
+          let top = 0
+          let current = element
+
+          while (current instanceof HTMLElement) {
+            top += current.offsetTop
+            current = current.offsetParent
+          }
+
+          return top
+        }
+        const contentEntryProgress = 0.05
+        const contentEntryInset = 2
+
+        const measure = () => {
+          distance = Number.parseFloat(getComputedStyle(home).paddingTop) || 1
+          homeTop = home.getBoundingClientRect().top + window.scrollY
+          introHeight = intro.offsetHeight
+
+          const contentNaturalTop = getNaturalTop(content)
+          const contentStartShift =
+            (window.innerHeight -
+              contentEntryInset -
+              contentNaturalTop +
+              distance * contentEntryProgress) /
+            (1 - contentEntryProgress)
+
+          const introLift = Math.min(40, window.innerHeight * 0.045)
+          const centeredTop = Math.max(16, (window.innerHeight - introHeight) / 2 - introLift)
+          const introStartShift = centeredTop - (homeTop + distance)
+
+          home.style.setProperty('--home-intro-shift-start', `${introStartShift}px`)
+          home.style.setProperty('--home-content-shift-start', `${contentStartShift}px`)
+        }
+
+        const update = () => {
+          frame = 0
+
+          const progress = clamp(window.scrollY / distance)
+          const incomplete = progress < 1
+          const contentActive = progress > 0.85
+
+          home.style.setProperty('--home-progress', progress.toFixed(4))
+
+          if (incomplete !== lastIncomplete) {
+            lastIncomplete = incomplete
+            document.body.classList.toggle('home-scroll-incomplete', incomplete)
+          }
+
+          if (contentActive !== lastContentActive) {
+            lastContentActive = contentActive
+            home.classList.toggle('home-content-active', contentActive)
+          }
+
+          if (expand instanceof HTMLButtonElement) {
+            const isVisible = progress < 0.22
+            expand.style.pointerEvents = isVisible ? 'auto' : 'none'
+            expand.tabIndex = isVisible ? 0 : -1
+          }
+        }
+
+        const scheduleUpdate = () => {
+          if (!frame) frame = window.requestAnimationFrame(update)
+        }
+
+        home.classList.add('home-scroll-enhanced')
+        measure()
+        update()
+
+        if (expand instanceof HTMLButtonElement) {
+          expand.addEventListener('click', () => {
+            window.scrollTo({ top: homeTop + distance, behavior: 'smooth' })
+          })
+        }
+
+        window.addEventListener('scroll', scheduleUpdate, { passive: true })
+        window.addEventListener('resize', () => {
+          measure()
+          scheduleUpdate()
+        })
+        document.fonts?.ready.then(() => {
+          measure()
+          scheduleUpdate()
+        })
+      }
+    }
+
     const profile = document.querySelector('[data-profile-hover]')
     const trigger = document.querySelector('[data-avatar-trigger]')
 
@@ -206,6 +334,105 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 </script>
 
 <style>
+  .home-scroll-enhanced {
+    --home-scroll-distance: clamp(40rem, 100svh, 60rem);
+    padding-top: var(--home-scroll-distance);
+  }
+
+  .home-scroll-enhanced #content-header {
+    z-index: 1;
+    opacity: 1;
+    animation: none;
+    transform: translate3d(
+      0,
+      calc(var(--home-intro-shift-start, 0px) * (1 - var(--home-progress, 0))),
+      0
+    );
+    will-change: transform;
+  }
+
+  .home-scroll-enhanced #content {
+    opacity: var(--home-progress, 0);
+    animation: none;
+    pointer-events: none;
+    transform: translate3d(
+      0,
+      calc(var(--home-content-shift-start, 0px) * (1 - var(--home-progress, 0))),
+      0
+    );
+    will-change: transform, opacity;
+  }
+
+  .home-scroll-enhanced.home-content-active #content {
+    pointer-events: auto;
+  }
+
+  .home-expand-trigger {
+    display: none;
+  }
+
+  .home-scroll-enhanced .home-expand-trigger {
+    position: fixed;
+    inset-inline-start: 50%;
+    bottom: clamp(7rem, 18svh, 10rem);
+    z-index: 20;
+    display: flex;
+    width: 3.25rem;
+    height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid hsl(var(--border));
+    border-radius: 9999px;
+    background-color: hsl(var(--background));
+    color: hsl(var(--muted-foreground));
+    box-shadow:
+      0 12px 30px rgba(24, 24, 27, 0.12),
+      0 2px 6px rgba(24, 24, 27, 0.08);
+    opacity: calc(1 - (var(--home-progress, 0) * 4.55));
+    pointer-events: auto;
+    transform: translate3d(-50%, calc(16px * var(--home-progress, 0)), 0);
+    transition:
+      color 0.2s,
+      background-color 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s;
+    will-change: transform, opacity;
+  }
+
+  .home-scroll-enhanced .home-expand-trigger:hover {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+    box-shadow:
+      0 16px 36px rgba(24, 24, 27, 0.16),
+      0 3px 8px rgba(24, 24, 27, 0.1);
+  }
+
+  .home-scroll-enhanced .home-expand-trigger:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 4px;
+  }
+
+  :global(.home-expand-trigger svg) {
+    transform: rotate(180deg);
+  }
+
+  :global(body.home-scroll-incomplete header-component[data-show='false']:not(.expanded)) {
+    transform: translateY(0);
+  }
+
+  :global(body.home-scroll-incomplete header-component.not-top:not(.expanded)) {
+    margin-inline: 0;
+    border-color: transparent;
+    background-color: transparent;
+    padding-inline: 0;
+    box-shadow: none;
+  }
+
+  .home-scroll-reduced #content-header {
+    min-height: calc(100svh - 8rem);
+    justify-content: center;
+  }
+
   .profile-hover {
     --avatar-transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -293,6 +520,11 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .home-scroll-reduced #content-header {
+      animation: none;
+      opacity: 1;
+    }
+
     .avatar-layer,
     .author-switch > span,
     :global(#highlight-gradient)::after {
