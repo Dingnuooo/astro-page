@@ -3,8 +3,8 @@ import { getImage } from 'astro:assets'
 
 import PageLayout from '@/layouts/CommonPage.astro'
 import DynamicSignature2 from '@/components/DynamicSignature2.astro'
-import { highlightColor, theme } from '@/site-config'
 import { renderGallerySubtitle } from '@/utils/gallery'
+import { highlightColor, theme } from '@/site-config'
 
 import json from './_info.json'
 
@@ -108,7 +108,9 @@ const images = await Promise.all(
   </div>
 
   <p>&nbsp;</p>
-  <p class='text-foreground/40'>* 部分图片包含 AI 生成或编辑的内容 / Contains AI-generated elements.</p>
+  <p class='text-foreground/40'>
+    * 部分图片包含 AI 生成或编辑的内容 / Contains AI-generated elements.
+  </p>
   <noscript>
     <style>
       .gallery-container--randomizing {

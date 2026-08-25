@@ -16,16 +16,12 @@ const headings = [
 ---
 
 <PageLayout title='About' {headings} comment highlightColor={highlightColor}>
-  <p>
-    欢迎光临。我是丁诺 (chinosan)，在这里收纳一些想法。真诚的分享是一切思想与机遇的根源。
-  </p>
-
-  <!-- <h2 id='hobbies'>Hobbies</h2> -->
 
   <ul>
+    <li>chinosan here！这里是丁诺，来自福建福州，现居北京海淀.</li>
     <li>我的人格类型是 INTJ-T.</li>
-    <li>我研究兴趣集中在 AgenticRL 与群体智能.</li>
-    <li>摄影低手 / 底边 coser，<a href='/gallery' target='_blank'>影像集 → Gallery</a>.</li>
+    <li>coding / 摄影 / cos 小萌新，<a href='/gallery' target='_blank'>影像集 → Gallery</a>.</li>
+    <li>我的研究兴趣集中在 AgenticRL 与群体智能.</li>
     <li>我主要阅读推理小说，本格与社会派.</li>
     <li>我主要游玩 Minecraft（生电 / 建筑）与音乐游戏（Arcaea / pjsk）.</li>
     <li>
@@ -41,20 +37,20 @@ const headings = [
 
   {/* findme */}
   <h2 id='social'>Social</h2>
-  <p>您可以在以下平台找到我。</p>
+  <p>您可以在以下平台找到我，欢迎关注~</p>
   <Substats
     stats={[
+      {
+        platform: 'Email',
+        icon: 'email',
+        color: '#C4A7A8',
+        desc: 'dingnuooo@163.com'
+      },
       {
         platform: 'GitHub',
         icon: 'github',
         link: 'https://github.com/dingnuooo',
         desc: 'Projects'
-      },
-            {
-        platform: 'Email',
-        icon: 'email',
-        color: '#C4A7A8',
-        desc: 'dingnuooo@163.com'
       },
       {
         platform: 'twitter',
