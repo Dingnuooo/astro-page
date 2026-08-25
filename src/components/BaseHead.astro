@@ -22,6 +22,40 @@ const socialImageURL = new URL(ogImage ? ogImage : config.socialCard, Astro.url)
 <meta content='IE=edge' http-equiv='X-UA-Compatible' />
 <title>{siteTitle}</title>
 
+{/* Umami analytics */}
+{
+  prod && (
+    <>
+      <script
+        is:inline
+        defer
+        src='https://umami.chinosan.com/script.js'
+        data-website-id='d07506f5-7036-49bc-930d-7b20009997af'
+        data-domains='chinosan.com,www.chinosan.com'
+        data-auto-pageview='false'
+      ></script>
+      <script is:inline>
+        const trackActualPageview = () => {
+          if (document.prerendering) return
+          if (window.umami) {
+            window.umami.track()
+            return
+          }
+          window.addEventListener('load', trackActualPageview, { once: true })
+        }
+
+        if (document.prerendering) {
+          document.addEventListener('prerenderingchange', trackActualPageview, { once: true })
+        } else if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', trackActualPageview, { once: true })
+        } else {
+          trackActualPageview()
+        }
+      </script>
+    </>
+  )
+}
+
 {/* Icons / Favicon */}
 <link rel='icon' type={config.favicon.type} href={config.favicon.href} />
 <link rel='shortcut icon' type={config.favicon.type} href={config.favicon.href} />
