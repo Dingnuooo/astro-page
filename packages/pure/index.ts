@@ -9,6 +9,7 @@ import { AstroError } from 'astro/errors'
 import { remarkHighlightMark } from 'remark-highlight-mark'
 
 import * as pagefind from 'pagefind'
+
 import rehypeExternalLinks from './plugins/rehype-external-links'
 import rehypeImageCaption from './plugins/rehype-image-caption'
 // Dingnuooo changes//remarkImageSize
@@ -104,7 +105,7 @@ export default function AstroPureIntegration(opts: UserInputConfig): AstroIntegr
         if (!opts.integ.pagefind) return
         try {
           const targetDir = fileURLToPath(dir)
-          
+
           // Create index
           const { index } = await pagefind.createIndex()
           if (!index) {
