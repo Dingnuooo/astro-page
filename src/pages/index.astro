@@ -6,7 +6,7 @@ import { PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
-import DynamicSignature2 from '@/components/DynamicSignature2.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import FeaturedGallery from '@/components/home/FeaturedGallery.astro'
 import Section from '@/components/home/Section.astro'
 import SkillLayout from '@/components/home/SkillLayout.astro'
@@ -188,7 +188,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
       </Section> -->
     </div>
     <p class='mt-10 text-center text-base text-muted-foreground'>— · —</p>
-    <DynamicSignature2 width='10rem' class='mt-5 self-center' />
+    <DynamicSignature width='10rem' class='mt-5 self-center' />
   </main>
 </PageLayout>
 

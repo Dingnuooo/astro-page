@@ -1,7 +1,7 @@
 ---
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import DynamicSignature2 from '@/components/DynamicSignature2.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import Sponsors from '@/components/projects/Sponsors.astro'
 import Sponsorship from '@/components/projects/Sponsorship.astro'
 import alipay from '@/assets/alipay-qrcode.jpg'
@@ -164,7 +164,7 @@ const snakeSvgUrl = '/images/github-snake.svg'
     本站仅负责内容创作及少量功能定制，网站主题并非出自我手。推荐关注主题原作者的<a
       href='https://github.com/cworld1/astro-theme-pure'
       target='_blank'>优秀工作</a
-    >。此处收到的赞助款项将在累计一定金额后，统一转交给主题原作者。
+    >。
   </p>
   <!-- <p>Chinese methods: <a >Afadian</a>, Wechat or Alipay </p> -->
   <Sponsorship
@@ -180,7 +180,7 @@ const snakeSvgUrl = '/images/github-snake.svg'
     sponsors={[{ name: 'chinosannn', platform: 'Wechat', amount: 15, date: '2025-08-06' }]}
   /> -->
   <div class='flex justify-end mt-12'>
-    <DynamicSignature2 width='11rem' />
+    <DynamicSignature width='11rem' />
   </div>
 </PageLayout>
 

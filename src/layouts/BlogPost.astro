@@ -12,7 +12,7 @@ import config from 'virtual:config'
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
-import DynamicSignature2 from '@/components/DynamicSignature2.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import { Comment, PageInfo } from '@/components/waline'
 
 interface Props {
@@ -64,7 +64,7 @@ const primaryColor = data.heroImage?.color ?? highlightColor
   <slot />
 
   <div class='flex justify-end mt-12'>
-    <DynamicSignature2 width='11rem' />
+    <DynamicSignature width='11rem' />
   </div>
 
   <Fragment slot='bottom'>

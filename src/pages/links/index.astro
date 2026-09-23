@@ -4,7 +4,7 @@ import config from 'virtual:config'
 
 import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
-import DynamicSignature2 from '@/components/DynamicSignature2.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import FriendList from '@/components/links/FriendList.astro'
 import { highlightColor } from '@/site-config'
 
@@ -69,6 +69,6 @@ const linkEditPage = 'https://github.com/Dingnuooo/astro-page/blob/main/public/l
     <li>内容不违反国家法律 Content does not violate laws</li>
   </ul>
   <div class='flex justify-end mt-12'>
-    <DynamicSignature2 width='11rem' />
+    <DynamicSignature width='11rem' />
   </div>
 </PageLayout>
