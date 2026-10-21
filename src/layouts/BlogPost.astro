@@ -2,12 +2,15 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
+import { highlightColor } from '@/site-config'
+
 // Plugin styles
 import 'katex/dist/katex.min.css'
 
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import { Comment, PageInfo } from '@/components/waline'
 import config from 'virtual:config'
 
@@ -41,7 +44,7 @@ const socialImage = heroImage
     : heroImage.src.src
   : config.socialCard
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
-const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+const primaryColor = data.heroImage?.color ?? highlightColor
 ---
 
 <PageLayout
@@ -53,11 +56,15 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
 
   <Hero {data} {remarkPluginFrontmatter} slot='header'>
     <Fragment slot='description'>
-      {!isDraft && enableComment && <PageInfo comment class='mt-1' />}
+      {!isDraft && <PageInfo comment={enableComment} class='mt-1' />}
     </Fragment>
   </Hero>
 
   <slot />
+
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='11rem' />
+  </div>
 
   <Fragment slot='bottom'>
     {/* Copyright */}

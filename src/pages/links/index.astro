@@ -3,33 +3,39 @@ import links from '@/public/links.json'
 
 import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
+import DynamicSignature from '@/components/DynamicSignature.astro'
 import FriendList from '@/components/links/FriendList.astro'
+import { highlightColor } from '@/site-config'
 import config from 'virtual:config'
 
 const headings = [
   { depth: 2, slug: 'common-links', text: 'Common Links' },
-  { depth: 2, slug: 'special-links', text: 'Special Links' },
+  // { depth: 2, slug: 'special-links', text: 'Special Links' },
   { depth: 2, slug: 'apply-links', text: 'Apply Links' }
 ]
 
 const { friends } = links
 const linksConf = config.integ.links
-const linkEditPage = 'https://github.com/cworld1/astro-theme-pure/blob/main/public/links.json'
+const linkEditPage = 'https://github.com/Dingnuooo/astro-page/blob/main/public/links.json'
 ---
 
-<PageLayout title='Links' {headings} comment>
-  <p>They're sorted randomly.</p>
+<PageLayout title='Links' {headings} comment highlightColor={highlightColor}>
   <h2 id='common-links'>Common Links</h2>
+  <p>漫游星标集。随机排序</p>
   <FriendList list={friends[0]} />
+
   <Collapse title='Links with Bad Status'>
     <FriendList list={friends[1]} />
   </Collapse>
+
   <Collapse title='Link History Book'>
     <Timeline events={linksConf.logbook} />
   </Collapse>
+  <!-- 
   <h2 id='special-links'>Special Links</h2>
-  <FriendList list={friends[2]} />
+  <FriendList list={friends[2]} /> -->
 
+  <!-- apply-links -->
   <h2 id='apply-links'>Apply Links</h2>
   <p>本站信息（点击复制）The site information (click to copy)：</p>
   <blockquote class='not-prose grid grid-cols-[auto_1fr] gap-x-2 break-words border-s-4 ps-4'>
@@ -62,4 +68,7 @@ const linkEditPage = 'https://github.com/cworld1/astro-theme-pure/blob/main/publ
     </li>
     <li>内容不违反国家法律 Content does not violate laws</li>
   </ul>
+  <div class='flex justify-end mt-12'>
+    <DynamicSignature width='11rem' />
+  </div>
 </PageLayout>

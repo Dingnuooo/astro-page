@@ -1,0 +1,72 @@
+name: Generate GitHub Snake
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate contribution snake SVGs
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: Dingnuooo
+          outputs: |
+            dist/github-snake-gitlab-light.svg?palette=gitlab-light&color_background=transparent
+            dist/github-snake-gitlab-dark.svg?palette=gitlab-dark&color_background=transparent
+
+      - name: Read latest main commit metadata
+        id: main_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin main --depth=1
+
+          main_sha="$(git rev-parse origin/main)"
+          main_commit_date="$(git show -s --format=%cI "$main_sha")"
+
+          echo "sha=$main_sha" >> "$GITHUB_OUTPUT"
+          echo "date=$main_commit_date" >> "$GITHUB_OUTPUT"
+
+      - name: Publish snake SVGs to output branch
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAIN_SHA: ${{ steps.main_commit.outputs.sha }}
+          MAIN_COMMIT_DATE: ${{ steps.main_commit.outputs.date }}
+        run: |
+          set -euo pipefail
+
+          publish_dir="$(mktemp -d)"
+          remote_url="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git init "$publish_dir"
+          cd "$publish_dir"
+          git checkout --orphan output
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          cp -R "${GITHUB_WORKSPACE}/dist/." .
+          touch .nojekyll
+
+          git add --all
+
+          export GIT_AUTHOR_DATE="$MAIN_COMMIT_DATE"
+          export GIT_COMMITTER_DATE="$MAIN_COMMIT_DATE"
+          git commit -m "docs: update snake outputs for ${MAIN_SHA}"
+
+          git remote add origin "$remote_url"
+          git push --force origin output

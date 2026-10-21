@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- 蛋糕主体阴影 -->
+    <filter id="cake-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+
+    <!-- 蛋糕上表面渐变（深巧克力色） -->
+    <linearGradient id="top-fill-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#462514" />
+      <stop offset="100%" stop-color="#32180a" />
+    </linearGradient>
+
+    <!-- 蛋糕侧面渐变（略带暖红的暗色巧克力） -->
+    <linearGradient id="side-fill-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#381b0c" />
+      <stop offset="100%" stop-color="#2a1206" />
+    </linearGradient>
+
+    <!-- 奶油球表面的暖白色渐变 -->
+    <radialGradient id="cream-face" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="65%" stop-color="#fffef2" />
+      <stop offset="100%" stop-color="#fef3cd" />
+    </radialGradient>
+
+    <!-- 奶油球周围的暖色发光光晕（增强亮度和范围） -->
+    <radialGradient id="cream-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#ffebb2" stop-opacity="0.65" />
+      <stop offset="60%" stop-color="#ffd54f" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#ffd54f" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- 紧凑、加粗版蛋糕切片与超大奶油球（透明背景） -->
+  <g filter="url(#cake-shadow)">
+    
+    <!-- 1. 蛋糕侧面填充 -->
+    <polygon points="136,376 376,376 376,286" fill="url(#side-fill-grad)" />
+
+    <!-- 2. 蛋糕上表面填充 -->
+    <polygon points="136,136 376,286 136,376" fill="url(#top-fill-grad)" />
+
+    <!-- 3. 蛋糕侧边轮廓线（橙色，加粗至 30px） -->
+    <path d="M 136,376 L 376,376 L 376,286" 
+          fill="none" 
+          stroke="#ff652f" 
+          stroke-width="30" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+
+    <!-- 4. 蛋糕上表面轮廓线（黄色，加粗至 30px） -->
+    <polygon points="136,136 376,286 136,376" 
+             fill="none" 
+             stroke="#fcd63c" 
+             stroke-width="30" 
+             stroke-linejoin="round" />
+
+    <!-- 5. 奶油微光大光晕（范围扩展，强化氛围感） -->
+    <circle cx="270" cy="195" r="95" fill="url(#cream-glow)" />
+
+    <!-- 6. 饱满的超大奶油球（半径增至 45px） -->
+    <circle cx="270" cy="195" r="45" fill="url(#cream-face)" />
+
+  </g>
+</svg>

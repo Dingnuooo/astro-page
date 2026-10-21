@@ -39,10 +39,34 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Animations */
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 /* Global */
 a {
   transition: color 0.2s ease;
   &:hover {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
+}
+
+/* Mark highlight (==text== syntax via remarkMark) */
+.prose mark {
+  background: hsl(var(--primary) / 0.25);
+  color: inherit;
+  padding: 0 0.2em;
+  border-radius: 0.2em;
 }

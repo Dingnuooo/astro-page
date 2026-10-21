@@ -38,40 +38,88 @@ const path = Astro.url.pathname
   import { commentCount } from '@waline/client/comment'
   import { pageviewCount } from '@waline/client/pageview'
 
-  const container = document.querySelector('#walinePageInfo')
+  const localHosts = new Set(['localhost', '127.0.0.1', '[::1]'])
 
-  if (container instanceof HTMLElement) {
+  const isPageVisible = () => {
+    const prerenderingDocument = document as Document & { prerendering?: boolean }
+    return document.visibilityState === 'visible' && prerenderingDocument.prerendering !== true
+  }
+
+  const initPageInfo = () => {
+    const container = document.querySelector('#walinePageInfo')
+
+    if (!(container instanceof HTMLElement) || container.dataset.walineInitialized === 'true') {
+      return
+    }
+
+    container.dataset.walineInitialized = 'true'
+
     const serverURL = container.dataset.serverUrl
     const comment = container.dataset.comment === 'true'
     const path = window.location.pathname
-    const update = !['localhost', '127.0.0.1'].includes(window.location.hostname)
+    const isDev = import.meta.env.DEV
+    const isLocalhost = localHosts.has(window.location.hostname)
 
-    if (serverURL) {
-      const abortPageview = pageviewCount({
+    if (!serverURL) return
+
+    let abortPageview: WalineAbort | undefined
+    let abortComment: WalineAbort | undefined
+    let hasUpdatedPageview = false
+
+    const cleanupPageviewActivation = () => {
+      document.removeEventListener('visibilitychange', activatePageview)
+      document.removeEventListener('prerenderingchange', activatePageview)
+      window.removeEventListener('pageshow', activatePageview)
+    }
+
+    const runPageview = (update: boolean) => {
+      abortPageview?.()
+      abortPageview = pageviewCount({
         serverURL,
         path,
         update,
         selector: '#walinePageInfo .waline-pageview-count'
       })
-
-      let abortComment: WalineAbort
-
-      if (comment) {
-        abortComment = commentCount({
-          serverURL,
-          path,
-          selector: '#walinePageInfo .waline-comment-count'
-        })
-      }
-
-      document.addEventListener(
-        'astro:before-swap',
-        () => {
-          abortPageview?.()
-          abortComment?.()
-        },
-        { once: true }
-      )
+      hasUpdatedPageview ||= update
     }
+
+    const activatePageview = () => {
+      if (hasUpdatedPageview || !isPageVisible()) return
+
+      cleanupPageviewActivation()
+      runPageview(true)
+    }
+
+    if (isDev || isLocalhost) {
+      runPageview(false)
+    } else if (isPageVisible()) {
+      runPageview(true)
+    } else {
+      runPageview(false)
+      document.addEventListener('visibilitychange', activatePageview)
+      document.addEventListener('prerenderingchange', activatePageview)
+      window.addEventListener('pageshow', activatePageview)
+    }
+
+    if (comment) {
+      abortComment = commentCount({
+        serverURL,
+        path,
+        selector: '#walinePageInfo .waline-comment-count'
+      })
+    }
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        cleanupPageviewActivation()
+        abortPageview?.()
+        abortComment?.()
+      },
+      { once: true }
+    )
   }
+
+  initPageInfo()
+  document.addEventListener('astro:page-load', initPageInfo)
 </script>

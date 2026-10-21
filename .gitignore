@@ -39,3 +39,13 @@ ignore.*
 bunfig.toml
 /src/content/blog/test.*
 /test/
+my-custom.md
+
+# Generated during npm prebuild
+/public/images/github-snake.svg
+
+/scripts/
+
+# Local Cloudflare tooling state
+.wrangler/
+wrangler.jsonc

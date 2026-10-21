@@ -4,6 +4,7 @@ import AstroPureIntegration from 'astro-pure'
 import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import type { Plugin } from 'vite'
 
 // Local integrations
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
@@ -22,10 +23,20 @@ import {
 } from './src/plugins/shiki-official/transformers.ts'
 import config from './src/site.config.ts'
 
+const watcherListenerLimitPlugin: Plugin = {
+  name: 'watcher-listener-limit',
+  configureServer(server) {
+    const nextLimit = 20
+    if (server.watcher.getMaxListeners() < nextLimit) {
+      server.watcher.setMaxListeners(nextLimit)
+    }
+  }
+}
+
 // https://astro.build/config
 export default defineConfig({
   // [Basic]
-  site: 'https://astro-pure.js.org',
+  site: 'https://chinosan.com',
   // Deploy to a sub path
   // https://astro-pure.js.org/docs/setup/deployment#platform-with-base-path
   // base: '/astro-pure/',
@@ -40,8 +51,9 @@ export default defineConfig({
 
   // [Adapter]
   // https://docs.astro.build/en/guides/deploy/
-  adapter: vercel({ imageService: true }),
-  output: 'server',
+  // adapter: vercel({ imageService: true }),
+  output: 'static',
+  // output: 'static',
   // Local (standalone)
   // adapter: node({ mode: 'standalone' }),
   // output: 'server',
@@ -73,6 +85,7 @@ export default defineConfig({
 
   // [Markdown]
   markdown: {
+    gfm: true,
     remarkPlugins: [remarkMath],
     rehypePlugins: [
       [rehypeKatex, {}],
@@ -124,6 +137,10 @@ export default defineConfig({
     // mdx(),
     AstroPureIntegration(config)
   ],
+
+  vite: {
+    plugins: [watcherListenerLimitPlugin]
+  },
 
   // [Experimental]
   experimental: {

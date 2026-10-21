@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="100%" height="100%">
+  <defs>
+    <!-- 左手柄对右手柄的叠加阴影（内部层叠） -->
+    <filter id="layer-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4.5" flood-color="#121026" flood-opacity="0.25"/>
+    </filter>
+    <!-- 整体图标底部的立体柔和阴影（针对极限尺寸优化：纯垂直向下投影，防左右切边） -->
+    <filter id="global-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="5" stdDeviation="3" flood-color="#121026" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- 极限放大与居中控制组 (放大 1.24 倍，横向填充率约 99.3%) -->
+  <g transform="translate(-29.5, -37.2) scale(1.24)">
+    <!-- 带有阴影的主体图标 -->
+    <g filter="url(#global-shadow)">
+      
+      <!-- 右侧（背景层）手柄 -->
+      <g id="right-controller">
+        <!-- 顶部左按键（几何隐藏但完整保留） -->
+        <rect x="126" y="93" width="22" height="18" rx="11" fill="#C1C6EB" />
+        <!-- 顶部右按键 -->
+        <rect x="166" y="93" width="22" height="18" rx="11" fill="#C1C6EB" />
+        <!-- 胶囊身体 -->
+        <rect x="96" y="108" width="126" height="82" rx="41" fill="#6359B4" stroke="#C1C6EB" stroke-width="15" />
+        <!-- 右侧圆形键 -->
+        <circle cx="181" cy="149" r="16.5" fill="#C1C6EB" />
+      </g>
+
+      <!-- 左侧（前景层）手柄 -->
+      <g id="left-controller" filter="url(#layer-shadow)">
+        <!-- 顶部左按键 -->
+        <rect x="62" y="69" width="22" height="18" rx="11" fill="#FFFFFF" />
+        <!-- 顶部右按键 -->
+        <rect x="106" y="69" width="22" height="18" rx="11" fill="#FFFFFF" />
+        <!-- 胶囊身体 -->
+        <rect x="32" y="84" width="126" height="82" rx="41" fill="#6359B4" stroke="#FFFFFF" stroke-width="15" />
+        <!-- 左侧十字键 -->
+        <g fill="#FFFFFF">
+          <rect x="56" y="119" width="34" height="12" rx="5" />
+          <rect x="67" y="108" width="12" height="34" rx="5" />
+        </g>
+        <!-- 右侧黄色圆形键 -->
+        <circle cx="117" cy="125" r="16.5" fill="#FCD15B" />
+      </g>
+      
+    </g>
+  </g>
+</svg>

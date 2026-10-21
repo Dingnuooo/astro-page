@@ -1,13 +1,13 @@
 import type { CardListData, Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/types'
 
 export const theme: ThemeUserConfig = {
-  // [Basic]
+  // === Basic configuration ===
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: 'Astro Theme Pure',
+  title: "chinosan's notes",
   /** Will be used in index page & copyright declaration */
-  author: 'Pure Lab',
+  author: 'chinosan',
   /** Description metadata for your website. Can be used in page metadata. */
-  description: 'Stay hungry, stay foolish',
+  description: '握紧你的锄头',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
   favicon: '/favicon/favicon.ico',
   /** The default social card image for your site which should be a path to an image in the `public/` directory. */
@@ -26,7 +26,7 @@ export const theme: ThemeUserConfig = {
   },
   /** Set a logo image to show in the homepage. */
   logo: {
-    src: '/src/assets/avatar.png',
+    src: '/avatar.png',
     alt: 'Avatar'
   },
 
@@ -49,10 +49,11 @@ export const theme: ThemeUserConfig = {
   header: {
     menu: [
       { title: 'Blog', link: '/blog' },
-      { title: 'Docs', link: '/docs' },
       { title: 'Projects', link: '/projects' },
       { title: 'Links', link: '/links' },
+      { title: 'Gallery', link: '/gallery' },
       { title: 'About', link: '/about' }
+      // { title: 'Travelling', link: 'https://www.travellings.cn/go.html' }
     ]
   },
 
@@ -64,27 +65,31 @@ export const theme: ThemeUserConfig = {
     links: [
       // Registration link
       {
-        title: 'Moe ICP 114514',
-        link: 'https://icp.gov.moe/?keyword=114514',
+        title: '萌ICP备20254889号',
+        link: 'https://icp.gov.moe/?keyword=20254889',
         style: 'text-sm' // Uno/TW CSS class
       },
-      // Privacy Policy link
       {
-        title: 'Site Policy',
-        link: '/terms',
-        pos: 2 // position set to 2 will be appended to copyright line
+        title: 'Travelling',
+        link: 'https://www.travellings.cn/go.html'
       }
+      // Privacy Policy link
+      // {
+      //   title: 'Site Policy',
+      //   link: '/terms',
+      //   pos: 2 // position set to 2 will be appended to copyright line
+      // }
     ],
     /** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
     credits: true,
     /** Optional details about the social media accounts for this site. */
     social: [
-      { icon: 'github', label: 'GitHub', href: 'https://github.com/cworld1/astro-theme-pure' },
+      // { icon: 'github', label: 'GitHub', href: 'https://github.com/Dingnuooo/astro-page' },
+      { icon: 'email', label: 'Email', href: 'mailto:dingnuooo@163.com' },
       { icon: 'rss', label: 'RSS', href: '/rss.xml' }
     ]
   },
 
-  // [Content]
   content: {
     /** External links configuration */
     externalLinks: {
@@ -94,7 +99,8 @@ export const theme: ThemeUserConfig = {
     },
     /** Blog page size for pagination (optional) */
     blogPageSize: 8,
-    /** Share buttons to show */
+    /** Gallery sort order (optional) */
+    gallerySortOrder: 'random', // 'random' | 'fileName'
     // Currently support weibo, x, bluesky
     share: ['weibo', 'x', 'bluesky']
     /** Enable image captions (default false) */
@@ -118,14 +124,14 @@ export const integ: IntegrationUserConfig = {
     applyTip: [
       { name: 'Name', val: theme.title },
       { name: 'Desc', val: theme.description || 'Null' },
-      { name: 'Link', val: 'https://astro-pure.js.org/' },
-      { name: 'Avatar', val: 'https://astro-pure.js.org/favicon/favicon.ico' }
+      { name: 'Link', val: 'https://chinosan.com/' },
+      { name: 'Avatar', val: 'https://chinosan.com/avatar.png' }
     ],
     // Cache avatars in `public/avatars/` to improve user experience.
-    cacheAvatar: false
+    cacheAvatar: true
   },
-  // [Search]
-  pagefind: true,
+  // [Search] - Disabled Pagefind, using FlexSearch instead
+  pagefind: false,
   // Add a random quote to the footer (default on homepage footer)
   // See: https://astro-pure.js.org/docs/integrations/advanced#web-content-render
   // [Quote]
@@ -165,7 +171,7 @@ export const integ: IntegrationUserConfig = {
   waline: {
     enable: true,
     // Server service link
-    server: 'https://astro-theme-pure-waline.arthals.ink/',
+    server: 'https://comment.chinosan.com/',
     // Show meta info for comments
     showMeta: false,
     // Refer https://waline.js.org/en/guide/features/emoji.html
@@ -177,7 +183,8 @@ export const integ: IntegrationUserConfig = {
         nick: 'Name',
         mail: 'Email',
         login: 'Login (Optional)',
-        placeholder: 'Comment here... (Email to receive replies)',
+        placeholder:
+          '欢迎评论，无需登录，请留下您的邮箱（或主要社交媒体联系方式）以接收回复。\nWelcome to comment. (Email to receive replies. Login is unnecessary)',
         reaction0: 'Like'
       }
     }
@@ -205,6 +212,10 @@ export const terms: CardListData = {
     }
   ]
 }
+
+/** Dingnuooo change: Highlight color for gradient background on pages */
+/** 默认颜色配置位于 src\assets\styles\app.css 的 primary */
+export const highlightColor = '#7351c4' //default 659EB9
 
 const config = { ...theme, integ } as Config
 export default config
